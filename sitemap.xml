@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+    <!-- ============================================================
+         الصفحات الأساسية (العامة)
+         ============================================================ -->
+
+    <!-- 1. الرئيسية -->
+    <url>
+        <loc>https://www.kidcode-eg.com/</loc>
+        <lastmod>2026-10-28</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+    </url>
+
+    <!-- 2. من نحن -->
+    <url>
+        <loc>https://www.kidcode-eg.com/about</loc>
+        <lastmod>2026-10-28</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- 3. تواصل معنا -->
+    <url>
+        <loc>https://www.kidcode-eg.com/contact</loc>
+        <lastmod>2026-10-28</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- 4. مميزات الخدمة -->
+    <url>
+        <loc>https://www.kidcode-eg.com/how-it-works</loc>
+        <lastmod>2026-10-28</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- 5. تسجيل طفل جديد -->
+    <url>
+        <loc>https://www.kidcode-eg.com/reg</loc>
+        <lastmod>2026-10-28</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+
+    <!-- 6. جرب الخدمة مجاناً -->
+    <url>
+        <loc>https://www.kidcode-eg.com/demo-register</loc>
+        <lastmod>2026-10-28</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- 7. تسجيل مسوق جديد -->
+    <url>
+        <loc>https://www.kidcode-eg.com/marketer-register</loc>
+        <lastmod>2026-10-28</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <!-- ============================================================
+         الصفحات القانونية والتوعوية
+         ============================================================ -->
+
+    <!-- 8. الأسئلة الشائعة -->
+    <url>
+        <loc>https://www.kidcode-eg.com/faq</loc>
+        <lastmod>2026-10-28</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+    <!-- 9. سياسة الخصوصية -->
+    <url>
+        <loc>https://www.kidcode-eg.com/privacy-policy</loc>
+        <lastmod>2026-10-28</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.5</priority>
+    </url>
+
+    <!-- 10. الشروط والأحكام -->
+    <url>
+        <loc>https://www.kidcode-eg.com/terms-and-conditions</loc>
+        <lastmod>2026-10-28</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.5</priority>
+    </url>
+
+    <!-- 11. سياسة الاسترداد والإلغاء -->
+    <url>
+        <loc>https://www.kidcode-eg.com/refund-policy</loc>
+        <lastmod>2026-10-28</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.5</priority>
+    </url>
+
+    <!-- 12. سياسة التوصيل والشحن -->
+    <url>
+        <loc>https://www.kidcode-eg.com/delivery-policy</loc>
+        <lastmod>2026-10-28</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.5</priority>
+    </url>
+
+</urlset>

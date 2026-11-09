@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GT-TB7R77BQ"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'GT-TB7R77BQ');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>تسجيل مسوق جديد - كيدكود-ايجي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/all.min.css">
+    <link rel="stylesheet" href="css/base/main.css">
+    <link rel="stylesheet" href="css/pages/marketer-register.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/logo2.png">
+    <link rel="canonical" href="https://www.kidcode-eg.com/marketer-register" />
+</head>
+<body>
+
+<!-- ===== الهيدر الموحد ===== -->
+<div id="headerPlaceholder"></div>
+
+<main>
+    <div class="register-wrapper">
+        <div class="register-card">
+            <span class="icon-big"><i class="fas fa-user-plus"></i></span>
+            <h1>انضم كمسوق</h1>
+            <p class="sub-desc">سجل حسابك للحصول على كود مسوق خاص وابدأ في كسب العمولات</p>
+
+            <form id="registerForm">
+                <div class="form-group">
+                    <label>الاسم كاملاً <span class="required"></span></label>
+                    <input type="text" id="regName" placeholder="مثال: أحمد محمد علي" required>
+                </div>
+                <div class="form-group">
+                    <label>رقم الهاتف (واتساب) <span class="required"></span></label>
+                    <input type="tel" id="regPhone" placeholder="مثال: 01012345678" maxlength="11" required>
+                </div>
+                <div class="form-group">
+                    <label>البريد الإلكتروني <span class="required"></span></label>
+                    <input type="email" id="regEmail" placeholder="example@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>المحافظة <span class="required"></span></label>
+                    <select id="regGovernorate" required>
+                        <option value="">-- اختر المحافظة --</option>
+                        <option value="القاهرة">القاهرة</option>
+                        <option value="الجيزة">الجيزة</option>
+                        <option value="الإسكندرية">الإسكندرية</option>
+                        <option value="بورسعيد">بورسعيد</option>
+                        <option value="السويس">السويس</option>
+                        <option value="العاصمة الإدارية">العاصمة الإدارية</option>
+                        <option value="القليوبية">القليوبية</option>
+                        <option value="الشرقية">الشرقية</option>
+                        <option value="الدقهلية">الدقهلية</option>
+                        <option value="الغربية">الغربية</option>
+                        <option value="المنوفية">المنوفية</option>
+                        <option value="كفر الشيخ">كفر الشيخ</option>
+                        <option value="الإسماعيلية">الإسماعيلية</option>
+                        <option value="الأقصر">الأقصر</option>
+                        <option value="أسوان">أسوان</option>
+                        <option value="أسيوط">أسيوط</option>
+                        <option value="سوهاج">سوهاج</option>
+                        <option value="قنا">قنا</option>
+                        <option value="المنيا">المنيا</option>
+                        <option value="بني سويف">بني سويف</option>
+                        <option value="الفيوم">الفيوم</option>
+                        <option value="مطروح">مطروح</option>
+                        <option value="البحر الأحمر">البحر الأحمر</option>
+                        <option value="جنوب سيناء">جنوب سيناء</option>
+                        <option value="شمال سيناء">شمال سيناء</option>
+                        <option value="الوادي الجديد">الوادي الجديد</option>
+                        <option value="دمياط">دمياط</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>كلمة السر <span class="required"></span></label>
+                    <input type="password" id="regPassword" placeholder="أقل 8 أحرف" minlength="8" required>
+                    <div class="hint">يجب أن تتكون من 8 أحرف على الأقل.</div>
+                </div>
+                <div class="form-group">
+                    <label>تأكيد كلمة السر <span class="required"></span></label>
+                    <input type="password" id="regConfirmPassword" placeholder="أعد كتابة كلمة السر" required>
+                </div>
+
+                <!-- ============================================
+                     🔔 قسم طريقة الإشعارات
+                     ============================================ -->
+                <hr class="section-divider">
+                <h3 class="section-subtitle">
+                    <i class="fas fa-bell"></i>
+                    طريقة استلام الإشعارات
+                </h3>
+                <p class="section-desc">اختر كيف تفضّل استقبال إشعارات العمولات والعملاء الجدد</p>
+
+                <div class="notification-methods">
+                    <label class="notification-option">
+                        <input type="radio" name="notificationMethod" value="telegram" checked>
+                        <div class="notification-option-content">
+                            <div class="notification-option-header">
+                                <i class="fab fa-telegram notification-option-icon telegram-icon"></i>
+                                <span class="notification-option-badge">موصى به</span>
+                            </div>
+                            <strong>تليجرام</strong>
+                            <small>إشعارات فورية على موبايلك</small>
+                        </div>
+                    </label>
+
+                    <label class="notification-option">
+                        <input type="radio" name="notificationMethod" value="email">
+                        <div class="notification-option-content">
+                            <div class="notification-option-header">
+                                <i class="fas fa-envelope notification-option-icon email-icon"></i>
+                            </div>
+                            <strong>البريد الإلكتروني</strong>
+                            <small>على بريدك المسجّل</small>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- زر التسجيل -->
+                <button type="submit" class="btn-submit" id="registerBtn">
+                    <i class="fas fa-user-check"></i> إنشاء الحساب
+                </button>
+                <div id="registerMessage" class="message-box"></div>
+                <div class="login-link">لديك حساب بالفعل؟ <a href="/marketer-login">تسجيل الدخول</a></div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<!-- ============================================
+     🎉 Success Modal
+     ============================================ -->
+<div id="successModal" class="success-modal-overlay" style="display: none;">
+    <div class="success-modal">
+        <div class="success-modal-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <h2 class="success-modal-title">تم إنشاء حسابك بنجاح!</h2>
+        <p class="success-modal-subtitle">احتفظ بكودك للدخول لاحقاً</p>
+
+        <div class="success-modal-code-box">
+            <span class="success-modal-code-label">🎫 كودك الخاص</span>
+            <strong class="success-modal-code-value" id="modalMarketerCode">--</strong>
+        </div>
+
+        <!-- قسم تليجرام (يظهر لو اختار تليجرام) -->
+        <div id="modalTelegramSection" class="success-modal-info telegram-info" style="display: none;">
+            <i class="fab fa-telegram"></i>
+            <div>
+                <strong>📱 اخترت إشعارات تليجرام</strong>
+                <p>لتفعيلها، اربط حسابك الآن من لوحة التحكم</p>
+            </div>
+        </div>
+
+        <!-- قسم الإيميل (يظهر لو اختار إيميل) -->
+        <div id="modalEmailSection" class="success-modal-info email-info" style="display: none;">
+            <i class="fas fa-envelope"></i>
+            <div>
+                <strong>📧 الإشعارات ستصلك على</strong>
+                <p id="modalEmailAddress">--</p>
+            </div>
+        </div>
+
+        <div class="success-modal-actions">
+            <button id="modalLinkTelegramBtn" class="btn-modal btn-modal-primary" style="display: none;">
+                <i class="fab fa-telegram"></i> اربط تليجرام الآن
+            </button>
+            <button id="modalLoginBtn" class="btn-modal btn-modal-secondary">
+                <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== الفوتر الموحد ===== -->
+<div id="footerPlaceholder"></div>
+
+<!-- ===== السكربتات ===== -->
+<script src="js/config.js"></script>
+<script src="js/header.js"></script>
+<script>
+    fetch('/header.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('headerPlaceholder').innerHTML = data;
+        })
+        .catch(err => console.warn('⚠️ فشل تحميل الهيدر:', err));
+</script>
+<script src="js/pages/marketer-register.js"></script>
+<script>
+    (function() {
+        const footerPlaceholder = document.getElementById('footerPlaceholder');
+        if (!footerPlaceholder) return;
+
+        fetch('/footer.html')
+            .then(response => response.text())
+            .then(html => { footerPlaceholder.innerHTML = html; })
+            .catch(err => console.warn('⚠️ فشل تحميل الفوتر:', err));
+    })();
+</script>
+
+</body>
+</html>

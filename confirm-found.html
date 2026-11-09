@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GT-TB7R77BQ"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'GT-TB7R77BQ');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>تأكيد العثور على الطفل - كيدكود-ايجي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Inter:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/all.min.css">
+    <link rel="stylesheet" href="css/base/main.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/logo2.png">
+    <style>
+        /* تنسيقات إضافية للصفحة */
+        .confirm-wrapper {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .confirm-card {
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            padding: 36px 32px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(34, 85, 159, 0.06);
+        }
+        .confirm-card .icon-big {
+            font-size: 3.5rem;
+            color: var(--secondary-color);
+            text-align: center;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .confirm-card h1 {
+            text-align: center;
+            font-weight: 900;
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            margin-bottom: 6px;
+        }
+        .confirm-card .sub-desc {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 24px;
+            line-height: 1.8;
+        }
+        .confirm-card .sub-desc strong {
+            color: var(--primary-color);
+        }
+        .confirm-card .info-box {
+            background: #fef3c7;
+            border-right: 4px solid #f59e0b;
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: #92400e;
+        }
+        .confirm-card .info-box i {
+            margin-left: 6px;
+        }
+        .confirm-card .form-group {
+            margin-bottom: 18px;
+        }
+        .confirm-card .form-group label {
+            display: block;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        .confirm-card .form-group label .required {
+            color: var(--danger-color);
+        }
+        .confirm-card .form-group input,
+        .confirm-card .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            font-family: var(--font-arabic);
+            background: var(--bg-white);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+        .confirm-card .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(34, 85, 159, 0.08);
+        }
+        .confirm-card .form-group .hint {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+        .confirm-card .image-upload-wrapper {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .confirm-card .image-upload-box {
+            flex: 1;
+            min-width: 140px;
+            border: 2px dashed var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--bg-body);
+            position: relative;
+        }
+        .confirm-card .image-upload-box:hover {
+            border-color: var(--primary-color);
+            background: rgba(34, 85, 159, 0.03);
+        }
+        .confirm-card .image-upload-box .preview-img {
+            width: 100%;
+            max-height: 140px;
+            object-fit: cover;
+            border-radius: 8px;
+            display: none;
+        }
+        .confirm-card .image-upload-box .placeholder-text {
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+        .confirm-card .image-upload-box .placeholder-text i {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 6px;
+        }
+        .confirm-card .image-upload-box input[type="file"] {
+            display: none;
+        }
+        .confirm-card .btn-submit {
+            width: 100%;
+            padding: 16px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            justify-content: center;
+            gap: 12px;
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #2b8557 100%);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(57, 166, 111, 0.2);
+            margin-top: 10px;
+        }
+        .confirm-card .btn-submit:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(57, 166, 111, 0.3);
+        }
+        .confirm-card .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        .confirm-card .btn-alternative {
+            display: block;
+            text-align: center;
+            margin-top: 16px;
+            color: var(--primary-color);
+            font-weight: 700;
+            text-decoration: underline;
+        }
+        .confirm-card .message-box {
+            margin-top: 16px;
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            text-align: center;
+            font-weight: 700;
+            display: none;
+        }
+        .confirm-card .message-box.success {
+            display: block;
+            background: #e8f5ee;
+            color: var(--secondary-dark);
+            border-right: 4px solid var(--secondary-color);
+        }
+        .confirm-card .message-box.error {
+            display: block;
+            background: #fee2e2;
+            color: #991B1B;
+            border-right: 4px solid var(--danger-color);
+        }
+        @media (max-width: 480px) {
+            .confirm-card {
+                padding: 24px 16px;
+                border-radius: var(--radius-md);
+            }
+            .confirm-card .image-upload-wrapper {
+                flex-direction: column;
+            }
+            .confirm-card .image-upload-box {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== الهيدر الموحد (يتم تضمينه عبر JS) ===== -->
+<div id="headerPlaceholder"></div>
+
+<!-- ===== المحتوى ===== -->
+<main>
+    <div class="confirm-wrapper">
+        <div class="confirm-card">
+            <span class="icon-big"><i class="fas fa-hands-helping"></i></span>
+            <h1>✅ تم العثور على الطفل</h1>
+            <p class="sub-desc">
+                شكراً لك على مساعدتك في العثور على هذا الطفل. لتأكيد هويتك وتسهيل التواصل مع الأسرة، يرجى ملء البيانات التالية.
+            </p>
+
+            <div class="info-box">
+                <i class="fas fa-shield-alt"></i>
+                <strong>هام جدًا:</strong> هذه البيانات تُستخدم فقط للتحقق من هويتك. ستتلقى الأسرة رقم هاتفك فقط للتواصل معك لاستلام الطفل. لا يتم مشاركة صور البطاقة مع الأسرة، بل تُحفظ في سجلاتنا الآمنة.
+            </div>
+
+            <div id="reportInfo" style="background: var(--bg-body); padding: 12px 16px; border-radius: var(--radius-sm); margin-bottom: 20px; border-right: 4px solid var(--primary-color);">
+                <p style="margin:0; font-weight:700;">📋 رقم البلاغ: <span id="reportIdDisplay">---</span></p>
+            </div>
+
+            <form id="confirmFoundForm" novalidate>
+                <!-- اسم المتطوع -->
+                <div class="form-group">
+                    <label for="volunteerNameConfirm">اسمك كاملاً <span class="required"></span></label>
+                    <input type="text" id="volunteerNameConfirm" placeholder="مثل: أحمد محمد علي" required>
+                </div>
+
+                <!-- رقم الهاتف -->
+                <div class="form-group">
+                    <label for="volunteerPhoneConfirm">رقم هاتفك (واتساب) <span class="required"></span></label>
+                    <input type="tel" id="volunteerPhoneConfirm" placeholder="مثال: 01012345678" required maxlength="11">
+                    <div class="hint">📌 سيتم إرسال هذا الرقم إلى أسرة الطفل للتواصل معك.</div>
+                </div>
+
+                <!-- صورة البطاقة (وجه) -->
+                <div class="form-group">
+                    <label>صورة بطاقتك الشخصية (الوجه) <span class="required"></span></label>
+                    <div class="image-upload-wrapper">
+                        <div class="image-upload-box" id="frontIdBox" onclick="document.getElementById('frontIdInput').click()">
+                            <input type="file" id="frontIdInput" accept="image/jpeg,image/png,image/jpg" required>
+                            <img id="frontIdPreview" class="preview-img" src="" alt="الوجه">
+                            <div class="placeholder-text" id="frontIdPlaceholder">
+                                <i class="fas fa-id-card"></i>
+                                اضغط لرفع الوجه
+                            </div>
+                        </div>
+                        <div class="image-upload-box" id="backIdBox" onclick="document.getElementById('backIdInput').click()">
+                            <input type="file" id="backIdInput" accept="image/jpeg,image/png,image/jpg" required>
+                            <img id="backIdPreview" class="preview-img" src="" alt="الظهر">
+                            <div class="placeholder-text" id="backIdPlaceholder">
+                                <i class="fas fa-id-card"></i>
+                                اضغط لرفع الظهر
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hint">📸 يُفضل أن تكون الصورة واضحة وتظهر جميع البيانات.</div>
+                </div>
+
+                <button type="submit" class="btn-submit" id="confirmSubmitBtn">
+                    <i class="fas fa-check-circle"></i> تأكيد العثور على الطفل
+                </button>
+            </form>
+
+            <div id="confirmMessage" class="message-box"></div>
+
+            <a href="/" class="btn-alternative">
+                <i class="fas fa-arrow-right"></i> العودة للرئيسية
+            </a>
+            <p style="text-align:center; font-size:0.85rem; color:var(--text-light); margin-top:12px;">
+                <i class="fas fa-info-circle"></i> يمكنك أيضاً التواصل مع الأسرة مباشرة من خلال مسح رمز QR الموجود مع الطفل.
+            </p>
+        </div>
+    </div>
+</main>
+
+<!-- ===== الفوتر الموحد (يتم تحميله عبر JS) ===== -->
+<div id="footerPlaceholder"></div>
+
+<!-- ===== السكربتات (الترتيب الصحيح) ===== -->
+<script src="js/config.js"></script>
+<script src="js/header.js"></script>
+<script>
+    // تحميل الهيدر من ملف خارجي
+    fetch('/header.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('headerPlaceholder').innerHTML = data;
+        })
+        .catch(err => console.warn('⚠️ فشل تحميل الهيدر:', err));
+</script>
+<script src="js/utils.js"></script>
+<script src="js/pages/confirm-found.js"></script>
+
+<!-- ===== تحميل الفوتر الموحد ===== -->
+<script>
+    (function() {
+        const footerPlaceholder = document.getElementById('footerPlaceholder');
+        if (!footerPlaceholder) return;
+
+        fetch('/footer.html')
+            .then(response => {
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                return response.text();
+            })
+            .then(html => {
+                footerPlaceholder.innerHTML = html;
+            })
+            .catch(err => {
+                console.warn('⚠️ فشل تحميل الفوتر:', err);
+                footerPlaceholder.innerHTML = `
+                    <footer class="site-footer">
+                        <p style="text-align:center; padding:20px; color:#94A3B8;">
+                            KidCode-EG © 2026. جميع الحقوق محفوظة.
+                        </p>
+                    </footer>
+                `;
+            });
+    })();
+</script>
+
+</body>
+</html>

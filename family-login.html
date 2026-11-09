@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GT-TB7R77BQ"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'GT-TB7R77BQ');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="description" content="تسجيل الدخول إلى لوحة تحكم الأسرة — KidCode-EG">
+    <title>تسجيل الدخول - لوحة تحكم الأسرة | كيدكود-ايجي</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Inter:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/all.min.css">
+    <link rel="stylesheet" href="css/base/main.css">
+    <link rel="stylesheet" href="css/pages/family-login.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/logo2.png">
+    <link rel="canonical" href="https://www.kidcode-eg.com/family-login" />
+</head>
+<body>
+
+<!-- ===== الهيدر الموحد ===== -->
+<div id="headerPlaceholder"></div>
+
+<main class="family-login-page">
+
+    <!-- ===== Hero ===== -->
+    <div class="login-hero-wrapper">
+        <section class="login-hero">
+            <div class="login-hero-content">
+                <span class="hero-icon">
+                    <i class="fas fa-shield-halved"></i>
+                </span>
+                <h1>لوحة تحكم الأسرة</h1>
+                <p>ادخل بكود طفلك وكلمة السر لمتابعة بياناته وإشعاراته</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- ===== Login Card ===== -->
+    <div class="login-container">
+        <div class="login-card">
+
+            <!-- ============================================================
+                 🟢 الحالة 1: تسجيل الدخول العادي
+                 ============================================================ -->
+            <div id="loginState" class="login-state">
+                <div class="card-header-simple">
+                    <h2>
+                        <i class="fas fa-sign-in-alt"></i>
+                        تسجيل الدخول
+                    </h2>
+                    <p class="state-desc">أدخل كود الطفل وكلمة السر</p>
+                </div>
+
+                <!-- كود الطفل -->
+                <div class="form-group">
+                    <label class="required">كود الطفل</label>
+                    <div class="id-field-wrapper">
+                        <span class="id-prefix">KC-</span>
+                        <input
+                            type="text"
+                            id="loginChildNumber"
+                            class="id-input-field"
+                            inputmode="numeric"
+                            pattern="[0-9]*"
+                            maxlength="5"
+                            placeholder="12345"
+                            autocomplete="off"
+                        >
+                    </div>
+                    <div class="hint">📌 أدخل الأرقام فقط (5 أرقام)</div>
+                </div>
+
+                <!-- كلمة السر -->
+                <div class="form-group">
+                    <label class="required">كلمة السر</label>
+                    <div class="password-field-wrapper">
+                        <input
+                            type="password"
+                            id="loginPassword"
+                            placeholder="••••••••"
+                            autocomplete="current-password"
+                        >
+                        <button
+                            type="button"
+                            class="toggle-password"
+                            data-target="loginPassword"
+                            aria-label="عرض كلمة السر"
+                        >
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="hint">
+                        <a href="/family-forgot-password" class="forgot-link">
+                            <i class="fas fa-key"></i>
+                            نسيت كلمة السر؟
+                        </a>
+                    </div>
+                </div>
+
+                <!-- زر الدخول -->
+                <button id="loginBtn" class="btn btn-primary btn-block btn-lg">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>تسجيل الدخول</span>
+                </button>
+            </div>
+
+            <!-- ============================================================
+                 🟡 الحالة 2: Migration - التحقق بالإيميل
+                 ============================================================ -->
+            <div id="migrationEmailState" class="login-state" style="display: none;">
+                <div class="card-header-simple">
+                    <h2>
+                        <i class="fas fa-envelope-circle-check"></i>
+                        تفعيل كلمة السر
+                    </h2>
+                    <p class="state-desc">
+                        ليس لديك كلمة سر. أدخل البريد المسجل لإنشاء كلمة سر جديدة
+                    </p>
+                </div>
+
+                <div class="migration-info-box">
+                    <p>
+                        <i class="fas fa-info-circle"></i>
+                        <strong>ملاحظة:</strong> البريد الإلكتروني المسجل مطلوب
+                    </p>
+                </div>
+
+                <!-- كود الطفل (readonly) -->
+                <div class="form-group">
+                    <label>كود الطفل</label>
+                    <div class="id-field-wrapper readonly">
+                        <span class="id-prefix">KC-</span>
+                        <input
+                            type="text"
+                            id="migrationChildNumber"
+                            class="id-input-field"
+                            readonly
+                            disabled
+                        >
+                    </div>
+                </div>
+
+                <!-- الإيميل -->
+                <div class="form-group">
+                    <label class="required">البريد الإلكتروني المسجل</label>
+                    <input
+                        type="email"
+                        id="migrationEmail"
+                        placeholder="example@email.com"
+                        dir="ltr"
+                        autocomplete="email"
+                    >
+                </div>
+
+                <!-- زر التحقق -->
+                <button id="migrationEmailBtn" class="btn btn-primary btn-block btn-lg">
+                    <i class="fas fa-check-circle"></i>
+                    <span>تحقق من البريد الإلكتروني</span>
+                </button>
+
+                <button id="backToLoginBtn" class="btn btn-outline btn-block btn-back">
+                    <i class="fas fa-arrow-right"></i>
+                    <span>رجوع</span>
+                </button>
+            </div>
+
+            <!-- ============================================================
+                 🟢 الحالة 3: Migration - تعيين الكلمة السر
+                 ============================================================ -->
+            <div id="migrationPasswordState" class="login-state" style="display: none;">
+                <div class="card-header-simple">
+                    <h2>
+                        <i class="fas fa-lock"></i>
+                        تعيين كلمة سر جديدة
+                    </h2>
+                    <p class="state-desc">
+                        تم التحقق من البريد الإلكتروني. عيّن كلمة سر قوية لحسابك.
+                    </p>
+                </div>
+
+                <div class="password-rules-box">
+                    <p class="rules-title">
+                        <i class="fas fa-shield-halved"></i>
+                        شروط كلمة السر:
+                    </p>
+                    <ul class="rules-list">
+                        <li><i class="fas fa-check"></i> 8 أحرف على الأقل</li>
+                        <li><i class="fas fa-check"></i> يحتوي على حرف واحد على الأقل</li>
+                        <li><i class="fas fa-check"></i> يحتوي على رقم واحد على الأقل</li>
+                        <li><i class="fas fa-check"></i> يحتوي على رمز خاص (@ # $ %)</li>
+                    </ul>
+                </div>
+
+                <!-- كلمة السر الجديدة -->
+                <div class="form-group">
+                    <label class="required">كلمة السر الجديدة</label>
+                    <div class="password-field-wrapper">
+                        <input
+                            type="password"
+                            id="migrationNewPassword"
+                            placeholder="••••••••"
+                            autocomplete="new-password"
+                        >
+                        <button
+                            type="button"
+                            class="toggle-password"
+                            data-target="migrationNewPassword"
+                            aria-label="عرض الكلمة السر"
+                        >
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- تأكيد كلمة السر -->
+                <div class="form-group">
+                    <label class="required">تأكيد كلمة السر</label>
+                    <div class="password-field-wrapper">
+                        <input
+                            type="password"
+                            id="migrationConfirmPassword"
+                            placeholder="••••••••"
+                            autocomplete="new-password"
+                        >
+                        <button
+                            type="button"
+                            class="toggle-password"
+                            data-target="migrationConfirmPassword"
+                            aria-label="عرض كلمة السر"
+                        >
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="error-message" id="migrationConfirmError">
+                        كلمة السر غير متطابقة
+                    </div>
+                </div>
+
+                <!-- زر التعيين -->
+                <button id="migrationPasswordBtn" class="btn btn-primary btn-block btn-lg">
+                    <i class="fas fa-check-circle"></i>
+                    <span>تعيين كلمة السر والدخول</span>
+                </button>
+
+                <button id="backToEmailBtn" class="btn btn-outline btn-block btn-back">
+                    <i class="fas fa-arrow-right"></i>
+                    <span>رجوع</span>
+                </button>
+            </div>
+
+            <!-- ============================================================
+                 💬 رسالة عامة (خطأ / نجاح / تحذير)
+                 ============================================================ -->
+            <div id="loginMessage" class="login-message" style="display: none;">
+                <i class="fas fa-info-circle msg-icon"></i>
+                <div class="msg-body">
+                    <strong class="msg-title"></strong>
+                    <p class="msg-text"></p>
+                </div>
+            </div>
+
+            <!-- ===== Loader ===== -->
+            <div id="loginLoader" class="login-loader" style="display: none;">
+                <i class="fas fa-spinner fa-spin"></i>
+                <span>جاري التحميل...</span>
+            </div>
+
+        </div>
+
+        <!-- ===== Helper Links ===== -->
+        <div class="login-footer-links">
+            <p>
+                <i class="fas fa-user-plus"></i>
+                ليس لديك حساب؟
+                <a href="/reg">سجّل الآن</a>
+            </p>
+            <p>
+                <i class="fas fa-headset"></i>
+                هل تحتاج مساعدة؟
+                <a href="/contact">تواصل مع الدعم</a>
+            </p>
+        </div>
+
+    </div>
+
+</main>
+
+<!-- ===== الفوتر الموحد ===== -->
+<div id="footerPlaceholder"></div>
+
+<!-- ===== السكربتات ===== -->
+<script src="js/config.js"></script>
+<script src="js/header.js"></script>
+<script>
+    (function() {
+        const placeholder = document.getElementById('headerPlaceholder');
+        if (!placeholder) return;
+        fetch('/header.html')
+            .then(r => r.text())
+            .then(data => {
+                placeholder.innerHTML = data;
+                if (window.initHeader) setTimeout(window.initHeader, 100);
+            })
+            .catch(err => console.warn('⚠️ فشل تحميل الهيدر:', err));
+    })();
+</script>
+<script src="js/utils.js"></script>
+<script src="js/pages/family-login.js"></script>
+<script>
+    (function() {
+        const footerPlaceholder = document.getElementById('footerPlaceholder');
+        if (!footerPlaceholder) return;
+        fetch('/footer.html')
+            .then(r => r.text())
+            .then(html => { footerPlaceholder.innerHTML = html; })
+            .catch(err => console.warn('⚠️ فشل تحميل الفوتر:', err));
+    })();
+</script>
+
+<script>
+    // 🔥 Warm-up GAS فور تحميل الصفحة
+    (function() {
+        fetch('/api?action=child&id=WARMUP&_t=' + Date.now(), { cache: 'no-store' })
+            .catch(function() {});
+    })();
+</script>
+
+</body>
+</html>

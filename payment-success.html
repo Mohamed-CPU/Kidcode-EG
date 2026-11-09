@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>نتيجة الدفع - كيدكود-ايجي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        /* ✅ خلفية الشاشة بيضاء عشان الكارت يبان */
+        body {
+            font-family: 'Cairo', Tahoma, Arial, sans-serif;
+            background: #ffffff; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            direction: rtl;
+            padding: 20px;
+        }
+
+        .payment-wrapper {
+            width: 100%;
+            max-width: 480px;
+            margin: auto;
+        }
+
+        /* ✅ الكارت غامق جداً عشان الـ Contrast */
+        .payment-card {
+            background: #0f172a; 
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); /* ظل قوي */
+            overflow: hidden;
+            border: 1px solid #1e293b;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ✅ الهيدر (اللون هيتغير بناءً على الحالة) */
+        .payment-card-header {
+            padding: 40px 20px 30px;
+            text-align: center;
+            color: #ffffff;
+            background: linear-gradient(135deg, #22559F, #1A437C); 
+            transition: background 0.5s ease;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        .payment-icon-circle {
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .payment-card-header h1 {
+            font-size: 1.7rem;
+            font-weight: 900;
+            margin-bottom: 8px;
+        }
+
+        .payment-subtitle {
+            font-size: 1.05rem;
+            color: #cbd5e1; /* رمادي فاتح */
+            font-weight: 600;
+        }
+
+        .payment-card-body {
+            padding: 30px 24px;
+            text-align: center;
+        }
+
+        .payment-message {
+            color: #e2e8f0; /* أبيض مائل للرمادي */
+            line-height: 1.8;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .btn-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 16px;
+            border-radius: 14px;
+            font-size: 1.05rem;
+            font-weight: 800;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        /* ✅ الزر الأساسي (أزرق) */
+        .btn-primary { 
+            background: #3b82f6; 
+            color: #ffffff; 
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        .btn-primary:hover { 
+            background: #2563eb; 
+            transform: translateY(-2px); 
+        }
+
+        /* ✅ زر إعادة المحاولة (حدود واضحة جداً) */
+        .btn-retry {
+            background: transparent;
+            color: #f1f5f9;
+            border: 2px solid #475569; /* الحدود اللي إنت طالبها */
+        }
+        .btn-retry:hover {
+            background: #1e293b;
+            border-color: #64748b;
+        }
+        
+        /* ✅ زر العودة (رمادي غامق) */
+        .btn-back {
+            background: #334155;
+            color: #f8fafc;
+        }
+        .btn-back:hover {
+            background: #475569;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .fa-spin { animation: spin 1s linear infinite; }
+
+        @media (max-width: 480px) {
+            .payment-card-header { padding: 30px 16px 20px; }
+            .payment-icon-circle { width: 75px; height: 75px; font-size: 2.5rem; }
+            .payment-card-header h1 { font-size: 1.5rem; }
+            .payment-card-body { padding: 24px 16px; }
+            .btn { padding: 14px; font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<main class="payment-wrapper">
+    <div id="resultCard" class="payment-card">
+        <div class="payment-card-header" id="resultHeader">
+            <div class="payment-icon-circle" id="resultIcon">
+                <i class="fas fa-spinner fa-spin"></i>
+            </div>
+            <h1 id="resultTitle">جاري التحقق...</h1>
+            <p class="payment-subtitle" id="resultSubtitle">يتم التحقق من حالة الدفع</p>
+        </div>
+
+        <div class="payment-card-body">
+            <p class="payment-message" id="resultMessage">
+                لحظات من فضلك...
+            </p>
+
+            <div class="btn-actions" id="resultActions">
+                <a href="/family-dashboard#data" class="btn btn-retry" style="display:none;" id="retryBtn">
+                    <i class="fas fa-redo"></i> المحاولة مرة أخرى
+                </a>
+
+                <a href="/family-dashboard" class="btn btn-back" style="display:none;" id="dashboardBtn">
+                    <i class="fas fa-arrow-left"></i> العودة للوحة الأسرة
+                </a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    (function() {
+        'use strict';
+
+        const params = new URLSearchParams(window.location.search);
+        const childID = String(params.get('childID') || '').trim().toUpperCase();
+        const orderId = params.get('order') || params.get('order_id');
+        const isSuccessParam = params.get('success');
+
+        function showResult(type, title, subtitle, message) {
+            const header = document.getElementById('resultHeader');
+            const icon = document.getElementById('resultIcon');
+            const titleEl = document.getElementById('resultTitle');
+            const subEl = document.getElementById('resultSubtitle');
+            const msgEl = document.getElementById('resultMessage');
+            const dashBtn = document.getElementById('dashboardBtn');
+            const retryBtn = document.getElementById('retryBtn');
+
+            titleEl.textContent = title;
+            subEl.textContent = subtitle;
+            msgEl.textContent = message;
+
+            if (type === 'success') {
+                // ✅ حالة النجاح: هيدر أخضر غامق وأيقونة خضراء فاتحة
+                header.style.background = 'linear-gradient(135deg, #10B981, #047857)'; 
+                icon.innerHTML = '<i class="fas fa-check-circle" style="color: #a7f3d0;"></i>';
+                dashBtn.style.display = 'flex';
+                dashBtn.className = 'btn btn-primary'; // زرار أزرق
+                if (retryBtn) retryBtn.style.display = 'none';
+            } else if (type === 'failed') {
+                // ✅ حالة الفشل: هيدر أحمر غامق
+                header.style.background = 'linear-gradient(135deg, #DC2626, #991B1B)'; 
+                icon.innerHTML = '<i class="fas fa-times-circle" style="color: #fecaca;"></i>';
+                dashBtn.style.display = 'flex';
+                dashBtn.className = 'btn btn-back'; // زرار رمادي غامق
+                
+                if (retryBtn && childID) {
+                    retryBtn.style.display = 'flex'; // زرار إعادة المحاولة بحدود واضحة
+                }
+            } else {
+                // ✅ حالة الانتظار: هيدر أزرق
+                header.style.background = 'linear-gradient(135deg, #22559F, #1A437C)'; 
+                icon.innerHTML = '<i class="fas fa-hourglass-half" style="color: #bfdbfe;"></i>';
+                dashBtn.style.display = 'flex';
+                dashBtn.className = 'btn btn-back';
+                if (retryBtn) retryBtn.style.display = 'none';
+            }
+        }
+
+        async function checkStatus(maxAttempts) {
+            if (!childID && !orderId) {
+                showResult('failed', 'خطأ في الرابط', 'لم يتم العثور على معلومات الدفع',
+                    'يمكنك العودة للوحة الأسرة للتحقق من حالة الاشتراك.');
+                return;
+            }
+
+            const attempts = maxAttempts || 15;
+
+            for (let i = 0; i < attempts; i++) {
+                try {
+                    if (orderId) {
+                        const res = await fetch('/api?action=getPaymentStatus&orderId=' + encodeURIComponent(orderId));
+                        const data = await res.json();
+
+                        if (data.status === 'paid') {
+                            showResult('success', '✅ تم الدفع بنجاح', 'تم تفعيل اشتراك طفلك',
+                                'سيتم إعادة توجيهك للوحة التحكم بعد لحظات...');
+                            setTimeout(() => { window.location.href = '/family-dashboard'; }, 3000);
+                            return;
+                        }
+
+                        if (data.status === 'failed') {
+                            showResult('failed', 'لم تكتمل العملية', 'فشل الدفع أو تم إلغاؤه',
+                                'يمكنك المحاولة مرة أخرى من لوحة الأسرة أو التواصل مع الدعم.');
+                            return;
+                        }
+                    }
+
+                    if (childID) {
+                        const res2 = await fetch('/api?action=family&innerAction=getChildDataForFamily&childID=' + encodeURIComponent(childID));
+                        const data2 = await res2.json();
+
+                        if (data2.success) {
+                            const status = String(data2.data.status || '').toLowerCase();
+                            const lastStatus = data2.data.lastPaymentStatus;
+
+                            if (status === 'active') {
+                                showResult('success', '✅ تم الدفع بنجاح', 'تم تفعيل اشتراك طفلك',
+                                    'سيتم إعادة توجيهك للوحة التحكم بعد لحظات...');
+                                setTimeout(() => { window.location.href = '/family-dashboard'; }, 3000);
+                                return;
+                            }
+
+                            if (lastStatus === 'failed') {
+                                showResult('failed', 'لم تكتمل العملية', 'فشل الدفع أو تم إلغاؤه',
+                                    'يمكنك المحاولة مرة أخرى من لوحة الأسرة أو التواصل مع الدعم.');
+                                return;
+                            }
+                        }
+                    }
+                } catch (e) {}
+
+                await new Promise(r => setTimeout(r, 2000));
+            }
+
+            showResult('failed', 'انتهت مهلة التحقق', 'لم يتم تأكيد الدفع',
+                'إذا كنت قد دفعت بالفعل، يرجى الانتظار قليلاً ثم مراجعة لوحة الأسرة.');
+        }
+
+        if (isSuccessParam === 'false') {
+            showResult('failed', 'لم تكتمل العملية', 'فشل الدفع أو تم إلغاؤه',
+                'يمكنك المحاولة مرة أخرى أو العودة للوحة الأسرة.');
+        } else {
+            checkStatus(15);
+        }
+    })();
+</script>
+
+</body>
+</html>

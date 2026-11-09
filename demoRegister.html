@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+
+        <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GT-TB7R77BQ"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'GT-TB7R77BQ');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <title>جرب الخدمة - كيدكود-ايجي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Inter:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/all.min.css">
+    <link rel="stylesheet" href="css/base/main.css">
+    <link rel="stylesheet" href="css/pages/demoRegister.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/logo2.png">
+    <link rel="canonical" href="https://www.kidcode-eg.com/demo-register" />
+</head>
+<body>
+
+<!-- ===== الهيدر الموحد (يتم تضمينه عبر JS) ===== -->
+<div id="headerPlaceholder"></div>
+
+<!-- ===== المحتوى ===== -->
+<main class="demo-main">
+    <div class="demo-wrapper">
+        <div class="demo-card">
+            <div class="demo-header">
+                <i class="fas fa-rocket demo-icon"></i>
+                <h1>جرّب <span class="kid">KidCode</span><span class="eg">-EG</span></h1>
+                <p class="demo-subtitle">جلسة تجريبية لمدة 5 دقائق · محاكاة حقيقية</p>
+            </div>
+
+            <div id="registerForm">
+                <div class="form-group">
+                    <label for="fullName"><i class="fas fa-user"></i> الاسم كاملاً <span class="required-star">*</span></label>
+                    <input type="text" id="fullName" placeholder="مثل: أحمد محمد" autocomplete="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="demoEmail"><i class="fas fa-envelope"></i> البريد الإلكتروني <span class="required-star">*</span></label>
+                    <input type="email" id="demoEmail" placeholder="example@email.com" autocomplete="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="demoPhone"><i class="fab fa-whatsapp"></i> رقم الهاتف (واتساب) <span class="required-star">*</span></label>
+                    <input type="tel" id="demoPhone" placeholder="مثل: 01012345678" autocomplete="tel" maxlength="11" inputmode="numeric" pattern="[0-9]*" required>
+                    <span class="hint"><i class="fas fa-info-circle"></i> يفضل أن يكون مسجلاً على واتساب لاستقبال الرسائل</span>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="agreeCheck">
+                    <label for="agreeCheck">
+                        أوافق على استخدام هذه البيانات <strong>للتجربة فقط</strong>، وأعلم أن الجلسة تنتهي بعد 5 دقائق.
+                    </label>
+                </div>
+
+                <button id="startBtn" class="btn btn-primary btn-start" disabled>
+                    <i class="fas fa-play"></i> ابدأ التجربة
+                </button>
+                <div id="statusMsg" class="status-msg"></div>
+            </div>
+
+            <div class="demo-footer-note">
+                <i class="fas fa-shield-alt"></i> بياناتك آمنة وتُستخدم فقط لهذه التجربة
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- ===== الفوتر الموحد (يتم تحميله عبر JS) ===== -->
+<div id="footerPlaceholder"></div>
+
+<!-- ===== السكربتات (الترتيب الصحيح) ===== -->
+<script src="js/config.js"></script>
+<script src="js/header.js"></script>
+<script>
+    // تحميل الهيدر من ملف خارجي
+    fetch('/header.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('headerPlaceholder').innerHTML = data;
+        })
+        .catch(err => console.warn('⚠️ فشل تحميل الهيدر:', err));
+</script>
+<script src="js/pages/demoRegister.js"></script>
+
+<!-- ===== تحميل الفوتر الموحد ===== -->
+<script>
+    (function() {
+        const footerPlaceholder = document.getElementById('footerPlaceholder');
+        if (!footerPlaceholder) return;
+
+        fetch('/footer.html')
+            .then(response => {
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                return response.text();
+            })
+            .then(html => {
+                footerPlaceholder.innerHTML = html;
+            })
+            .catch(err => {
+                console.warn('⚠️ فشل تحميل الفوتر:', err);
+                footerPlaceholder.innerHTML = `
+                    <footer class="site-footer">
+                        <p style="text-align:center; padding:20px; color:#94A3B8;">
+                            KidCode-EG © 2026. جميع الحقوق محفوظة.
+                        </p>
+                    </footer>
+                `;
+            });
+    })();
+</script>
+
+</body>
+</html>

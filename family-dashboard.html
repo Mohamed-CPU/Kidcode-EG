@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GT-TB7R77BQ"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'GT-TB7R77BQ');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="description" content="لوحة تحكم الأسرة — KidCode-EG">
+    <meta name="robots" content="noindex, nofollow">
+    <title>لوحة تحكم الأسرة - كيدكود-ايجي</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Inter:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/all.min.css">
+    <link rel="stylesheet" href="css/base/main.css">
+    <link rel="stylesheet" href="css/pages/family-dashboard.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/logo2.png">
+</head>
+<body class="family-dashboard-page no-header">
+
+    <!-- ============================================================
+     Initial Loader + Error State
+     ============================================================ -->
+<div id="fdInitialLoader" class="fd-initial-loader">
+    <div class="fd-initial-loader-box">
+        <div class="fd-initial-spinner"></div>
+        <p class="fd-initial-text">جاري تحميل البيانات...</p>
+        <p class="fd-initial-subtext">لحظات من فضلك</p>
+    </div>
+</div>
+
+<div id="fdInitialError" class="fd-initial-error" style="display: none;">
+    <div class="fd-initial-error-box">
+        <div class="fd-initial-error-icon">
+            <i class="fas fa-triangle-exclamation"></i>
+        </div>
+        <h2 class="fd-initial-error-title">حدث خطأ</h2>
+        <p class="fd-initial-error-message" id="fdInitialErrorMessage">
+            تعذر تحميل البيانات
+        </p>
+        <button type="button" class="fd-initial-retry-btn" id="fdInitialRetryBtn">
+            <i class="fas fa-rotate"></i>
+            إعادة تحميل البيانات
+        </button>
+    </div>
+</div>
+
+<!-- ===== Auth Guard (يشتغل قبل أي حاجة) ===== -->
+<script>
+    (function() {
+        const token = sessionStorage.getItem('family_session') || localStorage.getItem('family_session');
+        if (!token) {
+            window.location.replace('/family-login');
+        }
+    })();
+</script>
+
+<!-- ===== Main Layout ===== -->
+<div class="fd-layout">
+
+    <!-- ============================================================
+         SIDEBAR
+    ============================================================ -->
+    <aside class="fd-sidebar" id="fdSidebar">
+
+        <!-- Profile Card -->
+        <div class="sidebar-profile">
+            <div class="profile-avatar" id="sidebarAvatar">
+                <i class="fas fa-child"></i>
+            </div>
+            <div class="profile-info">
+                <h3 class="profile-name" id="sidebarChildName">--</h3>
+                <p class="profile-id" id="sidebarChildID">--</p>
+                <span class="profile-status" id="sidebarStatus">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    جاري التحميل
+                </span>
+            </div>
+        </div>
+
+        <!-- Nav Menu -->
+        <nav class="sidebar-nav" id="sidebarNav">
+            <a href="#data" class="nav-item" data-tab="data">
+                <i class="fas fa-child-reaching"></i>
+                <span>بيانات الطفل</span>
+            </a>
+            <a href="#notifications" class="nav-item" data-tab="notifications">
+                <i class="fas fa-bell"></i>
+                <span>الإشعارات</span>
+            </a>
+            <a href="#reports" class="nav-item" data-tab="reports">
+                <i class="fas fa-chart-line"></i>
+                <span>التقارير</span>
+            </a>
+            <a href="#missing" class="nav-item nav-item-disabled" data-tab="missing">
+                <i class="fas fa-triangle-exclamation"></i>
+                <span>الإبلاغ عن اختفاء طفلك</span>
+                <span class="nav-badge">قريباً</span>
+            </a>
+            <a href="#security" class="nav-item" data-tab="security">
+                <i class="fas fa-fingerprint"></i>
+                <span>الأمان الرقمي</span>
+            </a>
+            <a href="#settings" class="nav-item" data-tab="settings">
+                <i class="fas fa-gear"></i>
+                <span>الإعدادات</span>
+            </a>
+            <a href="#contact" class="nav-item" data-tab="contact">
+                <i class="fas fa-headset"></i>
+                <span>اتصل بنا</span>
+            </a>
+        </nav>
+
+        <!-- Logout -->
+        <div class="sidebar-footer">
+            <button id="logoutBtn" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>تسجيل الخروج</span>
+            </button>
+        </div>
+
+    </aside>
+
+    <!-- Sidebar Overlay (Mobile) -->
+    <div class="fd-sidebar-overlay" id="fdSidebarOverlay"></div>
+
+    <!-- ============================================================
+         MAIN CONTENT
+    ============================================================ -->
+    <main class="fd-content">
+
+        <!-- Mobile: Hamburger + Current Tab -->
+        <div class="mobile-tab-header">
+            <button class="mobile-sidebar-toggle" id="mobileSidebarToggle" aria-label="القائمة">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h2 class="mobile-current-tab" id="mobileCurrentTab">بيانات الطفل</h2>
+        </div>
+
+        <!-- Content Wrapper -->
+        <div class="content-wrapper" id="contentWrapper">
+
+            <!-- Tab: Data -->
+            <section class="fd-tab" data-tab="data" id="tab-data">
+
+                <!-- ============ Child Data Card ============ -->
+                <div class="fd-card">
+                    <div class="fd-card-header">
+                        <h2>
+                            <i class="fas fa-child-reaching"></i>
+                            بيانات الطفل
+                        </h2>
+                        <button class="fd-icon-btn" id="reloadDataBtn" title="إعادة تحميل">
+                            <i class="fas fa-rotate"></i>
+                        </button>
+                    </div>
+
+                    <div class="fd-card-body">
+
+                        <!-- Child Photo -->
+                        <div class="fd-field-group">
+                            <label>صورة الطفل</label>
+                            <div class="photo-wrapper">
+                                <div class="photo-preview" id="photoPreview">
+                                    <i class="fas fa-child"></i>
+                                </div>
+                                <div class="photo-info">
+                                    <button type="button" class="btn btn-outline btn-sm" id="changePhotoBtn">
+                                        <i class="fas fa-camera"></i>
+                                        تغيير الصورة
+                                    </button>
+                                    <p class="photo-hint">JPG أو PNG، الحد الأقصى 5 ميجا</p>
+                                </div>
+                                <input type="file" id="photoInput" accept="image/jpeg,image/png" hidden>
+                            </div>
+                        </div>
+
+                        <hr class="fd-divider">
+
+                        <!-- Name + Birth Date -->
+                        <div class="fd-grid-2">
+                            <div class="fd-field-group">
+                                <label>اسم الطفل</label>
+                                <input type="text" id="fdChildName" readonly disabled>
+                            </div>
+
+                            <div class="fd-field-group">
+                                <label>تاريخ الميلاد</label>
+                                <input type="text" id="fdBirthDate" readonly placeholder="DD/MM/YYYY">
+                                <div class="field-error" id="fdBirthDateError"></div>
+                            </div>
+                        </div>
+
+                        <!-- Google Maps + Detailed Address -->
+                        <div class="fd-field-group">
+                            <label>رابط خرائط Google</label>
+                            <input type="url" id="fdGoogleMaps" placeholder="https://maps.app.goo.gl/..." dir="ltr">
+                            <div class="field-error" id="fdGoogleMapsError"></div>
+                        </div>
+                        <div class="fd-field-group">
+                            <label class="required">العنوان التفصيلي</label>
+                            <input type="text" id="fdDetailedAddress" placeholder="الشارع، رقم المبنى، المنطقة">
+                            <div class="field-error" id="fdDetailedAddressError"></div>
+                        </div>
+
+                        <hr class="fd-divider">
+
+                        <!-- Father Phone -->
+                        <div class="fd-grid-2">
+                            <div class="fd-field-group">
+                                <label>رقم هاتف الأب (واتساب)</label>
+                                <input type="tel" id="fdFatherPhone" placeholder="01XXXXXXXXX" maxlength="11" dir="ltr">
+                                <div class="field-error" id="fdFatherPhoneError"></div>
+                            </div>
+                            <div class="fd-field-group">
+                                <label>رقم هاتف الأم (واتساب)</label>
+                                <input type="tel" id="fdMotherPhone" placeholder="01XXXXXXXXX" maxlength="11" dir="ltr">
+                                <div class="field-error" id="fdMotherPhoneError"></div>
+                            </div>
+                        </div>
+
+                        <!-- Mother Name + Marketer Code -->
+                        <div class="fd-grid-2">
+                            <div class="fd-field-group">
+                                <label>اسم الأم</label>
+                                <input type="text" id="fdMotherName" placeholder="اسم الأم">
+                            </div>
+                            <div class="fd-field-group">
+                                <label>كود المسوق</label>
+                                <input type="text" id="fdMarketerId" placeholder="MAXXXX" dir="ltr" maxlength="6">
+                                <div class="field-hint" id="fdMarketerHint">اتركه فارغاً إذا لم يكن هناك مسوق</div>
+                                <div class="field-error" id="fdMarketerIdError"></div>
+                            </div>
+                        </div>
+
+                        <hr class="fd-divider">
+
+                        <!-- Notes -->
+                        <div class="fd-field-group">
+                            <label>ملاحظات خاصة بالطفل</label>
+                            <div class="notes-container">
+                                <ul class="notes-list" id="fdNotesList"></ul>
+                                <div class="add-note-row">
+                                    <input type="text" id="fdNoteInput" class="form-control" placeholder="مثل: يعاني من حساسية، فصيلة الدم..." autocomplete="off" name="child_random_note_field">
+                                    <button type="button" class="btn btn-secondary btn-sm" id="addNoteBtn">
+                                        <i class="fas fa-plus"></i>
+                                        إضافة
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="fd-card-footer">
+                        <div class="fd-checkbox-group">
+                            <input type="checkbox" id="fdAcknowledge">
+                            <label for="fdAcknowledge">
+                                أقر بأن جميع البيانات المدخلة صحيحة وأتحمل المسؤولية الكاملة
+                            </label>
+                        </div>
+                        <button type="button" class="btn btn-primary btn-block" id="saveDataBtn">
+                            <i class="fas fa-save"></i>
+                            حفظ التغييرات
+                        </button>
+                        <div class="fd-message" id="saveDataMessage"></div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- Tab: Settings (الإعدادات) -->
+            <section class="fd-tab" data-tab="settings" id="tab-settings" style="display: none;">
+
+                <!-- ============ Payment Status Card ============ -->
+                <div class="fd-card fd-payment-card" id="fdPaymentCard" style="display: none;">
+                    <div class="fd-card-header">
+                        <h2>
+                            <i class="fas fa-credit-card"></i>
+                            حالة الاشتراك والدفع
+                        </h2>
+                    </div>
+                    <div class="fd-card-body">
+                        <div id="fdPaymentStatusBox" class="fd-payment-status"></div>
+                        
+                        <!-- اختيار الخطة المراد التجديد إليها -->
+                        <div class="fd-field-group" id="fdRenewPlanGroup" style="display: none; margin-top: 15px;">
+                            <label>اختر الخطة المراد التجديد إليها:</label>
+                            <select id="fdRenewPlanSelect" class="form-select">
+                                <option value="6 أشهر">6 أشهر (250 ج.م)</option>
+                                <option value="عام واحد">عام واحد (500 ج.م)</option>
+                            </select>
+                        </div>
+
+                        <div class="fd-payment-actions" style="margin-top: 15px;">
+                            <button type="button" class="btn btn-warning btn-block" id="fdRetryPaymentBtn" style="display: none;">
+                                <i class="fas fa-redo"></i> إعادة الدفع
+                            </button>
+                            <button type="button" class="btn btn-primary btn-block" id="fdRenewSubscriptionBtn" style="display: none;">
+                                <i class="fas fa-calendar-plus"></i> تجديد الاشتراك
+                            </button>
+                            <!-- زر إلغاء طلب الاسترداد (يظهر فقط لو الحالة refunding) -->
+                            <button type="button" class="btn btn-success btn-block" id="cancelRefundRequestBtn" style="display: none; margin-top:10px;">
+                                <i class="fas fa-undo"></i> إلغاء طلب الاسترداد
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============ Change Password Card (نُقل من التاب القديم) ============ -->
+                <div class="fd-card">
+                    <div class="fd-card-header">
+                        <h2>
+                            <i class="fas fa-key"></i>
+                            تغيير كلمة السر
+                        </h2>
+                    </div>
+
+                    <div class="fd-card-body">
+
+                        <p class="fd-section-desc">
+                            <i class="fas fa-shield-halved"></i>
+                            احرص على استخدام كلمة سر قوية لتأمين حساب طفلك. سيتم إنهاء جميع الجلسات الأخرى بعد التغيير.
+                        </p>
+
+                        <!-- Password Rules (Live) -->
+                        <div class="fd-pwd-rules-box">
+                            <p class="rules-title">
+                                <i class="fas fa-shield-halved"></i>
+                                شروط كلمة السر:
+                            </p>
+                            <ul class="fd-rules-list">
+                                <li data-rule="length"><i class="fas fa-circle"></i> 8 أحرف على الأقل</li>
+                                <li data-rule="letter"><i class="fas fa-circle"></i> حرف إنجليزي واحد على الأقل (A-Z)</li>
+                                <li data-rule="number"><i class="fas fa-circle"></i> رقم واحد على الأقل (0-9)</li>
+                                <li data-rule="symbol"><i class="fas fa-circle"></i> رمز خاص واحد (@ # $ % !)</li>
+                            </ul>
+                        </div>
+
+                        <!-- Current Password -->
+                        <div class="fd-field-group">
+                            <label class="required">كلمة السر الحالية</label>
+                            <div class="password-field-wrapper">
+                                <input
+                                    type="password"
+                                    id="fdCurrentPassword"
+                                    placeholder="••••••••"
+                                    autocomplete="current-password"
+                                >
+                                <button
+                                    type="button"
+                                    class="toggle-password"
+                                    data-target="fdCurrentPassword"
+                                    aria-label="عرض كلمة السر"
+                                >
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="field-error" id="fdCurrentPasswordError"></div>
+                        </div>
+
+                        <!-- New Password -->
+                        <div class="fd-field-group">
+                            <label class="required">كلمة السر الجديدة</label>
+                            <div class="password-field-wrapper">
+                                <input
+                                    type="password"
+                                    id="fdNewPassword"
+                                    placeholder="••••••••"
+                                    autocomplete="new-password"
+                                >
+                                <button
+                                    type="button"
+                                    class="toggle-password"
+                                    data-target="fdNewPassword"
+                                    aria-label="عرض كلمة السر"
+                                >
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="field-error" id="fdNewPasswordError"></div>
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div class="fd-field-group">
+                            <label class="required">تأكيد كلمة السر الجديدة</label>
+                            <div class="password-field-wrapper">
+                                <input
+                                    type="password"
+                                    id="fdConfirmPassword"
+                                    placeholder="••••••••"
+                                    autocomplete="new-password"
+                                >
+                                <button
+                                    type="button"
+                                    class="toggle-password"
+                                    data-target="fdConfirmPassword"
+                                    aria-label="عرض كلمة السر"
+                                >
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="field-error" id="fdConfirmPasswordError"></div>
+                        </div>
+
+                        <!-- Submit -->
+                        <button type="button" class="btn btn-primary btn-block btn-lg" id="changePwdBtn">
+                            <i class="fas fa-save"></i>
+                            حفظ
+                        </button>
+
+                        <div class="fd-message" id="changePwdMessage"></div>
+
+                    </div>
+                </div>
+
+                <!-- ============ Danger Zone ============ -->
+                <div class="fd-card fd-danger-card">
+                    <div class="fd-card-body">
+
+                        <!-- ── Disable Section ── -->
+                        <p class="fd-danger-desc fd-disable-desc">
+                            <i class="fas fa-power-off"></i>
+                            <strong>تعطيل الحساب مؤقتاً.</strong> البيانات تبقى محفوظة، وميزات الحماية (الإشعارات + التحقق) تتوقف لحين إعادة التفعيل
+                        </p>
+
+                        <!-- زر التعطيل (يظهر لما الحساب نشط) -->
+                        <button type="button" class="btn btn-warning btn-block" id="openDisableModalBtn">
+                            <i class="fas fa-power-off"></i>
+                            تعطيل الحساب
+                        </button>
+
+                        <!-- زر التفعيل (يظهر لما الحساب معطّل) -->
+                        <button type="button" class="btn btn-success btn-block" id="openEnableModalBtn" style="display: none;">
+                            <i class="fas fa-check-circle"></i>
+                            تفعيل الحساب
+                        </button>
+
+                        <hr class="fd-divider" style="margin: 22px 0;">
+
+                        <!-- ── Delete Section ── -->
+                        <p class="fd-danger-desc">
+                            <i class="fas fa-triangle-exclamation"></i>
+                            <strong>إلغاء الاشتراك واسترداد المدفوعات</strong> سيؤدي إلى حذف البيانات نهائياً بعد مراجعة طلبك. هذا الإجراء لا يمكن التراجع عنه بمجرد تأكيده.
+                        </p>
+                        <button type="button" class="btn btn-danger btn-block" id="openDeleteModalBtn">
+                            <i class="fas fa-trash-alt"></i>
+                            إلغاء الاشتراك واسترداد المدفوعات وحذف البيانات نهائياً
+                        </button>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab: Notifications -->
+            <section class="fd-tab" data-tab="notifications" id="tab-notifications" style="display: none;">
+
+                <!-- ============ Notifications Card ============ -->
+                <div class="fd-card">
+                    <div class="fd-card-header">
+                        <h2>
+                            <i class="fas fa-bell"></i>
+                            إعدادات الإشعارات
+                        </h2>
+                        <span class="fd-badge" id="notifStatusBadge">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            جاري التحميل...
+                        </span>
+                    </div>
+
+                    <div class="fd-card-body">
+
+                        <!-- Benefits (تظهر فقط لو مفيش ربط) -->
+                        <div id="notifBenefits" class="fd-benefits-box" style="display: none;">
+                            <p class="benefits-title">💡 اربط تليجرام الآن للحصول على:</p>
+                            <ul>
+                                <li>🔔 <strong>إشعارات فورية</strong> على موبايلك عند مسح رمز QR</li>
+                                <li>🚀 <strong>استجابة أسرع</strong> في حالات الطوارئ</li>
+                            </ul>
+                        </div>
+
+                        <!-- Parents Grid -->
+                        <div class="fd-parents-grid">
+
+                            <!-- Father Card -->
+                            <div class="fd-parent-card" id="fatherCard">
+                                <div class="fd-parent-header">
+                                    <h3>
+                                        <i class="fas fa-user-tie"></i>
+                                        الأب
+                                    </h3>
+                                    <span class="fd-parent-badge" id="fatherStatusBadge">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                    </span>
+                                </div>
+
+                                <div id="fatherNotLinked" class="fd-parent-action">
+                                    <button type="button" class="btn btn-primary btn-block" id="fatherLinkBtn">
+                                        <i class="fab fa-telegram"></i>
+                                        ربط تليجرام
+                                    </button>
+                                </div>
+
+                                <div id="fatherLinked" class="fd-parent-action" style="display: none;">
+                                    <p class="fd-parent-detail" id="fatherChatDetail">Chat ID: ---</p>
+                                    <p class="fd-parent-detail" id="fatherSinceDetail">منذ: ---</p>
+                                    <button type="button" class="btn btn-outline btn-block" id="fatherUnlinkBtn">
+                                        <i class="fas fa-unlink"></i>
+                                        فك الربط
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Mother Card -->
+                            <div class="fd-parent-card" id="motherCard">
+                                <div class="fd-parent-header">
+                                    <h3>
+                                        <i class="fas fa-user"></i>
+                                        الأم
+                                    </h3>
+                                    <span class="fd-parent-badge" id="motherStatusBadge">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                    </span>
+                                </div>
+
+                                <div id="motherNotLinked" class="fd-parent-action">
+                                    <button type="button" class="btn btn-primary btn-block" id="motherLinkBtn">
+                                        <i class="fab fa-telegram"></i>
+                                        ربط تليجرام
+                                    </button>
+                                </div>
+
+                                <div id="motherLinked" class="fd-parent-action" style="display: none;">
+                                    <p class="fd-parent-detail" id="motherChatDetail">Chat ID: ---</p>
+                                    <p class="fd-parent-detail" id="motherSinceDetail">منذ: ---</p>
+                                    <button type="button" class="btn btn-outline btn-block" id="motherUnlinkBtn">
+                                        <i class="fas fa-unlink"></i>
+                                        فك الربط
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Notification Method (تظهر لو واحد على الأقل مربوط) -->
+                        <div class="fd-method-box" id="notifMethodBox" style="display: none;">
+                            <p class="method-title">🔔 طريقة استقبال الإشعارات:</p>
+                            <div class="method-options">
+                                <label class="fd-radio-option">
+                                    <input type="radio" name="notifMethod" value="telegram" id="methodTelegramRadio">
+                                    <span>
+                                        <strong>تليجرام</strong>
+                                        <small>الأسرع والموصى به</small>
+                                    </span>
+                                </label>
+                                <label class="fd-radio-option">
+                                    <input type="radio" name="notifMethod" value="email" id="methodEmailRadio">
+                                    <span>
+                                        <strong>البريد الإلكتروني</strong>
+                                        <small>على بريدك المسجل</small>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="fd-message" id="notifMessage"></div>
+
+                    </div>
+                </div>
+
+            </section>
+
+                        <!-- Tab: Reports -->
+            <section class="fd-tab" data-tab="reports" id="tab-reports" style="display: none;">
+
+                <!-- ============ Filter Card ============ -->
+                <div class="fd-card">
+                    <div class="fd-card-header">
+                        <h2>
+                            <i class="fas fa-chart-line"></i>
+                            تقارير النشاط
+                        </h2>
+                        <button class="fd-icon-btn" id="reloadReportsBtn" title="تحديث">
+                            <i class="fas fa-rotate"></i>
+                        </button>
+                    </div>
+
+                    <div class="fd-card-body">
+
+                        <!-- Quick Filters -->
+                        <div class="fd-filter-quick">
+                            <button type="button" class="fd-quick-btn active" data-range="7">آخر 7 أيام</button>
+                            <button type="button" class="fd-quick-btn" data-range="30">آخر 30 يوم</button>
+                            <button type="button" class="fd-quick-btn" data-range="90">آخر 3 شهور</button>
+                            <button type="button" class="fd-quick-btn" data-range="custom">مخصص</button>
+                        </div>
+
+                        <!-- Custom Date Range -->
+                        <div class="fd-filter-custom" id="reportsCustomRange" style="display: none;">
+                            <div class="fd-grid-2">
+                                <div class="fd-field-group">
+                                    <label>من تاريخ</label>
+                                    <input type="date" id="reportsFromDate">
+                                </div>
+                                <div class="fd-field-group">
+                                    <label>إلى تاريخ</label>
+                                    <input type="date" id="reportsToDate">
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-primary btn-block" id="applyCustomRangeBtn">
+                                <i class="fas fa-search"></i>
+                                تطبيق الفلتر
+                            </button>
+                        </div>
+
+                        <!-- Active Period Display -->
+                        <div class="fd-period-display" id="reportsPeriodDisplay">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span id="reportsPeriodText">جاري التحميل...</span>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- ============ Summary Cards ============ -->
+                <div class="fd-summary-grid" id="reportsSummaryGrid">
+
+                    <div class="fd-summary-card">
+                        <div class="summary-icon blue">
+                            <i class="fas fa-qrcode"></i>
+                        </div>
+                        <div class="summary-info">
+                            <p class="summary-label">إجمالي المسحات</p>
+                            <h3 class="summary-value" id="statTotalScans">--</h3>
+                        </div>
+                    </div>
+
+                    <div class="fd-summary-card">
+                        <div class="summary-icon green">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="summary-info">
+                            <p class="summary-label">آخر مسح</p>
+                            <h3 class="summary-value small" id="statLastScan">--</h3>
+                        </div>
+                    </div>
+
+                    <div class="fd-summary-card">
+                        <div class="summary-icon orange">
+                            <i class="fas fa-hourglass-half"></i>
+                        </div>
+                        <div class="summary-info">
+                            <p class="summary-label">المدة المتبقية</p>
+                            <h3 class="summary-value small" id="statDaysRemaining">--</h3>
+                        </div>
+                    </div>
+
+                    <div class="fd-summary-card">
+                        <div class="summary-icon purple">
+                            <i class="fas fa-shield-halved"></i>
+                        </div>
+                        <div class="summary-info">
+                            <p class="summary-label">حالة الاشتراك</p>
+                            <h3 class="summary-value small" id="statStatus">--</h3>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- ============ Activity Chart ============ -->
+                <div class="fd-card">
+                    <div class="fd-card-header">
+                        <h2>
+                            <i class="fas fa-chart-bar"></i>
+                            النشاط اليومي
+                        </h2>
+                    </div>
+                    <div class="fd-card-body">
+
+                        <div id="reportsChartLoading" class="fd-chart-loading">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <p>جاري تحميل الرسم البياني...</p>
+                        </div>
+
+                        <div id="reportsChart" class="fd-chart-container" style="display: none;">
+                            <div class="fd-chart-scroll" id="reportsChartScroll">
+                                <!-- Bars هتتضاف هنا بـ JS -->
+                            </div>
+                            <div class="fd-chart-legend">
+                                <span class="legend-item">
+                                    <span class="legend-dot blue"></span>
+                                    مسحات
+                                </span>
+                                <span class="legend-item">
+                                    <span class="legend-dot green"></span>
+                                    مواقع
+                                </span>
+                            </div>
+                        </div>
+
+                        <div id="reportsChartEmpty" class="fd-empty-state" style="display: none;">
+                            <i class="fas fa-chart-bar"></i>
+                            <p>لا يوجد نشاط في هذه الفترة</p>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- ============ Location Logs Table ============ -->
+                <div class="fd-card">
+                    <div class="fd-card-header">
+                        <h2>
+                            <i class="fas fa-map-location-dot"></i>
+                            سجل المواقع
+                        </h2>
+                        <span class="fd-badge" id="locationLogsCountBadge">0</span>
+                    </div>
+                    <div class="fd-card-body" style="padding: 0;">
+
+                        <div id="locationLogsLoading" class="fd-table-loading">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+
+                        <div id="locationLogsTable" class="fd-table-container" style="display: none;">
+                            <table class="fd-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>التاريخ والوقت</th>
+                                        <th>العنوان</th>
+                                        <th>الخريطة</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="locationLogsBody"></tbody>
+                            </table>
+                            <button type="button" class="fd-table-toggle" id="locationLogsToggleBtn" style="display: none;">
+                                <span class="toggle-text">عرض المزيد</span>
+                                <i class="fas fa-chevron-down toggle-icon"></i>
+                            </button>
+                        </div>
+
+                        <div id="locationLogsEmpty" class="fd-empty-state" style="display: none;">
+                            <i class="fas fa-map-pin"></i>
+                            <p>لا توجد مواقع في هذه الفترة</p>
+                        </div>
+
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- Tab: Security (الأمان الرقمي) -->
+            <section class="fd-tab" data-tab="security" id="tab-security" style="display: none;">
+
+                <div class="fd-card">
+                    <div class="fd-card-header">
+                        <h2>
+                            <i class="fas fa-fingerprint"></i>
+                            التحقق الرقمي بالوجه
+                        </h2>
+                        <span class="fd-badge" id="faceStatusBadge">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            جاري التحميل...
+                        </span>
+                    </div>
+
+                    <div class="fd-card-body">
+                        <p class="fd-section-desc">
+                            <i class="fas fa-info-circle"></i>
+                            أضف صورة وجه لطفلك لتمكين التحقق الرقمي عند العثور عليه. تُستخدم لمقارنة الصور وتأكيد الهوية بدقة عالية.
+                        </p>
+
+                        <div class="fd-status-box" id="faceDataStatusBox">
+                            <p class="status-text" id="faceDataStatusText">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                جاري تحميل حالة البيانات...
+                            </p>
+                            <p class="status-detail" id="faceDataStatusDetail"></p>
+                        </div>
+
+                        <div class="fd-actions-vertical">
+                            <button type="button" class="btn btn-outline btn-block" id="uploadFaceBtn">
+                                <i class="fas fa-upload"></i>
+                                رفع صورة من الجهاز
+                            </button>
+                            <button type="button" class="btn btn-secondary btn-block" id="cameraFaceBtn">
+                                <i class="fas fa-camera"></i>
+                                التقاط صورة بالكاميرا
+                            </button>
+                            <button type="button" class="btn btn-danger btn-block" id="deleteFaceBtn" style="display: none;">
+                                <i class="fas fa-trash-alt"></i>
+                                حذف بيانات الوجه
+                            </button>
+                        </div>
+
+                        <div class="fd-message" id="faceMessage"></div>
+
+                        <div class="fd-camera-container" id="fdCameraContainer" style="display: none;">
+                            <video id="fdCameraVideo" autoplay playsinline></video>
+                            <button type="button" class="fd-capture-btn" id="fdCaptureBtn">
+                                <i class="fas fa-circle"></i>
+                            </button>
+                            <button type="button" class="fd-close-camera-btn" id="fdCloseCameraBtn">✕</button>
+                        </div>
+
+                        <input type="file" id="faceImageInput" accept="image/jpeg,image/png" hidden>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- Tab: Missing (Disabled) -->
+            <section class="fd-tab" data-tab="missing" id="tab-missing" style="display: none;">
+                <div class="tab-placeholder tab-placeholder-disabled">
+                    <i class="fas fa-triangle-exclamation"></i>
+                    <h2>الإبلاغ عن اختفاء الطفل</h2>
+                    <p>هذه الميزة قادمة قريباً</p>
+                    <span class="coming-soon-badge">
+                        <i class="fas fa-clock"></i>
+                        قيد التطوير
+                    </span>
+                </div>
+            </section>
+
+            <!-- Tab: Contact -->
+            <section class="fd-tab" data-tab="contact" id="tab-contact" style="display: none;">
+
+                <!-- ============ Contact Methods Card ============ -->
+                <div class="fd-card">
+                    <div class="fd-card-header">
+                        <h2>
+                            <i class="fas fa-headset"></i>
+                            تواصل معنا
+                        </h2>
+                    </div>
+
+                    <div class="fd-card-body">
+
+                        <p class="fd-section-desc">
+                            <i class="fas fa-info-circle"></i>
+                            فريقنا جاهز لمساعدتك في أي وقت. اختر الطريقة الأنسب لك، وسيتم الرد في أسرع وقت.
+                        </p>
+
+                        <div class="fd-contact-methods">
+
+                            <!-- WhatsApp -->
+                            <a href="https://wa.me/201004135973?text=%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%20%D8%B9%D9%84%D9%8A%D9%83%D9%85%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%A7%D9%84%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1%20%D8%B9%D9%86%20KidCode-EG"
+                            target="_blank" rel="noopener"
+                            class="fd-contact-method fd-contact-whatsapp">
+                                <div class="method-icon">
+                                    <i class="fab fa-whatsapp"></i>
+                                </div>
+                                <div class="method-info">
+                                    <strong>واتساب</strong>
+                                    <small>الرد خلال دقائق</small>
+                                </div>
+                            </a>
+
+                            <!-- Email -->
+                            <a href="mailto:support@kidcode-eg.com?subject=%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1%20%D8%B9%D9%86%20KidCode-EG"
+                            class="fd-contact-method fd-contact-email">
+                                <div class="method-icon">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div class="method-info">
+                                    <strong>البريد الإلكتروني</strong>
+                                    <small>الرد خلال 24 ساعة</small>
+                                </div>
+                            </a>
+
+                            <!-- Telegram -->
+                            <a href="https://t.me/Kidcode_EG"
+                            target="_blank" rel="noopener"
+                            class="fd-contact-method fd-contact-telegram">
+                                <div class="method-icon">
+                                    <i class="fab fa-telegram"></i>
+                                </div>
+                                <div class="method-info">
+                                    <strong>تليجرام</strong>
+                                    <small>قناة رسمية</small>
+                                </div>
+                            </a>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- ============ Contact Form Card ============ -->
+                <div class="fd-card">
+                    <div class="fd-card-header">
+                        <h2>
+                            <i class="fas fa-paper-plane"></i>
+                            أرسل رسالتك
+                        </h2>
+                    </div>
+
+                            <div class="fd-card-body">
+
+            <p class="fd-section-desc">
+                <i class="fas fa-info-circle"></i>
+                كلما كانت التفاصيل أوضح، كان ردنا أدق وأسرع
+            </p>
+
+            <!-- Email (Read-only) -->
+            <div class="fd-field-group">
+                <label>
+                    <i class="fas fa-envelope"></i>
+                    البريد الإلكتروني المسجل
+                </label>
+                <div class="fd-email-readonly">
+                    <input
+                        type="email"
+                        id="fdContactEmail"
+                        readonly
+                        disabled
+                        dir="ltr"
+                        placeholder="جاري التحميل..."
+                    >
+                    <i class="fas fa-lock"></i>
+                </div>
+                <div class="field-hint" id="fdContactEmailHint">
+                    📧 البريد المسجل لحسابك. الرد سيتم عليه
+                </div>
+                <div class="field-error" id="fdContactEmailError"></div>
+            </div>
+
+            <!-- Subject -->
+            <div class="fd-field-group">
+                <label class="required">الموضوع</label>
+                            <select id="fdContactSubject">
+                                <option value="">-- اختر الموضوع --</option>
+                                <option value="استفسار عام">استفسار عام</option>
+                                <option value="دعم فني">دعم فني</option>
+                                <option value="مشكلة في الدفع">مشكلة في الدفع</option>
+                                <option value="بلاغ عن مشكلة">بلاغ عن مشكلة</option>
+                                <option value="اقتراح أو تطوير">اقتراح أو تطوير</option>
+                                <option value="أخرى">أخرى</option>
+                            </select>
+                            <div class="field-error" id="fdContactSubjectError"></div>
+                        </div>
+
+                        <!-- Message -->
+                        <div class="fd-field-group">
+                            <label class="required">تفاصيل الرسالة</label>
+                            <textarea
+                                id="fdContactMessage"
+                                rows="6"
+                                maxlength="1500"
+                                placeholder="اكتب رسالتك بالتفصيل..."
+                            ></textarea>
+                            <div class="char-counter">
+                                <span id="fdContactCharCount">0</span> / 1500
+                            </div>
+                            <div class="field-error" id="fdContactMessageError"></div>
+                        </div>
+
+                        <!-- Submit -->
+                        <button type="button" class="btn btn-primary btn-block btn-lg" id="sendContactBtn">
+                            <i class="fas fa-paper-plane"></i>
+                            إرسال الرسالة
+                        </button>
+
+                        <div class="fd-message" id="contactFormMessage"></div>
+
+                    </div>
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+</div>
+
+<!-- ===== الفوتر الموحد ===== -->
+<div id="footerPlaceholder"></div>
+
+<!-- ============================================================
+     Delete Account Modal
+============================================================ -->
+<div class="fd-modal-overlay" id="deleteAccountModal" style="display: none;">
+    <div class="fd-modal">
+
+        <button type="button" class="fd-modal-close" id="closeDeleteModalBtn">✕</button>
+
+        <!-- Modal Header -->
+        <div class="fd-modal-header fd-danger-modal-header">
+            <div class="fd-modal-icon fd-danger-icon">
+                <i class="fas fa-triangle-exclamation"></i>
+            </div>
+            <h2>تأكيد حذف الحساب</h2>
+            <p>هذا الإجراء <strong>لا يمكن التراجع عنه</strong></p>
+        </div>
+
+        <!-- Warnings -->
+        <div class="fd-warnings-box">
+            <p class="warnings-title">⚠️ بمجرد تأكيد الحذف:</p>
+            <ul class="warnings-list">
+                <li><i class="fas fa-times"></i> لن تسترد أي مبالغ مدفوعة بعد 14 يوم من تاريخ التسجيل</li>
+                <li><i class="fas fa-times"></i> لتسجيل نفس الطفل مرة أخرى يرجى التواصل مع الدعم</li>
+                <li><i class="fas fa-times"></i> سيتم تعطيل بصمة الوجه</li>
+                <li><i class="fas fa-times"></i> سيتم إنهاء جميع الجلسات فوراً</li>
+            </ul>
+        </div>
+
+        <!-- Refund Policy Link -->
+        <div class="fd-refund-link-box">
+            <p>
+                📖 للمزيد راجع:
+                <a href="/refund-policy" target="_blank" rel="noopener">
+                    سياسة الإلغاء والاسترداد
+                    <i class="fas fa-external-link-alt"></i>
+                </a>
+            </p>
+        </div>
+
+        <!-- ⚠️ ملاحظة: هتختفي لما يظهر Court warning -->
+        <div id="deleteFormSection">
+
+        <!-- Password -->
+        <div class="fd-field-group">
+            <label class="required">كلمة السر الحالية</label>
+            <div class="password-field-wrapper">
+                <input
+                    type="password"
+                    id="deletePasswordInput"
+                    placeholder="••••••••"
+                    autocomplete="current-password"
+                >
+                <button
+                    type="button"
+                    class="toggle-password"
+                    data-target="deletePasswordInput"
+                    aria-label="عرض كلمة السر"
+                >
+                    <i class="fas fa-eye"></i>
+                </button>
+            </div>
+            <div class="field-error" id="deletePasswordError"></div>
+        </div>
+
+        <!-- Confirmation Checkbox -->
+                <div class="fd-checkbox-group fd-danger-checkbox">
+            <input type="checkbox" id="deleteConfirmCheck">
+            <label for="deleteConfirmCheck">
+                <strong>أتحمل كامل المسؤولية عن هذا القرار، وأقر بأنني قرأت سياسة الاسترداد.</strong>
+            </label>
+        </div>
+
+        </div><!-- /deleteFormSection -->
+
+                <!-- ⚖️ رسالة "مطلوب قضائياً" (تظهر تلقائياً) -->
+                <div id="courtWarningBox" class="fd-court-warning" style="display: none;">
+                    <div class="fd-court-icon">
+                        <i class="fas fa-gavel"></i>
+                    </div>
+                    <h3 class="fd-court-title">⚖️ لا يمكن الحذف</h3>
+                    <p class="fd-court-message">
+                        عفواً، بيانات الطفل <strong>مطلوبة قضائياً</strong> ولا يمكن حذفها.
+                        <br>
+                        يمكنك <strong>تعطيل الحساب</strong> بدلاً من ذلك.
+                    </p>
+                    <button type="button" class="btn btn-warning btn-block" id="courtDisableInsteadBtn">
+                        <i class="fas fa-power-off"></i>
+                        تعطيل الحساب بدلاً من الحذف
+                    </button>
+                </div>
+
+                <!-- Actions (تختفي لو في Court) -->
+                <div class="fd-modal-actions" id="deleteModalActions">
+                    <button type="button" class="btn btn-outline" id="cancelDeleteBtn">
+                        إلغاء
+                    </button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn" disabled>
+                        <i class="fas fa-trash-alt"></i>
+                        تأكيد الحذف
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+<!-- ============================================================
+     Telegram QR Link Modal
+============================================================ -->
+<div class="fd-modal-overlay" id="telegramQRModal" style="display: none;">
+    <div class="fd-modal" style="max-width: 480px;">
+
+        <button type="button" class="fd-modal-close" id="closeQRModalBtn">✕</button>
+
+        <!-- Header -->
+        <div class="fd-modal-header">
+            <div class="fd-modal-icon fd-telegram-icon">
+                <i class="fab fa-telegram"></i>
+            </div>
+            <h2>ربط تليجرام</h2>
+            <p id="qrModalSubtitle">امسح الرمز بكاميرا تليجرام</p>
+        </div>
+
+        <!-- QR Container -->
+        <div class="qr-code-box">
+            <div id="qrLoading" class="qr-loading">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>جاري توليد الرمز...</p>
+            </div>
+            <img id="qrCodeImage" src="" alt="QR Code" style="display: none;">
+        </div>
+
+        <!-- Open Telegram Button -->
+        <a id="openTelegramBtn" href="#" target="_blank" rel="noopener" class="btn btn-primary btn-block" style="display: none; margin-top: 16px;">
+            <i class="fab fa-telegram"></i>
+            افتح تليجرام
+        </a>
+
+        <!-- Status + Countdown -->
+        <div class="linking-status">
+            <p id="qrLinkingStatus" style="font-weight: 800; color: #0088CC; margin: 0;">
+                <i class="fas fa-spinner fa-spin"></i> في انتظار الربط...
+            </p>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 8px;">
+                ⏱️ الرابط صالح لمدة <span id="qrCountdown" style="font-weight: 900; color: var(--danger-color);">--:--</span>
+            </p>
+        </div>
+
+        <div class="fd-message" id="qrError"></div>
+
+        </div>
+</div>
+
+<!-- ============================================================
+     Disable Account Modal
+============================================================ -->
+<div class="fd-modal-overlay" id="disableAccountModal" style="display: none;">
+    <div class="fd-modal">
+
+        <button type="button" class="fd-modal-close" id="closeDisableModalBtn">✕</button>
+
+        <!-- Header -->
+        <div class="fd-modal-header">
+            <div class="fd-modal-icon fd-warning-icon">
+                <i class="fas fa-power-off"></i>
+            </div>
+            <h2>تعطيل الحساب</h2>
+            <p>هذا الإجراء <strong>مؤقت</strong> ويمكن التراجع عنه</p>
+        </div>
+
+        <!-- Warnings -->
+        <div class="fd-warnings-box fd-warning-box-warning">
+            <p class="warnings-title">⚠️ عند تعطيل الحساب:</p>
+            <ul class="warnings-list">
+                <li><i class="fas fa-times"></i> إشعارات المسح والمواقع ستتوقف</li>
+                <li><i class="fas fa-times"></i> التحقق الرقمي بالوجه سيتعطل</li>
+                <li><i class="fas fa-check" style="color: var(--secondary-color);"></i> بيانات الطفل ستبقى محفوظة</li>
+                <li><i class="fas fa-check" style="color: var(--secondary-color);"></i> يمكنك الدخول إلى لوحة التحكم بشكل طبيعي</li>
+                <li><i class="fas fa-check" style="color: var(--secondary-color);"></i> يمكنك تفعيل الحساب مرة أخرى في أي وقت</li>
+            </ul>
+        </div>
+
+        <!-- Password -->
+        <div class="fd-field-group">
+            <label class="required">كلمة السر الحالية للتأكيد</label>
+            <div class="password-field-wrapper">
+                <input
+                    type="password"
+                    id="disablePasswordInput"
+                    placeholder="••••••••"
+                    autocomplete="current-password"
+                >
+                <button
+                    type="button"
+                    class="toggle-password"
+                    data-target="disablePasswordInput"
+                    aria-label="عرض كلمة السر"
+                >
+                    <i class="fas fa-eye"></i>
+                </button>
+            </div>
+            <div class="field-error" id="disablePasswordError"></div>
+        </div>
+
+        <!-- Actions -->
+        <div class="fd-modal-actions">
+            <button type="button" class="btn btn-outline" id="cancelDisableBtn">
+                إلغاء
+            </button>
+            <button type="button" class="btn btn-warning" id="confirmDisableBtn" disabled>
+                <i class="fas fa-power-off"></i>
+                تأكيد التعطيل
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<!-- ============================================================
+     Enable Account Modal
+============================================================ -->
+<div class="fd-modal-overlay" id="enableAccountModal" style="display: none;">
+    <div class="fd-modal" style="max-width: 460px;">
+
+        <button type="button" class="fd-modal-close" id="closeEnableModalBtn">✕</button>
+
+        <!-- Header -->
+        <div class="fd-modal-header">
+            <div class="fd-modal-icon fd-success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2>تفعيل الحساب</h2>
+            <p>إعادة تشغيل ميزات الحماية</p>
+        </div>
+
+        <!-- Info -->
+        <div class="fd-info-box-success">
+            <p class="info-title">✅ عند التفعيل:</p>
+            <ul class="info-list">
+                <li>🔔 إشعارات المسح والمواقع ستعمل مرة اخرى</li>
+                <li>🎯 التحقق الرقمي بالوجه سيعمل مرة اخرى</li>
+                <li>📊 الحساب سيعود نشطاً بشكل طبيعي</li>
+            </ul>
+        </div>
+
+        <!-- Actions -->
+        <div class="fd-modal-actions">
+            <button type="button" class="btn btn-outline" id="cancelEnableBtn">
+                إلغاء
+            </button>
+            <button type="button" class="btn btn-success" id="confirmEnableBtn">
+                <i class="fas fa-check-circle"></i>
+                تفعيل الحساب
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<!-- ============================================================
+     Unlink OTP Modal
+============================================================ -->
+<div class="fd-modal-overlay" id="unlinkOTPModal" style="display: none;">
+    <div class="fd-modal" style="max-width: 460px;">
+
+        <button type="button" class="fd-modal-close" id="closeUnlinkOTPBtn">✕</button>
+
+        <!-- Header -->
+        <div class="fd-modal-header">
+            <div class="fd-modal-icon fd-telegram-icon">
+                <i class="fab fa-telegram"></i>
+            </div>
+            <h2>تأكيد فك الربط</h2>
+            <p id="unlinkOTPSubtitle">تم إرسال رمز تحقق على تليجرام</p>
+        </div>
+
+        <!-- Info -->
+        <div class="fd-info-box-success" style="background:#f0f9ff; border-right-color:#0088CC;">
+            <p class="info-title" style="color:#0c4a6e;">📱 تحقق من تليجرام</p>
+            <p style="font-size:0.9rem; color:#0c4a6e; margin:8px 0 0; line-height:1.7;">
+                تم ارسال رمز مكوّن من <strong>6 أرقام</strong> على حساب تليجرام , يرجى ادخاله لتأكيد فك الربط.
+            </p>
+        </div>
+
+        <!-- OTP Input -->
+        <div class="fd-field-group">
+            <label class="required">رمز التحقق</label>
+            <input
+                type="text"
+                id="unlinkOTPInput"
+                inputmode="numeric"
+                maxlength="6"
+                autocomplete="one-time-code"
+                placeholder="- - - - - -"
+                style="text-align:center; font-size:1.6rem; font-weight:900; letter-spacing:8px; direction:ltr; padding:14px;"
+            >
+            <div class="field-error" id="unlinkOTPError"></div>
+        </div>
+
+        <!-- Countdown -->
+        <p style="text-align:center; font-size:0.85rem; color:var(--text-secondary); margin:8px 0;">
+            ⏱️ ينتهي الرمز خلال <span id="unlinkOTPCountdown" style="font-weight:900; color:var(--danger-color);">05:00</span>
+        </p>
+
+        <div class="fd-message" id="unlinkOTPMessage"></div>
+
+        <!-- Actions -->
+        <div class="fd-modal-actions">
+            <button type="button" class="btn btn-outline" id="cancelUnlinkOTPBtn">
+                إلغاء
+            </button>
+            <button type="button" class="btn btn-danger" id="confirmUnlinkOTPBtn" disabled>
+                <i class="fas fa-unlink"></i>
+                تأكيد فك الربط
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!--  🚪 Exit Confirmation Modal                                   -->
+<!-- ============================================================ -->
+<div id="fdExitModal" class="fd-exit-modal" style="display: none;">
+    <div class="fd-exit-modal-content">
+        <div class="fd-exit-icon">
+            <i class="fas fa-sign-out-alt"></i>
+        </div>
+        <h3 class="fd-exit-title">هل تريد تسجيل الخروج؟</h3><br><br>
+        <div class="fd-exit-actions">
+            <button type="button" id="fdExitCancelBtn" class="fd-exit-btn fd-exit-btn-cancel">
+                <i class="fas fa-arrow-right"></i>
+                <span>البقاء في اللوحة</span>
+            </button>
+            <button type="button" id="fdExitConfirmBtn" class="fd-exit-btn fd-exit-btn-confirm">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>تسجيل الخروج</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== Global Loader ===== -->
+<div id="fdGlobalLoader" class="fd-global-loader" style="display: none;">
+    <div class="fd-global-loader-box">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>جاري التحميل...</p>
+    </div>
+</div>
+
+<!-- ===== السكربتات ===== -->
+ <script src="js/config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/pages/family-dashboard.js"></script>
+<script src="js/pages/family-dashboard-data.js"></script>
+<script src="js/pages/family-dashboard-security.js"></script>
+<script src="js/pages/family-dashboard-notifications.js"></script>
+<script src="js/pages/family-dashboard-reports.js"></script>
+<script src="js/pages/family-dashboard-password.js"></script>
+<script src="js/pages/family-dashboard-contact.js"></script>
+
+<script>
+    (function() {
+        const footerPlaceholder = document.getElementById('footerPlaceholder');
+        if (!footerPlaceholder) return;
+        fetch('/footer.html')
+            .then(r => r.text())
+            .then(html => { footerPlaceholder.innerHTML = html; })
+            .catch(err => console.warn('⚠️ فشل تحميل الفوتر:', err));
+    })();
+</script>
+
+<script>
+    // 🔥 Warm-up GAS فور تحميل الصفحة
+    (function() {
+        fetch('/api?action=child&id=WARMUP&_t=' + Date.now(), { cache: 'no-store' })
+            .catch(function() {});
+    })();
+</script>
+
+</body>
+</html>

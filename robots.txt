@@ -1,0 +1,67 @@
+# ============================================================
+#  robots.txt - إرشادات الزحف لمحركات البحث
+#  الموقع: KidCode-eg
+#  تاريخ التحديث: 2026-11-07
+# ============================================================
+
+User-agent: *
+
+# ===== 1. لوحة تحكم الأدمن (حساسة جداً) =====
+Disallow: /admin
+Disallow: /admin/
+
+# ===== 2. واجهات برمجة التطبيقات =====
+Disallow: /api
+
+# ===== 3. صفحات الأسرة (بعد login + transactional) =====
+Disallow: /dashboard
+Disallow: /family-login
+Disallow: /family-forgot-password
+Disallow: /family-reset-password
+Disallow: /family-dashboard
+
+# ===== 4. صفحات الطفل (تحتوي على توكنات صلاحية 5 دقائق) =====
+Disallow: /child-view
+Disallow: /redirect
+
+# ===== 5. صفحات تأكيد العثور والاستلام =====
+Disallow: /confirm-found
+Disallow: /confirm-received
+
+# ===== 6. صفحات الدفع (transactional) =====
+Disallow: /payment
+Disallow: /payment-success
+
+# ===== 7. صفحات المسوقين الداخلية =====
+Disallow: /marketer-dashboard
+Disallow: /marketer-login
+Disallow: /marketer-forgot-password
+Disallow: /marketer-reset-password
+
+# ===== 8. صفحات transactional =====
+Disallow: /unsubscribe
+
+# ===== 9. ملفات الإعدادات =====
+Disallow: /package.json
+Disallow: /vercel.json
+
+# ===== 10. الصفحات العامة (مسموحة صراحةً) =====
+Allow: /
+Allow: /about
+Allow: /contact
+Allow: /how-it-works
+Allow: /reg
+Allow: /demo-register
+Allow: /marketer-register
+Allow: /faq
+Allow: /privacy-policy
+Allow: /terms-and-conditions
+Allow: /refund-policy
+Allow: /delivery-policy
+
+# ===== 11. الموارد الثابتة =====
+Allow: /css/
+Allow: /js/
+Allow: /assets/
+
+Sitemap: https://www.kidcode-eg.com/sitemap.xml

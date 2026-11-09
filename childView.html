@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+
+        <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GT-TB7R77BQ"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'GT-TB7R77BQ');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>بيانات الطفل - كيدكود-ايجي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Inter:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/all.min.css">
+    <link rel="stylesheet" href="css/base/main.css">
+    <link rel="stylesheet" href="css/pages/childView.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/logo2.png">
+</head>
+<body>
+
+<!-- ===== المحتوى ===== -->
+<main>
+
+    <!-- ===== شاشة التحميل ===== -->
+    <div id="loadingSpinner" class="loading-screen">
+        <div class="spinner-box">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>جاري تحميل بيانات الطفل...</p>
+        </div>
+    </div>
+
+    <!-- ===== شاشة الخطأ ===== -->
+    <div id="errorSection" class="error-screen" style="display: none;">
+        <div class="error-box">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p id="errorMessage">حدث خطأ</p>
+            <a href="https://wa.me/201004135973" target="_blank" class="btn btn-success">
+                <i class="fab fa-whatsapp"></i> تواصل مع الدعم
+            </a>
+        </div>
+    </div>
+
+    <!-- ===== المحتوى الرئيسي ===== -->
+    <div id="mainContent" class="child-content" style="display: none;">
+
+        <!-- ============================================================
+             🟢 شريط التنبيه - يظهر فقط عند وجود بلاغ نشط
+             ============================================================ -->
+        <div id="alertBar" class="alert-bar" style="display: none;">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span id="alertText">🚨 تنبيه: طفل مفقود</span>
+        </div>
+
+        <!-- بطاقة الطفل -->
+        <div class="child-card">
+
+            <!-- صورة الطفل -->
+            <div class="child-image-wrapper">
+                <img id="childImageMain" src="" alt="صورة الطفل" class="child-image" onclick="openImageModal(this.src)">
+                <div id="noImagePlaceholder" class="no-image-placeholder">
+                    <i class="fas fa-child"></i>
+                    <span>لا توجد صورة</span>
+                </div>
+            </div>
+
+            <!-- بيانات الطفل -->
+            <div class="child-info">
+                <div class="child-header">
+                    <span class="warning-badge">⚠️ الرجاء التدقيق في الملامح (اضغط على الصورة لتكبيرها)</span>
+                    <h1 id="childNameDisplay" class="child-name">---</h1>
+                </div>
+
+                <div class="child-details">
+                    <div class="detail-row">
+                        <span class="detail-label"><i class="fas fa-birthday-cake"></i> العمر:</span>
+                        <span id="childAgeDisplay" class="detail-value">---</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label"><i class="fas fa-map-marker-alt"></i> العنوان:</span>
+                        <span id="childAddressDisplay" class="detail-value">---</span>
+                    </div>
+                    <div id="googleMapsRow" class="detail-row">
+                        <span class="detail-label"><i class="fas fa-location-dot"></i>العنوان على الخريطة:</span>
+                        <a id="googleMapsLink" href="#" target="_blank" class="detail-link">عرض الموقع <i class="fas fa-external-link-alt"></i></a>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label"><i class="fas fa-id-card"></i> المعرف:</span>
+                        <span id="childIdDisplay" class="detail-value mono">---</span>
+                    </div>
+                </div>
+
+                <!-- الأزرار -->
+                <div class="child-actions">
+                    <p class="action-hint">إذا عثرت على الطفل، يُرجى التواصل فوراً:</p>
+
+                    <div id="contactButtons" class="contact-buttons">
+                        <!-- سيتم ملؤها بواسطة JavaScript -->
+                    </div>
+
+                    <div id="foundArea" class="location-area">
+                        <button id="mainFoundBtn" onclick="startGPS()" class="btn-location">
+                            <i class="fas fa-location-dot"></i> إرسال الموقع الحالي لأهل الطفل
+                        </button>
+                        <div id="foundMsg" class="location-msg hidden"></div>
+                    </div>
+
+                    <!-- ===== مجموعة أزرار الطوارئ ===== -->
+                    <div class="emergency-buttons">
+                        <a href="tel:122" class="btn-emergency">
+                            <i class="fas fa-shield-halved"></i> اتصل بشرطة النجدة
+                        </a>
+                        <a href="tel:16000" class="btn-child-helpline">
+                            <i class="fas fa-phone-volume"></i> اتصل بخط نجدة الطفل
+                        </a>
+                    </div>
+                </div>
+
+                <!-- الملاحظات -->
+                <div class="child-notes">
+                    <div class="notes-title"><i class="fas fa-notes-medical"></i> ملاحظات:</div>
+                    <div id="notesContainer" class="notes-content">لا توجد ملاحظات</div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ===== مودال الصورة ===== -->
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()" style="display: none;">
+        <span class="modal-close">&times;</span>
+        <img id="modalImage" src="" alt="صورة الطفل">
+    </div>
+
+    <!-- ===== رسالة انتهاء الصلاحية ===== -->
+    <div id="timeoutModal" class="timeout-modal" style="display: none;">
+        <div class="timeout-content">
+            <div class="timeout-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <div class="timeout-shield">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h2>نظراً للأمان</h2>
+            <p>يرجى إعادة مسح رمز QR Code مرة أخرى للحصول على جلسة جديدة</p>
+            <div class="timeout-divider"></div>
+            <p class="timeout-hint">انتهت صلاحية الجلسة</p>
+            <a href="/" onclick="try{sessionStorage.removeItem('kc_session_expired_token');sessionStorage.removeItem('kc_session_expired_at');}catch(e){}" class="btn btn-primary timeout-btn">
+            <i class="fas fa-home"></i> العودة للرئيسية
+            </a>
+        </div>
+    </div>
+
+</main>
+
+<!-- ===== الفوتر الموحد (يتم تحميله عبر JS) ===== -->
+<div id="footerPlaceholder"></div>
+
+<!-- ===== السكربتات بالترتيب الصحيح ===== -->
+<script src="js/config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/pages/childView.js"></script>
+
+<!-- ===== تحميل الفوتر الموحد ===== -->
+<script>
+    (function() {
+        const footerPlaceholder = document.getElementById('footerPlaceholder');
+        if (!footerPlaceholder) return;
+
+        fetch('/footer.html')
+            .then(response => {
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                return response.text();
+            })
+            .then(html => {
+                footerPlaceholder.innerHTML = html;
+            })
+            .catch(err => {
+                console.warn('⚠️ فشل تحميل الفوتر:', err);
+                footerPlaceholder.innerHTML = `
+                    <footer class="site-footer">
+                        <p style="text-align:center; padding:20px; color:#94A3B8;">
+                            KidCode-EG © 2026. جميع الحقوق محفوظة.
+                        </p>
+                    </footer>
+                `;
+            });
+    })();
+</script>
+
+<script>
+    // 🔥 Warm-up GAS فور تحميل الصفحة
+    (function() {
+        fetch('/api?action=child&id=WARMUP&_t=' + Date.now(), { cache: 'no-store' })
+            .catch(function() {});
+    })();
+</script>
+
+</body>
+</html>

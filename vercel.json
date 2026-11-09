@@ -1,0 +1,71 @@
+{
+  "version": 2,
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "kidcode-eg.com" }],
+      "destination": "https://www.kidcode-eg.com/:path*",
+      "statusCode": 301
+    },
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/index",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/home",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/home.html",
+      "destination": "/",
+      "statusCode": 301
+    }
+  ],
+  "rewrites": [
+    { "source": "/", "destination": "/index.html" },
+
+    { "source": "/about", "destination": "/about.html" },
+    { "source": "/contact", "destination": "/contact.html" },
+
+    { "source": "/reg", "destination": "/reg.html" },
+    { "source": "/demo-register", "destination": "/demoRegister.html" },
+
+    { "source": "/dashboard", "destination": "/dashboard.html" },
+    { "source": "/child-view", "destination": "/childView.html" },
+    { "source": "/redirect", "destination": "/redirect.html" },
+
+    { "source": "/confirm-found", "destination": "/confirm-found.html" },
+    { "source": "/confirm-received", "destination": "/confirm-received.html" },
+    { "source": "/unsubscribe", "destination": "/unsubscribe.html" },
+
+    { "source": "/admin", "destination": "/admin/index.html" },
+    { "source": "/admin/", "destination": "/admin/index.html" },
+
+    { "source": "/marketer-login", "destination": "/marketer-login.html" },
+    { "source": "/marketer-register", "destination": "/marketer-register.html" },
+    { "source": "/marketer-forgot-password", "destination": "/marketer-forgot-password.html" },
+    { "source": "/marketer-reset-password", "destination": "/marketer-reset-password.html" },
+    { "source": "/marketer-dashboard", "destination": "/marketer-dashboard.html" },
+
+    { "source": "/how-it-works", "destination": "/how-it-works.html" },
+
+    { "source": "/faq", "destination": "/faq.html" },
+    { "source": "/privacy-policy", "destination": "/privacy-policy.html" },
+    { "source": "/terms-and-conditions", "destination": "/terms-and-conditions.html" },
+
+    { "source": "/refund-policy", "destination": "/refund-policy.html" },
+    { "source": "/delivery-policy", "destination": "/delivery-policy.html" },
+
+    { "source": "/family-login", "destination": "/family-login.html" },
+    { "source": "/family-forgot-password", "destination": "/family-forgot-password.html" },
+    { "source": "/family-reset-password", "destination": "/family-reset-password.html" },
+    { "source": "/family-dashboard", "destination": "/family-dashboard.html" }
+  ]
+}

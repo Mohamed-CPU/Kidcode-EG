@@ -1,0 +1,206 @@
+<!-- ============================================================
+     الهيدر الموحد (يتم تضمينه في كل الصفحات)
+     ============================================================ -->
+<header class="site-header unified-header">
+    <div class="header-container">
+
+        <!-- زر الهامبورغر -->
+        <button class="hamburger-btn" id="hamburgerBtn" aria-label="القائمة">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </button>
+
+        <!-- الشعار (متمركز) -->
+        <a href="/" class="logo">
+            <span class="brand">
+                <span class="kid">KidCode</span><span class="eg">-EG</span>
+            </span>
+            <span class="tagline">أمان طفلك في صفحة واحدة</span>
+        </a>
+
+        <!-- اللوجو المصغر على الشمال -->
+        <a href="/" class="header-logo-left" title="KidCode-EG">
+            <img src="assets/images/logo.png" alt="KidCode-EG Logo">
+        </a>
+
+    </div>
+
+    <!-- القائمة المنسدلة -->
+    <nav class="nav-menu" id="navMenu">
+        <ul class="nav-list">
+            <li><a href="/"><i class="fas fa-home"></i> الرئيسية</a></li>
+            <li><a href="/reg"><i class="fas fa-child"></i> سجّل طفلك</a></li>
+            <li><a href="/demo-register"><i class="fas fa-rocket"></i> جرب الخدمة مجاناً</a></li>
+            <li><a href="/dashboard"><i class="fas fa-users"></i> لوحة تحكم الأسرة</a></li>
+            <li><a href="/marketer-login"><i class="fas fa-chart-line"></i> لوحة تحكم المسوقين</a></li>
+            <li><a href="/marketer-register"><i class="fas fa-user-plus"></i> سجّل كمسوق بالعمولة</a></li>
+            <li><a href="/how-it-works"><i class="fas fa-book-open"></i> مميزات الخدمة</a></li>
+            <li><a href="/faq"><i class="fas fa-question-circle"></i> الأسئلة الشائعة</a></li>
+            <li><a href="/privacy-policy"><i class="fas fa-shield-alt"></i> سياسة الخصوصية</a></li>
+            <li><a href="/terms-and-conditions"><i class="fas fa-file-contract"></i> الشروط والأحكام</a></li>
+        </ul>
+    </nav>
+
+    <!-- خلفية مظللة خلف القائمة -->
+    <div class="nav-overlay" id="navOverlay"></div>
+</header>
+
+<!-- ============================================================
+     ✅ Open Graph Tags - لظهور صورة مميزة عند المشاركة
+     ============================================================ -->
+<script>
+    (function() {
+        function addOpenGraphTags() {
+            if (document.querySelector('meta[property="og:title"]')) {
+                return;
+            }
+
+            const pageTitle = document.title || 'KidCode-eg - أمان طفلك في صفحة واحدة';
+            let pageDescription = 'نظام QR Code آمن لحماية الأطفال وإعادتهم لأسرهم بسرعة. سجل طفلك الآن واحصل على رمز QR خاص به.';
+            
+            const currentPath = window.location.pathname;
+            if (currentPath.includes('faq')) {
+                pageDescription = 'إجابات شافية على جميع أسئلتك حول نظام KidCode-eg لحماية الأطفال.';
+            } else if (currentPath.includes('how-it-works')) {
+                pageDescription = 'دليل شامل لمميزات خدمة KidCode-EG — التسجيل، الباقات، الإشعارات، لوحة تحكم الأسرة، والأمان.';
+            } else if (currentPath.includes('reg')) {
+                pageDescription = 'سجل طفلك الآن واحصل على رمز QR خاص به لحمايته في حالة فقدانه.';
+            } else if (currentPath.includes('dashboard')) {
+                pageDescription = 'لوحة تحكم الأسرة: إدارة بيانات طفلك، متابعة نشاط رمز QR، والإبلاغ عن الاختفاء.';
+            } else if (currentPath.includes('marketer')) {
+                pageDescription = 'انضم كمسوق في KidCode-eg واحصل على عمولات مقابل الترويج لخدمة حماية الأطفال.';
+            } else if (currentPath.includes('about')) {
+                pageDescription = 'تعرّف على KidCode-EG — منصة مصرية لحماية الأطفال باستخدام تقنية QR Code.';
+            } else if (currentPath.includes('contact')) {
+                pageDescription = 'تواصل مع فريق KidCode-EG — دعم فني، استفسارات، اقتراحات.';
+            }
+
+            const ogImage = 'https://www.kidcode-eg.com/assets/images/og-image.jpg';
+            const ogImageSquare = 'https://www.kidcode-eg.com/assets/images/logo-square.png';
+
+            const metaTags = [
+                { property: 'og:title', content: pageTitle },
+                { property: 'og:description', content: pageDescription },
+                { property: 'og:image', content: ogImage },
+                { property: 'og:image:width', content: '1200' },
+                { property: 'og:image:height', content: '630' },
+                { property: 'og:url', content: window.location.href },
+                { property: 'og:type', content: 'website' },
+                { property: 'og:site_name', content: 'KidCode-eg' },
+                { name: 'twitter:card', content: 'summary_large_image' },
+                { name: 'twitter:title', content: pageTitle },
+                { name: 'twitter:description', content: pageDescription },
+                { name: 'twitter:image', content: ogImage }
+            ];
+
+            const squareMeta = document.createElement('meta');
+            squareMeta.setAttribute('itemprop', 'image');
+            squareMeta.setAttribute('content', ogImageSquare);
+            document.head.appendChild(squareMeta);
+
+            metaTags.forEach(tag => {
+                const meta = document.createElement('meta');
+                if (tag.property) {
+                    meta.setAttribute('property', tag.property);
+                }
+                if (tag.name) {
+                    meta.setAttribute('name', tag.name);
+                }
+                meta.setAttribute('content', tag.content);
+                document.head.appendChild(meta);
+            });
+
+            console.log('✅ Open Graph Tags تم إضافتها بنجاح');
+        }
+
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            addOpenGraphTags();
+        } else {
+            document.addEventListener('DOMContentLoaded', addOpenGraphTags);
+        }
+    })();
+</script>
+
+    <!-- ============================================================
+     ✅ أنماط الإشعار الجديد (داخل الهيدر، بجوار البراند)
+     ============================================================ -->
+<style>
+    /* ============================================================
+       ترتيب عناصر الهيدر — الشعار في المنتصف تماماً
+       ============================================================ */
+    .unified-header .header-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        max-width: 1200px;
+        margin: 0 auto;
+        width: 100%;
+        padding: 0 10px;
+        box-sizing: border-box;
+    }
+
+    /* زر الهامبورغر (يمين) */
+    .unified-header .hamburger-btn {
+        flex-shrink: 0;
+        order: 1;
+    }
+
+    /* الشعار (منتصف) */
+    .unified-header .logo {
+        flex: 1;
+        text-align: center;
+        order: 2;
+    }
+
+    /* اللوجو المصغر على الشمال (بدل المساحة الفارغة) */
+    .unified-header .header-logo-left {
+        width: 48px;
+        height: 48px;
+        flex-shrink: 0;
+        order: 3;
+        background: #ffffff;
+        border-radius: 8px;
+        padding: 2px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        transition: transform 0.3s ease;
+    }
+
+    .unified-header .header-logo-left:hover {
+        transform: scale(1.05);
+    }
+
+    .unified-header .header-logo-left img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        border-radius: 6px;
+    }
+
+    /* ===== التجاوب مع الشاشات الصغيرة ===== */
+    @media (max-width: 768px) {
+        .unified-header .header-container {
+            gap: 6px;
+            padding: 0 6px;
+        }
+        .unified-header .header-logo-left {
+            width: 40px;
+            height: 40px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .unified-header .header-container {
+            gap: 4px;
+            padding: 0 4px;
+        }
+        .unified-header .header-logo-left {
+            width: 36px;
+            height: 36px;
+        }
+    }
+</style>

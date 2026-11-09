@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GT-TB7R77BQ"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'GT-TB7R77BQ');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>رمز الاستجابة - كيدكود-ايجي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Inter:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/all.min.css">
+    <link rel="stylesheet" href="css/base/main.css">
+    <link rel="stylesheet" href="css/pages/redirect.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/logo2.png">
+    <link rel="canonical" href="https://www.kidcode-eg.com/redirect" />
+</head>
+<body>
+
+<!-- ===== الهيدر الموحد (يتم تضمينه عبر JS) ===== -->
+<div id="headerPlaceholder"></div>
+
+<!-- ===== المحتوى ===== -->
+<main>
+    <div class="redirect-wrapper">
+
+        <div class="redirect-card" id="redirectCard">
+
+            <!-- أيقونة التحذير/الدرع -->
+            <div class="icon-big">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+
+            <h1><span class="kid">KidCode</span><span class="eg">-EG</span></h1>
+            <p class="sub-head">🔐 رمز الاستجابة · تأكيد الموافقة</p>
+
+            <p style="font-size: 1rem; color: var(--text-secondary); margin-bottom: 8px;">
+                تم العثور على طفل. للوصول إلى بياناته ومساعدته، يرجى الاطلاع على الاتي:
+            </p>
+
+            <!-- مربع الموافقة -->
+            <div class="consent-box" id="consentBox">
+                <label>
+                    <input type="checkbox" id="agreeCheckbox">
+                    <span>
+                        ✔️ أوافق على <a href="privacy-policy.html" target="_blank">سياسة الخصوصية</a> و <a href="terms-and-conditions.html" target="_blank">الشروط والأحكام</a>
+                    </span>
+                </label>
+
+                <div class="terms-summary">
+                    <strong>📌 ملخص الموافقة:</strong><br>
+                    • أتعهد باستخدام بيانات الطفل فقط للتواصل مع ولي أمره.<br>
+                    • ألتزم بعدم مشاركة أو نشر أي بيانات خاصة بالطفل.<br>
+                    • أوافق على تسجيل موقعي الجغرافي تلقائياً (عند الموافقة) لأغراض أمنية.<br>
+                    • أعلم أن أي استخدام غير قانوني يعرضني للمساءلة.
+                </div>
+
+                <div class="warning-text" id="warningMsg">⚠️ يجب الموافقة على السياسة والشروط أولاً.</div>
+            </div>
+
+            <!-- الأزرار -->
+            <div class="redirect-actions">
+                <button id="viewChildBtn" class="btn btn-primary" disabled>
+                    <i class="fas fa-eye"></i> عرض بيانات الطفل
+                </button>
+
+                <a href="https://wa.me/201004135973" target="_blank" class="btn-wa-redirect">
+                    <i class="fab fa-whatsapp"></i> تواصل مع الدعم عبر واتساب
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+</main>
+
+<!-- ===== الفوتر الموحد (يتم تحميله عبر JS) ===== -->
+<div id="footerPlaceholder"></div>
+
+<!-- ===== السكربتات (الترتيب الصحيح) ===== -->
+<script src="js/config.js"></script>
+<script src="js/header.js"></script>
+<script>
+    // تحميل الهيدر من ملف خارجي
+    fetch('/header.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('headerPlaceholder').innerHTML = data;
+            if (window.initHeader && typeof window.initHeader === 'function') {
+                setTimeout(window.initHeader, 100);
+            }
+        })
+        .catch(err => console.warn('⚠️ فشل تحميل الهيدر:', err));
+</script>
+
+<script>
+    (function() {
+        'use strict';
+
+        // ===== عناصر DOM =====
+        const agreeCheckbox = document.getElementById('agreeCheckbox');
+        const viewBtn = document.getElementById('viewChildBtn');
+        const warningMsg = document.getElementById('warningMsg');
+        const redirectCard = document.getElementById('redirectCard');
+
+        let isLoading = false;
+
+        // استخراج الـ ID من الرابط
+        const urlParams = new URLSearchParams(window.location.search);
+        const childId = urlParams.get('id');
+
+        // ===== عرض رسالة خطأ =====
+        function showErrorCard(icon, title, message, supportText, supportUrl) {
+            const finalUrl = supportUrl || ('https://wa.me/201004135973?text=' + encodeURIComponent('السلام عليكم، أرغب في مساعدة بخصوص الطفل ' + childId));
+            const isMailto = finalUrl.startsWith('mailto:');
+
+            redirectCard.innerHTML = `
+                <div class="icon-big error">
+                    <i class="fas ${icon}"></i>
+                </div>
+                <h1 style="color: var(--danger-color);">${title}</h1>
+                <div class="error-message-box">
+                    <span class="error-icon">📌</span>
+                    <p>${message}</p>
+                </div>
+                <a href="${finalUrl}" ${isMailto ? '' : 'target="_blank"'} class="btn-support">
+                    <i class="fas ${isMailto ? 'fa-envelope' : 'fab fa-whatsapp'}"></i> ${supportText || 'تواصل مع الدعم'}
+                </a>
+                <br>
+                <a href="/" class="back-link">
+                    <i class="fas fa-arrow-right"></i> العودة للرئيسية
+                </a>
+            `;
+        }
+
+        // ===== التحقق من وجود ID =====
+        if (!childId) {
+            showErrorCard(
+                'fa-exclamation-triangle',
+                '⚠️ رابط غير صحيح',
+                'لم يتم العثور على معرف الطفل في الرابط. يرجى التأكد من الرابط أو التواصل مع الدعم.',
+                'طلب مساعدة',
+                'https://wa.me/201004135973?text=السلام%20عليكم%2C%20واجهت%20مشكلة%20في%20الرابط'
+            );
+            return;
+        }
+
+        // ===== ✅ فحص لو الكود ملغى =====
+        function showRevokedCard(data) {
+            redirectCard.innerHTML = `
+                <div class="icon-big" style="background: linear-gradient(135deg, #FEF2F2, #FEE2E2); color: #DC2626;">
+                    <i class="fas fa-ban"></i>
+                </div>
+                <h1 style="color: var(--danger-color);">🚫 هذا الكود تم إلغاؤه</h1>
+                <div class="error-message-box">
+                    <span class="error-icon">📌</span>
+                    <p>هذا الكود لم يعد صالحًا. تم توليد كود جديد للطفل من قبل الإدارة.</p>
+                    <p style="margin-top: 8px; font-size: 0.9rem;">
+                        <strong>إذا كنت ولي الأمر:</strong> تحقق من بريدك الإلكتروني أو تليجرام للحصول على الكود الجديد.<br>
+                        <strong>إذا وجدت هذا الطفل:</strong> تواصل مع الدعم فورًا.
+                    </p>
+                </div>
+                <a href="https://wa.me/201004135973?text=${encodeURIComponent('السلام عليكم، وجدت كود طفل ملغى وأريد المساعدة')}"
+                   target="_blank"
+                   class="btn-support">
+                    <i class="fab fa-whatsapp"></i> تواصل مع الدعم
+                </a>
+                <br>
+                <a href="/" class="back-link">
+                    <i class="fas fa-arrow-right"></i> العودة للرئيسية
+                </a>
+            `;
+        }
+
+        // ✅ نفحص الأول
+        fetch('/api?action=checkRevoked&id=' + encodeURIComponent(childId.trim()), { cache: 'no-store' })
+            .then(r => r.json())
+            .then(data => {
+                if (data && data.revoked) {
+                    showRevokedCard(data);
+                    return;
+                }
+                setupNormalFlow();
+            })
+            .catch(() => {
+                // Fail-open: نكمل عادي
+                setupNormalFlow();
+            });
+
+        // ===== تحديث حالة الزر =====
+        function setupNormalFlow() {
+        function updateButtonState() {
+            const isChecked = agreeCheckbox.checked;
+            viewBtn.disabled = !isChecked;
+            if (!isChecked) {
+                warningMsg.classList.add('show');
+            } else {
+                warningMsg.classList.remove('show');
+            }
+        }
+
+        agreeCheckbox.addEventListener('change', updateButtonState);
+
+        // ===== التوجيه لصفحة الطفل =====
+        function goToChildView(token) {
+            const targetUrl = '/childView.html?id=' + encodeURIComponent(childId.trim())
+                            + '&tempToken=' + encodeURIComponent(token);
+            console.log('🔗 التوجيه إلى:', targetUrl);
+            try { window.top.location.replace(targetUrl); return; } catch (e) {}
+            try { window.location.href = targetUrl; return; } catch (e) {}
+            window.open(targetUrl, '_blank');
+        }
+
+        // ===== معالجة أخطاء إنشاء التوكن =====
+        function handleTokenError(data) {
+            const errorCode = data.code || data.error || 'unknown';
+            const errorMsg = data.message || 'لم نتمكن من إنشاء رابط آمن. يرجى المحاولة مرة أخرى.';
+            let errorMessage = errorMsg;
+            let supportText = 'تواصل مع الدعم';
+            let supportUrl = null;
+            let title = '⚠️ حدث خطأ';
+            let icon = 'fa-exclamation-circle';
+
+            if (errorCode === 'account_pending' || errorCode === 'pending') {
+                title = '⏳ الحساب قيد التفعيل';
+                errorMessage = 'جاري مراجعة طلب التسجيل. سيتم التفعيل خلال <strong>24 ساعة</strong>';
+                supportText = 'استفسار عن حالة الحساب';
+                supportUrl = 'https://wa.me/201004135973?text=' + encodeURIComponent('السلام عليكم، أود الاستفسار عن حالة الحساب ' + childId);
+            } else if (errorCode === 'account_expired' || errorCode === 'expired') {
+                title = '⏰ انتهى الاشتراك';
+                icon = 'fa-clock';
+                errorMessage = `
+                    <strong>انتهت صلاحية اشتراك هذا الحساب.</strong><br>
+                    <span style="font-size:0.9rem; display:block; margin-top:8px;">
+                        لتجديد الاشتراك يرجى التواصل مع <strong>فريق المبيعات</strong>:
+                    </span>
+                `;
+                supportText = '📧 راسل المبيعات';
+                supportUrl = 'mailto:sales@kidcode-eg.com?subject=' + encodeURIComponent('تجديد اشتراك منتهي - ' + childId) + '&body=' + encodeURIComponent('السلام عليكم،\n\nأود تجديد اشتراك الطفل ' + childId + '.\n\nشكراً لكم.');
+            } else if (errorCode === 'account_suspended' || errorCode === 'suspended') {
+                title = '🚫 الحساب موقوف';
+                errorMessage = 'هذا الحساب موقوف مؤقتاً من قِبل الإدارة.<br>يرجى التواصل مع الدعم لمعرفة السبب.';
+                supportText = 'استفسار عن الإيقاف';
+            } else if (errorCode === 'account_inactive' || errorCode === 'inactive') {
+                title = '⛔ الحساب غير نشط';
+                errorMessage = 'هذا الحساب غير نشط حالياً.<br>يرجى التواصل مع الدعم لمعرفة السبب.';
+                supportText = 'استفسار عن الحساب';
+            } else if (errorCode === 'account_disabled' || errorCode === 'disabled') {
+                title = '🚫 الحساب معطّل';
+                errorMessage = 'هذا الحساب معطّل مؤقتاً من قبل ولي الأمر.<br>يرجى التواصل مع الدعم.';
+                supportText = 'استفسار عن الحساب';
+            } else if (errorCode === 'account_deleted' || errorCode === 'deleted') {
+                title = '🗑️ الحساب محذوف';
+                errorMessage = 'هذا الحساب تم حذفه.<br>يرجى التواصل مع الدعم للاستفسار.';
+                supportText = 'استفسار عن الحساب';
+            } else if (errorCode === 'child_not_found' || errorCode === 'not_found') {
+                title = '❓ طفل غير موجود';
+                errorMessage = 'لم يتم العثور على بيانات الطفل. يرجى التأكد من الرابط.';
+                supportText = 'طلب مساعدة';
+            } else if (errorCode === 'invalid_token') {
+                title = '⚠️ الرابط منتهي';
+                errorMessage = 'هذا الرابط غير صالح أو منتهي الصلاحية.<br>يرجى إعادة مسح رمز QR.';
+                supportText = 'طلب مساعدة';
+            }
+
+            showErrorCard(icon, title, errorMessage, supportText, supportUrl);
+        }
+
+        // ===== الزر الرئيسي =====
+        viewBtn.addEventListener('click', function() {
+            if (viewBtn.disabled || isLoading) return;
+
+            isLoading = true;
+            viewBtn.disabled = true;
+            viewBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحضير...';
+
+            fetch('/api?action=token&id=' + encodeURIComponent(childId.trim()), { cache: 'no-store' })
+                .then(function(response) { return response.json(); })
+                .then(function(data) {
+                    let token = data.tempToken;
+                    if (typeof token === 'object' && token && token.token) {
+                        token = token.token;
+                    }
+
+                    if (token) {
+                        goToChildView(token);
+                    } else {
+                        handleTokenError(data);
+                        isLoading = false;
+                        viewBtn.disabled = false;
+                        viewBtn.innerHTML = '<i class="fas fa-eye"></i> عرض بيانات الطفل';
+                    }
+                })
+                .catch(function(err) {
+                    console.error('❌ خطأ في جلب التوكن:', err);
+                    showErrorCard(
+                        'fa-exclamation-triangle',
+                        '❌ خطأ في الاتصال',
+                        'تعذر الاتصال بالخادم. يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى.',
+                        'الإبلاغ عن مشكلة',
+                        'https://wa.me/201004135973?text=' + encodeURIComponent('السلام عليكم، واجهت مشكلة في الاتصال بالخادم للطفل ' + childId)
+                    );
+                });
+        });
+
+        // ===== التحديث الأولي =====
+        updateButtonState();
+
+        } // ← إغلاق setupNormalFlow
+
+        console.log('✅ redirect.html جاهز');
+    })();
+</script>
+
+<!-- ===== تحميل الفوتر الموحد ===== -->
+<script>
+    (function() {
+        const footerPlaceholder = document.getElementById('footerPlaceholder');
+        if (!footerPlaceholder) return;
+
+        fetch('/footer.html')
+            .then(response => {
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                return response.text();
+            })
+            .then(html => {
+                footerPlaceholder.innerHTML = html;
+            })
+            .catch(err => {
+                console.warn('⚠️ فشل تحميل الفوتر:', err);
+                footerPlaceholder.innerHTML = `
+                    <footer class="site-footer">
+                        <p style="text-align:center; padding:20px; color:#94A3B8;">
+                            KidCode-EG © 2026. جميع الحقوق محفوظة.
+                        </p>
+                    </footer>
+                `;
+            });
+    })();
+</script>
+
+</body>
+</html>

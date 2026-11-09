@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GT-TB7R77BQ"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'GT-TB7R77BQ');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="description" content="دليل شامل لمميزات خدمة KidCode-EG — تعرّف على كيفية التسجيل، الباقات، الإشعارات، لوحة تحكم الأسرة، والأمان.">
+    <title>مميزات الخدمة - كيدكود-ايجي</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Inter:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/all.min.css">
+    <link rel="stylesheet" href="css/base/main.css">
+    <link rel="stylesheet" href="css/pages/how-it-works.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/logo2.png">
+    <link rel="canonical" href="https://www.kidcode-eg.com/how-it-works" />
+</head>
+<body>
+
+<!-- ===== الهيدر الموحد ===== -->
+<div id="headerPlaceholder"></div>
+
+<!-- ===== المحتوى ===== -->
+<main>
+    <div class="hiw-wrapper">
+        <div class="hiw-card">
+
+            <!-- ===== 1. Header ===== -->
+            <div class="hiw-header">
+                <span class="hiw-icon"><i class="fas fa-book-open"></i></span>
+                <h1><span class="kid">KidCode</span><span class="eg">-EG</span></h1>
+                <p class="hiw-title">مميزات الخدمة</p>
+                <p class="hiw-subtitle">
+                    دليل شامل يوضّح لك كيفية الاستفادة الكاملة من خدماتنا،
+                    من التسجيل حتى استلام البطاقة وتفعيل الإشعارات الفورية.
+                </p>
+            </div>
+
+            <!-- ===== 2. شريط البحث ===== -->
+            <div class="hiw-search-wrapper">
+                <div class="hiw-search-box">
+                    <i class="fas fa-search hiw-search-icon"></i>
+                    <input
+                        type="text"
+                        id="hiwSearchInput"
+                        class="hiw-search-input"
+                        placeholder="ابحث عن ميزة، خدمة، أو استفسار..."
+                        autocomplete="off"
+                    >
+                    <button id="hiwClearBtn" class="hiw-search-clear" style="display: none;" aria-label="مسح البحث">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <p class="hiw-search-hint">
+                    <i class="fas fa-lightbulb"></i>
+                    جرب كتابة: "تليجرام"، "عمولة"، "دفع"، "QR"، "خصم"...
+                </p>
+            </div>
+
+            <!-- ===== 3. الفلاتر ===== -->
+            <div class="hiw-filters-wrapper">
+                <button class="hiw-filter-chip active" data-filter="all">
+                    <i class="fas fa-th-large"></i> الكل
+                </button>
+                <button class="hiw-filter-chip" data-filter="registration">
+                    <i class="fas fa-user-plus"></i> التسجيل
+                </button>
+                <button class="hiw-filter-chip" data-filter="qr">
+                    <i class="fas fa-qrcode"></i> رمز QR
+                </button>
+                <button class="hiw-filter-chip" data-filter="notifications">
+                    <i class="fas fa-bell"></i> الإشعارات
+                </button>
+                <button class="hiw-filter-chip" data-filter="dashboard">
+                    <i class="fas fa-tachometer-alt"></i> لوحة الأسرة
+                </button>
+                <button class="hiw-filter-chip" data-filter="security">
+                    <i class="fas fa-shield-alt"></i> الأمان
+                </button>
+                <button class="hiw-filter-chip" data-filter="marketers">
+                    <i class="fas fa-chart-line"></i> المسوقين
+                </button>
+                <button class="hiw-filter-chip" data-filter="support">
+                    <i class="fas fa-headset"></i> الدعم
+                </button>
+            </div>
+
+            <!-- ===== رسالة عدم وجود نتائج ===== -->
+            <div id="hiwNoResults" class="hiw-no-results" style="display: none;">
+                <i class="fas fa-search-minus"></i>
+                <p>لم يتم العثور على نتائج مطابقة</p>
+                <span>جرّب كلمة بحث أخرى أو اختر فلتراً مختلفاً</span>
+            </div>
+
+            <!-- ============================================================
+                 القسم 1: التسجيل والحساب
+                 ============================================================ -->
+            <section class="hiw-section" data-category="registration">
+                <div class="hiw-section-header">
+                    <span class="hiw-section-icon"><i class="fas fa-user-plus"></i></span>
+                    <h2>التسجيل والحساب</h2>
+                </div>
+
+                <div class="hiw-accordion-group">
+
+                    <details class="hiw-item">
+                        <summary>
+                            <span class="hiw-item-title">كيف يتم تسجيل طفل جديد في النظام؟</span>
+                            <i class="fas fa-chevron-down hiw-item-icon"></i>
+                        </summary>
+                        <div class="hiw-item-content">
+                            <p>يتم التسجيل عبر الخطوات التالية:</p>
+                            <ol class="hiw-steps-list">
+                                <li>الدخول إلى صفحة <strong>"سجّل طفلك"</strong> من القائمة الرئيسية.</li>
+                                <li>تعبئة بيانات الطفل بدقة: الاسم الرباعي، تاريخ الميلاد، العنوان التفصيلي، وأرقام التواصل.</li>
+                                <li>رفع صورة واضحة للطفل (يُفضّل أن تكون بجودة عالية).</li>
+                                <li>إدخال البريد الإلكتروني لتلقي التنبيهات والتأكيدات.</li>
+                                <li>اختيار طريقة استلام الإشعارات (تليجرام أو البريد الإلكتروني).</li>
+                                <li>اختيار الباقة المناسبة (الإطلاق المجانية، النصف سنوية، أو السنوية).</li>
+                                <li>إتمام عملية الدفع في حال اختيار باقة مدفوعة.</li>
+                            </ol>
+                            <div class="hiw-info-box">
+                                <i class="fas fa-info-circle"></i>
+                                <span>يستغرق التسجيل من 3 إلى 5 دقائق، ويتم تفعيل الحساب <strong>تلقائياً خلال دقائق</strong> من تأكيد الدفع عبر Paymob.</span>
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="hiw-item">
+                        <summary>
+                            <span class="hiw-item-title">ما هي الباقات المتاحة وما الفرق بينها؟</span>
+                            <i class="fas fa-chevron-down hiw-item-icon"></i>
+                        </summary>
+                        <div class="hiw-item-content">
+                            <p>نوفّر ثلاث باقات لتلبية احتياجات مختلف الأسر:</p>
+                            <div class="hiw-table-wrapper">
+                                <table class="hiw-table">
+                                    <thead>
+                                        <tr>
+                                            <th>الباقة</th>
+                                            <th>السعر</th>
+                                            <th>المدة</th>
+                                            <th>الملحقات</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>الإطلاق</strong></td>
+                                            <td>مجاناً</td>
+                                            <td>شهر واحد</td>
+                                            <td>كارت رقمي فقط</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>النصف سنوية</strong></td>
+                                            <td>250 ج.م</td>
+                                            <td>6 أشهر</td>
+                                            <td>كارت + ميدالية + 10 استيكرات</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>السنوية</strong></td>
+                                            <td>500 ج.م</td>
+                                            <td>سنة كاملة</td>
+                                            <td>كارت + 2 ميدالية + 30 استيكر</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="hiw-info-box hiw-info-warning">
+                                <i class="fas fa-gift"></i>
+                                <span>عرض الإطلاق متاح بحد أقصى <strong>30 عرض فقط</strong> — بعد نفاد العروض يتم إيقاف العرض تلقائياً.</span>
+                            </div>
+                            <p>للمقارنة التفصيلية الكاملة، يُرجى الرجوع إلى قسم <strong>"الأسعار"</strong> في الصفحة الرئيسية.</p>
+                        </div>
+                    </details>
+
+                    <details class="hiw-item">
+                        <summary>
+                            <span class="hiw-item-title">ما هي طرق الدفع المتاحة؟</span>
+                            <i class="fas fa-chevron-down hiw-item-icon"></i>
+                        </summary>
+                            <div class="hiw-item-content">
+                                <p>نوفّر <strong>الدفع الإلكتروني الآمن</strong> عبر بوابة <strong>Paymob</strong> (المعتمدة من البنك المركزي المصري)، وفق الخطوات التالية:</p>
+                                <ol class="hiw-steps-list">
+                                    <li>اختيار الباقة المناسبة في صفحة التسجيل.</li>
+                                    <li>الضغط على "تسجيل البيانات والاشتراك" — سيتم تحويلك تلقائياً لصفحة الدفع الآمنة.</li>
+                                    <li>اختيار طريقة الدفع: <strong>بطاقة ائتمانية</strong> (Visa/MasterCard) أو <strong>محفظة إلكترونية</strong>.</li>
+                                    <li>إتمام الدفع — سيتم تفعيل حساب الطفل <strong>تلقائياً خلال دقائق</strong> من تأكيد الدفع.</li>
+                                </ol>
+                                <div class="hiw-info-box hiw-info-success">
+                                    <i class="fas fa-lock"></i>
+                                    <span><strong>دفع آمن ومشفّر 100%</strong> — جميع بيانات البطاقة تُعالَج مباشرة من Paymob ولا تُخزَّن على خوادمنا.</span>
+                                </div>
+                            </div>
+                    </details>
+
+                    <details class="hiw-item">
+                        <summary>
+                            <span class="hiw-item-title">كيف يعمل نظام الخصم عبر كود المسوق؟</span>
+                            <i class="fas fa-chevron-down hiw-item-icon"></i>
+                        </summary>
+                        <div class="hiw-item-content">
+                            <p>يُتيح النظام للعملاء الحصول على خصم <strong>10%</strong> عند التسجيل عبر أحد المسوقين المعتمدين، ويمكن الحصول على الخصم بطريقتين:</p>
+
+                            <p style="margin-top:14px;"><strong>الطريقة الأولى: كود المسوق المباشر</strong></p>
+                            <ol class="hiw-steps-list">
+                                <li>طلب كود من أحد المسوقين المعتمدين (صيغة الكود: <strong>MAXXXX</strong>).</li>
+                                <li>إدخال الكود في الحقل المخصص ضمن صفحة التسجيل.</li>
+                                <li>سيتم تطبيق الخصم تلقائياً على السعر النهائي.</li>
+                            </ol>
+
+                            <p style="margin-top:14px;"><strong>الطريقة الثانية: الرابط التسويقي (أسهل وأسرع)</strong></p>
+                            <ol class="hiw-steps-list">
+                                <li>الحصول على الرابط التسويقي من المسوق (صيغة: <code style="background:#F1F5F9;padding:2px 6px;border-radius:4px;font-family:monospace;direction:ltr;display:inline-block;">reg.html?ref=MAXXXX</code>).</li>
+                                <li>فتح الرابط مباشرة — سيُملأ حقل كود المسوق <strong>تلقائياً وإلزامياً</strong>.</li>
+                                <li>يظهر الخصم فور فتح الصفحة، دون كتابة أي شيء يدوياً.</li>
+                            </ol>
+
+                            <div class="hiw-info-box hiw-info-success">
+                                <i class="fas fa-lightbulb"></i>
+                                <span>في حال عدم وجود كود متاح، يمكن التواصل مع <a href="/contact">فريق الدعم</a> لمساعدتك في الحصول على أحد الأكواد.</span>
+                            </div>
+                        </div>
+                    </details>
+
+                </div>
+            </section>
+
+            <!-- ============================================================
+                 القسم 2: رمز QR والملحقات
+                 ============================================================ -->
+            <section class="hiw-section" data-category="qr">
+                <div class="hiw-section-header">
+                    <span class="hiw-section-icon"><i class="fas fa-qrcode"></i></span>
+                    <h2>رمز QR والملحقات</h2>
+                </div>
+
+                <div class="hiw-accordion-group">
+
+                    <details class="hiw-item">
+                        <summary>
+                            <span class="hiw-item-title">كيف يعمل رمز QR الخاص بالطفل؟</span>
+                            <i class="fas fa-chevron-down hiw-item-icon"></i>
+                        </summary>
+                        <div class="hiw-item-content">
+                            <p>رمز QR هو الوسيلة الأساسية التي يعتمد عليها النظام عند العثور على الطفل المفقود.</p>
+                            <p>عند قيام أي شخص بمسح الرمز بهاتفه الذكي:</p>
+                            <ol class="hiw-steps-list">
+                                <li>يظهر له نموذج الموافقة على الشروط وسياسة الخصوصية.</li>
+                                <li>بعد الموافقة، تُعرض بيانات الطفل (الاسم، الصورة، العمر، العنوان).</li>
+                                <li>تظهر أزرار مباشرة للتواصل مع ولي الأمر عبر الهاتف أو واتساب.</li>
+                                <li>يمكن للشخص مشاركة موقعه الجغرافي لتسهيل وصول الأسرة للطفل.</li>
+                            </ol>
+                            <div class="hiw-info-box">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>تكون صلاحية الرابط المؤقت المستخدم لعرض البيانات <strong>5 دقائق فقط</strong>، لضمان أقصى درجات الأمان.</span>
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="hiw-item">
+                        <summary>
+                            <span class="hiw-item-title">ما الملحقات التي يتم توصيلها مع البطاقة؟</span>
+                            <i class="fas fa-chevron-down hiw-item-icon"></i>
+                        </summary>
+                        <div class="hiw-item-content">
+                            <p>يتم تجهيز الشحنة حسب نوع الباقة:</p>
+                            <ul class="hiw-features-list">
+                                <li><strong>الكارت المطبوع:</strong> بطاقة بلاستيكية متينة تحمل رمز QR بدقة عالية.</li>
+                                <li><strong>الميدالية الأكليرك:</strong> يتم تعليقها في الملابس.</li>
+                                <li><strong>الاستيكرات:</strong> يمكن لصقها على المتعلقات الشخصية (الحقيبة، زجاجة المياه، الدراجة).</li>
+                            </ul>
+                            <div class="hiw-info-box hiw-info-success">
+                                <i class="fas fa-check-circle"></i>
+                                <span>جميع الملحقات تحمل نفس رمز QR الخاص بالطفل، وفي حال تحديث البيانات لا تحتاج إلى إعادة طباعة.</span>
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="hiw-item">
+                        <summary>
+                            <span class="hiw-item-title">كيف تتم عملية التوصيل؟ وكم تستغرق؟</span>
+                            <i class="fas fa-chevron-down hiw-item-icon"></i>
+                        </summary>
+                        <div class="hiw-item-content">
+                            <p>يتم التوصيل عبر شركات معتمدة في أي مكان داخل جمهورية مصر العربية.</p>
+                            <p><strong>المدة المتوقعة:</strong></p>
+                            <ul class="hiw-features-list">
+                                <li>14 يوم عمل.</li>
+                            </ul>
+                            <div class="hiw-info-box">
+                                <i class="fas fa-truck"></i>
+                                <span>خدمة التوصيل <strong>مجانية بالكامل</strong> لجميع الباقات المدفوعة.</span>
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="hiw-item">
+                        <summary>
+                            <span class="hiw-item-title">ماذا أفعل إذا فقدت الكارنيه أو الميدالية؟</span>
+                            <i class="fas fa-chevron-down hiw-item-icon"></i>
+                        </summary>
+                        <div class="hiw-item-content">
+                            <p><strong>⚠️ بمجرد فقدان الكارنيه أو الميدالية، يجب تعطيل الحساب فوراً</strong> من لوحة تحكم الأسرة (تبويب "بيانات الطفل" → قسم "تعطيل الحساب"). التعطيل يوقف كل ميزات الحماية، وأي شخص يجد الكارنيه المفقود لن يتمكن من الوصول إلى بيانات طفلك.</p>
+                            <p><strong>خطوات التعامل مع فقدان الكارنيه:</strong></p>
+                            <ol class="hiw-steps-list">
+                                <li>تعطيل الحساب فوراً من <a href="/family-dashboard" target="_blank">لوحة تحكم الأسرة</a>.</li>
+                                <li>التواصل مع <a href="https://wa.me/201004135973" target="_blank">واتساب الدعم</a> لإصدار كارنيه أو ميدالية جديدة.</li>
+                                <li>بعد استلام الكارنيه الجديد، يتم إعادة تفعيل الحساب من نفس القسم في لوحة التحكم.</li>
+                            </ol>
+                        </div>
+                    </details>
+
+                </div>
+            </section>
+
+            <!-- ============================================================
+                 القسم 3: الإشعارات والمتابعة
+                 ============================================================ -->
+            <section class="hiw-section" data-category="notifications">
+                <div class="hiw-section-header">
+                    <span class="hiw-section-icon"><i class="fas fa-bell"></i></span>
+                    <h2>الإشعارات والمتابعة</h2>
+                </div>
+
+                <div class="hiw-accordion-group">
+
+                    <details class="hiw-item">
+                        <summary>
+                            <span class="hiw-item-title">كيف يتم تفعيل إشعارات تليجرام؟</span>
+                            <i class="fas fa-chevron-down hiw-item-icon"></i>
+                        </summary>
+                        <div class="hiw-item-content">
+                            <p>للحصول على إشعارات فورية على هاتفك، يتم اتباع الخطوات التالية:</p>
+                            <ol class="hiw-steps-list">
+                                <li>الدخول إلى <a href="/family-dashboard">لوحة تحكم الأسرة</a>.</li>
+                                <li>الضغط على زر <strong>"ربط تليجرام للأب"</strong> أو <strong>"ربط تليجرام للأم"</strong>.</li>
+                                <li>اضغط على زر "افتح تليجرام".</li>
+                                <li>سيتم إرسال كلمة "Start" تلقائياً داخل محادثة تليجرام.</li>
+                                <li>قم بالرجوع إلى لوحة التحكم وانتظر ثوانٍ لتأكيد الربط.</li>
+                            </ol>
+                            <p>بعد نجاح الربط، سيتم إرسال جميع الإشعارات الفورية عبر تليجرام بدلاً من البريد الإلكتروني.</p>
+                            <div class="hiw-info-box hiw-info-success">
+                                <i class="fas fa-robot"></i>
+                                <span><strong>أوامر تليجرام المتاحة:</strong> <code>/start</code> لبدء الربط · <code>/status</code> لعرض الأطفال المربوطين · <code>/help</code> للمساعدة.</span>
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="hiw-item">
+                        <summary>
+                            <span class="hiw-item-title">هل يمكن ربط حساب تليجرام واحد بأكثر من طفل؟</span>
+                            <i class="fas fa-chevron-down hiw-item-icon"></i>
+                        </summary>
+                        <div class="hiw-item-content">
+                            <p><strong>نعم</strong>، يدعم النظام ربط الحساب ذاته بأكثر من طفل.</p>
+                            <p>لإضافة طفل آخر:</p>
+                            <ol class="hiw-steps-list">
+                                <li>الدخول إلى لوحة تحكم الطفل الجديد.</li>
+                                <li>الضغط على "ربط تليجرام" بنفس الحساب.</li>
+                                <li>إتمام عملية الربط كالمعتاد.</li>
+                            </ol>
+                            <p>عند وجود أكثر من طفل مربوط بنفس الحساب:</p>
+                            <ul class="hiw-features-list">
+                                <li>يستقبل الحساب إشعارات من جميع الأطفال.</li>
+                                <li>يحتوي كل إشعار على <strong>اسم الطفل ومعرّفه</strong> للتمييز بينهم.</li>
+                                <li>يمكن استخدام أمر <code>/status</code> لعرض قائمة كاملة بالأطفال المربوطين.</li>
+                                <li>يمكن فك ربط كل طفل بشكل مستقل من لوحة تحكمه الخاصة.</li>
+                            </ul>
+                        </div>
+                    </details>
+
+                    <details class="hiw-item">
+                        <summary>
+                            <span class="hiw-item-title">ما نوع الإشعارات التي تصلك؟</span>
+                            <i class="fas fa-chevron-down hiw-item-icon"></i>
+                        </summary>
+                        <div class="hiw-item-content">
+                            <p>يُرسل النظام ثلاثة أنواع رئيسية من الإشعارات:</p>
+                            <ul class="hiw-features-list">
+                                <li><strong>✅ إشعار تسجيل الحساب:</strong> يُرسل بعد قبول التسجيل.</li>
+                                <li><strong>🔔 إشعار مسح الرمز:</strong> يُرسل فور مسح رمز QR الخاص بالطفل من أي جهاز.</li>
+                                <li><strong>📍 إشعار مشاركة الموقع:</strong> يُرسل عند مشاركة الشخص الذي عثر على الطفل لموقعه الجغرافي، مع رابط مباشر لخرائط Google.</li>
+                            </ul>
+                            <p>كما يتم إرسال تنبيهات دورية عند تحديث بيانات الطفل أو اقتراب انتهاء الاشتراك.</p>
+                        </div>
+                    </details>
+
+                    <details class="hiw-item">
+                        <summary>
+                            <span class="hiw-item-title">كيف أختار طريقة استلام الإشعارات أثناء تسجيل طفلي؟</span>
+                            <i class="fas fa-chevron-down hiw-item-icon"></i>
+                        </summary>
+                        <div class="hiw-item-content">
+                            <p>يوفّر النظام طريقتين لاستلام الإشعارات، يمكنك الاختيار بينهما أثناء عملية التسجيل:</p>
+                            <ul class="hiw-features-list">
+                                <li><strong>📱 إشعارات تليجرام (موصى به):</strong> إشعارات فورية على هاتفك عند مسح رمز QR أو مشاركة الموقع، مع إمكانية فتح خرائط Google مباشرة من الإشعار.</li>
+                                <li><strong>📧 إشعارات البريد الإلكتروني:</strong> تصلك على بريدك الإلكتروني المسجّل بشكل تلقائي.</li>
+                            </ul>
+                            <p>يتم اختيار الطريقة في نموذج التسجيل ضمن قسم <strong>"طريقة استلام الإشعارات"</strong>.</p>
+                            <div class="hiw-info-box hiw-info-telegram">
+                                <i class="fab fa-telegram"></i>
+                                <span>إذا اخترت تليجرام، سيظهر لك زر "افتح تليجرام" مباشرةً بعد إتمام التسجيل لربط حسابك فوراً.</span>
+                            </div>
+                            <div class="hiw-info-box">
+                                <i class="fas fa-edit"></i>
+                                <span>يمكنك تغيير طريقة الإشعارات في أي وقت لاحقاً من خلال <a href="/family-dashboard">لوحة تحكم الأسرة</a>.</span>
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="hiw-item">
+                        <summary>
+                            <span class="hiw-item-title">كيف أربط الأب والأم بشكل مستقل بنفس حساب الطفل؟</span>
+                            <i class="fas fa-chevron-down hiw-item-icon"></i>
+                        </summary>
+                        <div class="hiw-item-content">
+                            <p>يدعم النظام ربط حسابي الأب والأم بشكل مستقل تماماً، بحيث يستقبل كل طرف الإشعارات على هاتفه الخاص.</p>
+                            <p><strong>خطوات ربط الطرفين:</strong></p>
+                            <ol class="hiw-steps-list">
+                                <li>أثناء تسجيل الطفل، يتم اختيار "تليجرام" كطريقة للإشعارات.</li>
+                                <li>بعد إتمام التسجيل، يظهر زر "افتح تليجرام" في نافذة النجاح.</li>
+                                <li>اختر <strong>"الأب"</strong> أو <strong>"الأم"</strong> من أعلى النافذة.</li>
+                                <li>اضغط الزر "افتح تليجرام" وانتظر إرسال "Start" تلقائياً، ثم الرجوع إلى صفحة التسجيل وانتظار تأكيد الربط.</li>
+                            </ol>
+                            <p><strong>ملاحظات مهمة:</strong></p>
+                            <ul class="hiw-features-list">
+                                <li>يستقبل كل طرف الإشعارات بشكل مستقل عن الآخر.</li>
+                                <li>إمكانية فك الربط لكل طرف على حدة من <a href="/family-dashboard">لوحة تحكم الأسرة</a>.</li>
+                                <li>يمكن ربط نفس حساب تليجرام بأكثر من طفل دون قيود.</li>
+                            </ul>
+                        </div>
+                    </details>
+
+                </div>
+            </section>
+
+            <!-- ============================================================
+                 القسم 4: لوحة تحكم الأسرة
+                 ============================================================ -->
+            <section class="hiw-section" data-category="dashboard">
+                <div class="hiw-section-header">
+                    <span class="hiw-section-icon"><i class="fas fa-tachometer-alt"></i></span>
+                    <h2>لوحة تحكم الأسرة</h2>
+                </div>
+
+                <div class="hiw-accordion-group">
+
+                    <details class="hiw-item">
+                        <summary>
+                            <span class="hiw-item-title">كيف يتم الدخول إلى لوحة تحكم الأسرة؟</span>
+                            <i class="fas fa-chevron-down hiw-item-icon"></i>
+                        </summary>
+                        <div class="hiw-item-content">
+                            <p>يتم الدخول إلى <a href="/family-dashboard">لوحة تحكم الأسرة</a> باستخدام:</p>
+                            <ul class="hiw-features-list">
+                                <li>رقم معرّف الطفل: <strong>KC-XXXXX</strong>.</li>
+                                <li>كلمة السر الخاصة بحسابك.</li>
+                            </ul>
+                            <div class="hiw-info-box">
+                                <i class="fas fa-info-circle"></i>
+                                <span>في حال لم يتم تعيين كلمة سر بعد (الحسابات القديمة)، سيُطلب منك البريد الإلكتروني المسجّل لتعيين كلمة السر لأول مرة.</span>
+                            </div>
+                            <div class="hiw-info-box">
+                                <i class="fas fa-lock"></i>
+                                <span>مدة الجلسة 30 دقيقة، وبعدها يتم تسجيل الخروج تلقائياً لأغراض أمنية.</span>
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="hiw-item">
+                        <summary>
+                            <span class="hiw-item-title">ما التعديلات المتاحة على بيانات الطفل؟</span>
+                            <i class="fas fa-chevron-down hiw-item-icon"></i>
+                        </summary>
+                        <div class="hiw-item-content">
+                            <p>توفر لوحة التحكم إمكانية تعديل البيانات التالية:</p>
+                            <ul class="hiw-features-list">
+                                <li>صورة الطفل.</li>
+                                <li>العنوان التفصيلي.</li>
+                                <li>رابط موقع Google Maps (اختياري).</li>
+                                <li>رقم هاتف الأب والأم.</li>
+                                <li>اسم الأم.</li>
+                                <li>الملاحظات الخاصة (حساسية، فصيلة دم، ملاحظات طبية...).</li>
+                                <li>كود المسوق (إن لم يُسجَّل بعد).</li>
+                            </ul>
+                            <div class="hiw-info-box hiw-info-warning">
+                                <i class="fas fa-lock"></i>
+                                <span><strong>الحقول الغير قابلة للتعديل من اللوحة:</strong> اسم الطفل، تاريخ الميلاد، والبريد الإلكتروني — لا يمكن تعديلها من لوحة التحكم لمنع تسجيل نفس الطفل مرتين. لأي مشكلة في هذه الحقول، يُرجى التواصل مع <a href="https://wa.me/201004135973" target="_blank">الدعم</a>.</span>
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="hiw-item">
+                        <summary>
+                            <span class="hiw-item-title">ما هو تقرير نشاط رمز QR؟</span>
+                            <i class="fas fa-chevron-down hiw-item-icon"></i>
+                        </summary>
+                        <div class="hiw-item-content">
+                            <p>يوفر قسم <strong>"تقرير نشاط رمز QR"</strong> في لوحة التحكم معلومات تفصيلية عن استخدام الرمز:</p>
+                            <ul class="hiw-features-list">
+                                <li>فلترة تاريخية (7 أيام، 30 يوم، 3 شهور، أو مخصص).</li>
+                                <li>إجمالي عدد المسحات.</li>
+                                <li>تاريخ ووقت آخر مسح.</li>
+                                <li>المدة المتبقية حتى انتهاء الاشتراك.</li>
+                                <li>حالة الاشتراك الحالية (نشط، منتهي، قيد المراجعة).</li>
+                                <li>رسم بياني للنشاط اليومي (المسحات + المواقع).</li>
+                                <li>سجل المواقع مع العنوان التقريبي ورابط مباشر لخرائط Google.</li>
+                            </ul>
+                            <div class="hiw-info-box">
+                                <i class="fas fa-chart-line"></i>
+                                <span>يساعد هذا التقرير الأسرة على متابعة أي استخدام لرمز الطفل ومراقبة الأنشطة المرتبطة به.</span>
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="hiw-item">
+                        <summary>
+                            <span class="hiw-item-title">ما هو نظام تعطيل الحساب؟ ومتى أستخدمه؟</span>
+                            <i class="fas fa-chevron-down hiw-item-icon"></i>
+                        </summary>
+                        <div class="hiw-item-content">
+                            <p><strong>تعطيل الحساب</strong> إجراء مؤقت يوقف الإشعارات والميزات الأمنية مع <strong>الاحتفاظ بجميع البيانات</strong>.</p>
+                            <p><strong>متى يتم استخدامه؟</strong></p>
+                            <ul class="hiw-features-list">
+                                <li>عند فقدان الكارنيه أو الميدالية.</li>
+                                <li>عند وجود طلب قضائي أو أمني بالاحتفاظ بالبيانات (بدلاً من الحذف).</li>
+                                <li>عند الرغبة في إيقاف مؤقت للخدمة دون فقدان الحساب.</li>
+                                <li>عند الاشتباه في وصول غير مصرح به للحساب.</li>
+                            </ul>
+                            <p>يمكن إعادة تفعيل الحساب في أي وقت من نفس القسم في <a href="/family-dashboard">لوحة تحكم الأسرة</a>.</p>
+                        </div>
+                    </details>
+
+                    <details class="hiw-item">
+                        <summary>
+                            <span class="hiw-item-title">كيف أحذف حساب طفلي نهائياً؟</span>
+                            <i class="fas fa-chevron-down hiw-item-icon"></i>
+                        </summary>
+                        <div class="hiw-item-content">
+                            <p>يمكنك حذف الحساب في أي وقت من <a href="/family-dashboard">لوحة تحكم الأسرة</a> (تبويب "بيانات الطفل" → قسم "حذف بيانات الطفل").</p>
+                            <p><strong>خطوات الحذف:</strong></p>
+                            <ol class="hiw-steps-list">
+                                <li>الضغط على زر "حذف بيانات الطفل".</li>
+                                <li>إدخال كلمة السر للتأكيد.</li>
+                                <li>الموافقة على الإقرار بمسؤولية الحذف.</li>
+                                <li>يتم الحذف <strong>فوراً</strong> بمجرد التأكيد.</li>
+                            </ol>
+                            <div class="hiw-info-box hiw-info-warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <span><strong>مهم:</strong> بعد الحذف لا يمكن استرجاع البيانات، ولا يمكن إعادة تسجيل نفس الطفل بالنظام.</span>
+                            </div>
+                            <div class="hiw-info-box" style="border-right-color: var(--danger-color); background: #fef2f2;">
+                                <i class="fas fa-gavel"></i>
+                                <span><strong>استثناء قضائي:</strong> لا يمكن الحذف إذا كان هناك طلب رسمي من جهة قضائية أو أمنية بالاحتفاظ بالبيانات — في هذه الحالة يمكن تعطيل الحساب بدلاً من الحذف.</span>
+                            </div>
+                        </div>
+                    </details>
+
+                </div>
+            </section>
+
+            <!-- ============================================================
+                 القسم 5: الأمان والخصوصية
+                 ============================================================ -->
+            <section class="hiw-section" data-category="security">
+                <div class="hiw-section-header">
+                    <span class="hiw-section-icon"><i class="fas fa-shield-alt"></i></span>
+                    <h2>الأمان والخصوصية</h2>
+                </div>
+
+                <div class="hiw-accordion-group">
+
+                    <details class="hiw-item">
+                        <summary>
+                            <span class="hiw-item-title">كيف يتم حماية بيانات الطفل؟</span>
+                            <i class="fas fa-chevron-down hiw-item-icon"></i>
+                        </summary>
+                        <div class="hiw-item-content">
+                            <p>يعتمد النظام على عدة طبقات من الحماية لضمان أمان بيانات الطفل:</p>
+                            <ul class="hiw-features-list">
+                                <li>تخزين البيانات في خوادم سحابية آمنة.</li>
+                                <li>تشفير بيانات الدخول وكلمات السر.</li>
+                                <li>عدم عرض أي بيانات دون مسح رمز QR الفعلي.</li>
+                                <li>استخدام روابط مؤقتة لضمان عدم الاحتفاظ بالبيانات على أجهزة الغير.</li>
+                                <li>تسجيل كامل لجميع عمليات المسح في خوادمنا للمراجعة الأمنية.</li>
+                            </ul>
+                            <div class="hiw-info-box">
+                                <i class="fas fa-user-shield"></i>
+                                <span>يمكنك مراجعة <a href="/privacy-policy">سياسة الخصوصية</a> للتفاصيل الكاملة.</span>
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="hiw-item">
+                        <summary>
+                            <span class="hiw-item-title">ما فائدة الرابط المؤقت ومدته؟</span>
+                            <i class="fas fa-chevron-down hiw-item-icon"></i>
+                        </summary>
+                        <div class="hiw-item-content">
+                            <p>عند مسح رمز QR، يقوم النظام بإنشاء <strong>رابط مؤقت</strong> يعرض بيانات الطفل، بصلاحية <strong>5 دقائق فقط</strong>.</p>
+                            <p><strong>الفائدة:</strong></p>
+                            <ul class="hiw-features-list">
+                                <li>منع الاحتفاظ بالبيانات من قبل أشخاص غير مصرح لهم.</li>
+                                <li>الحد من محاولات الاستغلال أو التصوير.</li>
+                                <li>ضمان أن الوصول يتم في لحظة الحاجة فقط.</li>
+                            </ul>
+                            <div class="hiw-info-box hiw-info-warning">
+                                <i class="fas fa-hourglass-half"></i>
+                                <span>بعد انتهاء الـ 5 دقائق، يجب إعادة مسح الرمز للحصول على رابط جديد، وتُسجَّل جميع المحاولات في سجل النظام.</span>
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="hiw-item">
+                        <summary>
+                            <span class="hiw-item-title">ما الذي يمنع استغلال الطفل من قبل الشخص الذي يجده؟</span>
+                            <i class="fas fa-chevron-down hiw-item-icon"></i>
+                        </summary>
+                        <div class="hiw-item-content">
+                            <p>النظام مصمم لردع أي محاولة استغلال، عبر الإجراءات التالية:</p>
+                            <ul class="hiw-features-list">
+                                <li><strong>موافقة إلزامية:</strong> لا تظهر البيانات إلا بعد موافقة المستخدم على الشروط والأحكام.</li>
+                                <li><strong>تسجيل تلقائي:</strong> يتم تسجيل IP الشخص، والموقع الجغرافي التقريبي، والوقت، ونوع الجهاز عند كل مسح.</li>
+                                <li><strong>رابط مؤقت:</strong> صلاحية 5 دقائق فقط — لا يمكن الاحتفاظ بالبيانات.</li>
+                                <li><strong>إشعار فوري للأسرة:</strong> تُرسل إشعار فوري لولي الأمر بكل عملية مسح.</li>
+                                <li><strong>مسؤولية قانونية:</strong> المستخدم يُقر بمسؤوليته الكاملة، ويُحظر عليه طلب أي مقابل مالي، أو الاحتفاظ بالطفل، أو تصويره ونشره.</li>
+                            </ul>
+                            <div class="hiw-info-box" style="border-right-color: var(--danger-color); background: #fef2f2;">
+                                <i class="fas fa-gavel"></i>
+                                <span>السجلات الأمنية <strong>قابلة للاستخدام قانونياً</strong> كدليل أمام الجهات المختصة في حال أي نزاع أو استغلال.</span>
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="hiw-item">
+                        <summary>
+                            <span class="hiw-item-title">ما سياسة استرداد المبالغ وإلغاء الاشتراك؟</span>
+                            <i class="fas fa-chevron-down hiw-item-icon"></i>
+                        </summary>
+                            <div class="hiw-item-content">
+                                <p>يلتزم النظام بسياسة استرداد واضحة وعادلة، ويتم تنفيذ الاسترداد <strong>تلقائياً عبر بوابة Paymob</strong>:</p>
+                                <ul class="hiw-features-list">
+                                    <li><strong>خلال 14 يوماً من الدفع:</strong> استرداد كامل في حال عدم استخدام الخدمة (عدم مسح QR).</li>
+                                    <li><strong>بعد استخدام الرمز:</strong> لا يحق للعميل استرداد المبلغ.</li>
+                                    <li><strong>بعد انقضاء 14 يوماً:</strong> لا يحق للعميل استرداد المبلغ في أي حال.</li>
+                                    <li><strong>في حال حدوث خطأ تقني يؤثر على تفعيل الخدمة لأول مرة:</strong> استرداد كامل في أي وقت.</li>
+                                    <li><strong>وقت وصول المبلغ:</strong> 5-7 أيام عمل، على نفس وسيلة الدفع الأصلية.</li>
+                                </ul>
+                                <div class="hiw-info-box">
+                                    <i class="fas fa-file-contract"></i>
+                                    <span>للتفاصيل الكاملة، يمكن مراجعة <a href="/refund-policy">سياسة الاسترداد والإلغاء</a>.</span>
+                                </div>
+                            </div>
+                    </details>
+
+                </div>
+            </section>
+
+            <!-- ============================================================
+                 القسم 6: برنامج المسوقين
+                 ============================================================ -->
+            <section class="hiw-section" data-category="marketers">
+                <div class="hiw-section-header">
+                    <span class="hiw-section-icon"><i class="fas fa-chart-line"></i></span>
+                    <h2>برنامج المسوقين</h2>
+                </div>
+
+                <div class="hiw-accordion-group">
+
+                    <details class="hiw-item">
+                        <summary>
+                            <span class="hiw-item-title">كيف يعمل نظام العمولات؟</span>
+                            <i class="fas fa-chevron-down hiw-item-icon"></i>
+                        </summary>
+                        <div class="hiw-item-content">
+                            <p>يوفر برنامج المسوقين فرصة لكسب عمولات مقابل الترويج للخدمة:</p>
+                            <ol class="hiw-steps-list">
+                                <li>التسجيل كمسوق من خلال صفحة <a href="/marketer-register">تسجيل مسوق جديد</a>.</li>
+                                <li>الحصول على كود خاص بصيغة <strong>MAXXXX</strong>.</li>
+                                <li>مشاركة الكود مع العملاء المهتمين.</li>
+                                <li>عند تسجيل عميل جديد باستخدام الكود، يحصل العميل على خصم 10%، ويُحتسب للمسوق عمولة بنفس النسبة.</li>
+                            </ol>
+                            <div class="hiw-info-box hiw-info-success">
+                                <i class="fas fa-clock"></i>
+                                <span>تصبح العمولة مستحقة الصرف بعد مرور <strong>14 يوماً</strong> من تسجيل الطفل، وذلك لتغطية فترة الاسترداد القانونية.</span>
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="hiw-item">
+                        <summary>
+                            <span class="hiw-item-title">ما هو الرابط التسويقي الخاص؟ وكيف أستخدمه؟</span>
+                            <i class="fas fa-chevron-down hiw-item-icon"></i>
+                        </summary>
+                        <div class="hiw-item-content">
+                            <p>يُمنح كل مسوق <strong>رابطاً تسويقياً فريداً</strong> من لوحة تحكم المسوقين، بالصيغة التالية:</p>
+                            <div class="hiw-code-box" style="background:#F1F5F9;padding:12px 16px;border-radius:10px;direction:ltr;font-family:monospace;font-size:0.9rem;text-align:center;margin:12px 0;overflow-x:auto;">https://www.kidcode-eg.com/reg.html?ref=MAXXXX</div>
+                            <p><strong>ميزات الرابط:</strong></p>
+                            <ul class="hiw-features-list">
+                                <li>عند فتح الرابط، يُملأ حقل كود المسوق <strong>تلقائياً وإلزامياً</strong> في صفحة التسجيل.</li>
+                                <li>لا يحتاج العميل لمعرفة أو كتابة الكود يدوياً — يوفّر الوقت ويقلل الأخطاء.</li>
+                                <li>الخصم (10%) يُطبَّق تلقائياً ويظهر للعميل فور فتح الصفحة.</li>
+                                <li>يمكن مشاركته على واتساب، فيسبوك، تليجرام، أو تحويله لـ QR Code لاستخدامه في الكروت والبروشورات.</li>
+                            </ul>
+                            <div class="hiw-info-box hiw-info-success">
+                                <i class="fas fa-qrcode"></i>
+                                <span>توفّر لوحة تحكم المسوقين زراً لتوليد <strong>QR Code</strong> خاص بالرابط التسويقي، جاهز للطباعة أو التحميل.</span>
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="hiw-item">
+                        <summary>
+                            <span class="hiw-item-title">هل يمكنني تسجيل أطفالي بكود المسوق الخاص بي؟</span>
+                            <i class="fas fa-chevron-down hiw-item-icon"></i>
+                        </summary>
+                        <div class="hiw-item-content">
+                            <p><strong>نعم</strong>، يمكنك تسجيل أطفالك باستخدام كود المسوق الخاص بك أثناء عملية التسجيل كأي عميل عادي.</p>
+                            <ul class="hiw-features-list">
+                                <li>تحصل على <strong>نفس نسبة الخصم</strong> (10%) الممنوحة لعملائك.</li>
+                                <li>تُحتسب لك عمولة بنفس الطريقة على هذا التسجيل.</li>
+                                <li>لا يوجد استثناء أو معاملة خاصة — نفس الشروط تنطبق على الجميع.</li>
+                            </ul>
+                        </div>
+                    </details>
+
+                    <details class="hiw-item">
+                        <summary>
+                            <span class="hiw-item-title">ما المميزات المتاحة في لوحة تحكم المسوق؟</span>
+                            <i class="fas fa-chevron-down hiw-item-icon"></i>
+                        </summary>
+                        <div class="hiw-item-content">
+                            <p>توفر <a href="/marketer-dashboard">لوحة تحكم المسوق</a> مجموعة من الأدوات لمتابعة الأداء:</p>
+                            <ul class="hiw-features-list">
+                                <li>عرض إجمالي عدد الأطفال المسجلين باستخدام الكود.</li>
+                                <li>متابعة العمولات المستحقة (بعد 14 يوماً).</li>
+                                <li>متابعة العمولات المعلقة (قبل انقضاء 14 يوماً).</li>
+                                <li>تفاصيل كل عملية تسجيل (الطفل، الخطة، السعر، العمولة، التاريخ).</li>
+                                <li>إمكانية حذف الحساب مع إلغاء العمولات غير المستحقة.</li>
+                            </ul>
+                        </div>
+                    </details>
+
+                    <details class="hiw-item">
+                        <summary>
+                            <span class="hiw-item-title">كيف أربط حساب تليجرام كمسوق؟</span>
+                            <i class="fas fa-chevron-down hiw-item-icon"></i>
+                        </summary>
+                        <div class="hiw-item-content">
+                            <p>يدعم برنامج المسوقين نظام إشعارات فوري عبر تليجرام، يمكنك تفعيله بسهولة:</p>
+                            <p><strong>طريقة الربط:</strong></p>
+                            <ol class="hiw-steps-list">
+                                <li>أثناء التسجيل كمسوق، اختر <strong>"تليجرام"</strong> في قسم "طريقة استلام الإشعارات".</li>
+                                <li>بعد إتمام التسجيل، سيظهر زر "افتح تليجرام" في نافذة النجاح.</li>
+                                <li>اضغط على الزر سالف الذكر للدخول إلى تليجرام وانتظر إرسال "Start" تلقائياً، ثم العودة إلى صفحة التسجيل لتأكيد الربط.</li>
+                            </ol>
+                            <p>بعد نجاح الربط، ستصلك جميع الإشعارات تلقائياً على تليجرام بدلاً من البريد الإلكتروني.</p>
+                            <div class="hiw-info-box hiw-info-telegram">
+                                <i class="fab fa-telegram"></i>
+                                <span>يمكنك دائماً تغيير طريقة الإشعارات أو إعادة الربط من <a href="/marketer-dashboard">لوحة تحكم المسوقين</a>.</span>
+                            </div>
+                            <div class="hiw-info-box hiw-info-warning">
+                                <i class="fas fa-bell"></i>
+                                <span>إذا اخترت تليجرام ولم تقم بالربط، سيصلك تذكير دوري على بريدك الإلكتروني لتفعيل الربط.</span>
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="hiw-item">
+                        <summary>
+                            <span class="hiw-item-title">ما الإشعارات التي ستصلك كمسوق؟</span>
+                            <i class="fas fa-chevron-down hiw-item-icon"></i>
+                        </summary>
+                        <div class="hiw-item-content">
+                            <p>يوفّر النظام ثلاث فئات من الإشعارات التلقائية للمسوقين:</p>
+                            <ul class="hiw-features-list">
+                                <li><strong>🎉 إشعار عميل جديد:</strong> يُرسل فوراً عند تسجيل طفل جديد باستخدام كودك، مع تفاصيل الطفل والباقة وقيمة عمولتك المعلقة.</li>
+                                <li><strong>✅ إشعار عمولة مستحقة:</strong> يُرسل بعد مرور <strong>14 يوماً</strong> من تاريخ التسجيل، مع تحديث رصيدك الإجمالي.</li>
+                                <li><strong>📊 تقرير أسبوعي:</strong> يُرسل كل يوم أحد، ويشمل ملخص أدائك الأسبوعي والإجمالي (العملاء الجدد، العمولات، الرصيد).</li>
+                            </ul>
+                            <div class="hiw-info-box hiw-info-success">
+                                <i class="fas fa-envelope"></i>
+                                <span>في حال عدم ربط تليجرام، يتم إرسال جميع الإشعارات تلقائياً على بريدك الإلكتروني المسجّل لضمان وصولها.</span>
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="hiw-item">
+                        <summary>
+                            <span class="hiw-item-title">كيف أستلم مستحقاتي المالية كمسوق؟</span>
+                            <i class="fas fa-chevron-down hiw-item-icon"></i>
+                        </summary>
+                        <div class="hiw-item-content">
+                            <p>بعد أن تصبح العمولة مستحقة الصرف (بعد مرور 14 يوماً من تسجيل الطفل)، يمكنك:</p>
+                            <ol class="hiw-steps-list">
+                                <li>متابعة رصيدك المستحق من <a href="/marketer-dashboard">لوحة تحكم المسوقين</a>.</li>
+                                <li>التواصل مع الدعم عبر <a href="https://wa.me/201004135973?text=أرغب%20في%20صرف%20مستحقاتي%20كمسوق" target="_blank">واتساب</a> لطلب الصرف.</li>
+                                <li>الاتفاق على طريقة الصرف (تحويل بنكي / محفظة إلكترونية) بعد التأكد من إجمالي الرصيد.</li>
+                            </ol>
+                            <div class="hiw-info-box">
+                                <i class="fab fa-telegram"></i>
+                                <span>إذا كنت مربوطاً بتليجرام، يمكنك استخدام أمر <code>/mystats</code> لعرض رصيدك المستحق بسهولة.</span>
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="hiw-item">
+                        <summary>
+                            <span class="hiw-item-title">ما هي أوامر تليجرام المتاحة للمسوقين؟</span>
+                            <i class="fas fa-chevron-down hiw-item-icon"></i>
+                        </summary>
+                        <div class="hiw-item-content">
+                            <p>بعد ربط حسابك بتليجرام، يمكنك استخدام الأوامر التالية داخل محادثة تليجرام لاستعراض بياناتك بشكل فوري:</p>
+                            <ul class="hiw-features-list">
+                                <li><code>/mycode</code> — عرض كود المسوق الخاص بك ونسبة الخصم المرتبطة به.</li>
+                                <li><code>/mystats</code> — عرض إحصائياتك الكاملة (عدد الأطفال، العمولات المستحقة، العمولات المعلقة).</li>
+                                <li><code>/share</code> — الحصول على رسالة جاهزة للمشاركة مع العملاء، تحتوي على كودك ومعلومات الخصم.</li>
+                                <li><code>/status</code> — عرض حالة حسابك كمسوق (والأطفال المربوطين إن كنت ولي أمر أيضاً).</li>
+                                <li><code>/help</code> — قائمة المساعدة بجميع الأوامر المتاحة.</li>
+                            </ul>
+                            <div class="hiw-info-box">
+                                <i class="fas fa-robot"></i>
+                                <span>جميع الأوامر تعمل فوراً بمجرد ربط حسابك بتليجرام، دون الحاجة لأي إعداد إضافي.</span>
+                            </div>
+                        </div>
+                    </details>
+
+                </div>
+            </section>
+
+            <!-- ============================================================
+                 القسم 7: الدعم والتواصل
+                 ============================================================ -->
+            <section class="hiw-section" data-category="support">
+                <div class="hiw-section-header">
+                    <span class="hiw-section-icon"><i class="fas fa-headset"></i></span>
+                    <h2>الدعم والتواصل</h2>
+                </div>
+
+                <div class="hiw-accordion-group">
+
+                    <details class="hiw-item">
+                        <summary>
+                            <span class="hiw-item-title">ما قنوات الدعم المتاحة؟</span>
+                            <i class="fas fa-chevron-down hiw-item-icon"></i>
+                        </summary>
+                        <div class="hiw-item-content">
+                            <p>يوفّر النظام عدة قنوات للتواصل مع فريق الدعم:</p>
+                            <ul class="hiw-features-list">
+                                <li><strong>💬 واتساب:</strong> الأسرع للرد — <a href="https://wa.me/201004135973" target="_blank">201004135973</a>.</li>
+                                <li><strong>✈️ تليجرام:</strong> للاستفسارات العامة — <a href="https://t.me/Kidcode_EG" target="_blank">@Kidcode_EG</a>.</li>
+                                <li><strong>📧 البريد الإلكتروني:</strong> للاستفسارات التفصيلية — <a href="mailto:support@kidcode-eg.com">support@kidcode-eg.com</a>.</li>
+                                <li><strong>📝 نموذج التواصل:</strong> عبر <a href="/contact">صفحة تواصل معنا</a>.</li>
+                            </ul>
+                            <div class="hiw-info-box">
+                                <i class="fas fa-clock"></i>
+                                <span><strong>🕐 ساعات عمل الدعم:</strong> من الأحد إلى الخميس، من الساعة 9 صباحاً حتى 6 مساءً.</span>
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="hiw-item">
+                        <summary>
+                            <span class="hiw-item-title">أين يمكن إيجاد إجابات للأسئلة الشائعة؟</span>
+                            <i class="fas fa-chevron-down hiw-item-icon"></i>
+                        </summary>
+                        <div class="hiw-item-content">
+                            <p>يُخصص قسم <a href="/faq">الأسئلة الشائعة</a> لإجابات سريعة على أكثر الاستفسارات تكراراً.</p>
+                            <p>في حال عدم إيجاد إجابة مناسبة، يمكنك التواصل مباشرة مع فريق الدعم عبر أي من القنوات المذكورة أعلاه.</p>
+                        </div>
+                    </details>
+
+                </div>
+            </section>
+
+        </div>
+    </div>
+</main>
+
+<!-- ===== الفوتر الموحد ===== -->
+<div id="footerPlaceholder"></div>
+
+<!-- ===== السكربتات ===== -->
+<script src="js/config.js"></script>
+<script src="js/header.js"></script>
+<script>
+    (function() {
+        const headerPlaceholder = document.getElementById('headerPlaceholder');
+        if (headerPlaceholder) {
+            fetch('/header.html')
+                .then(response => response.text())
+                .then(data => {
+                    headerPlaceholder.innerHTML = data;
+                    if (window.initHeader && typeof window.initHeader === 'function') {
+                        setTimeout(window.initHeader, 100);
+                    }
+                })
+                .catch(err => console.warn('⚠️ فشل تحميل الهيدر:', err));
+        }
+
+        const footerPlaceholder = document.getElementById('footerPlaceholder');
+        if (footerPlaceholder) {
+            fetch('/footer.html')
+                .then(response => response.text())
+                .then(html => { footerPlaceholder.innerHTML = html; })
+                .catch(err => console.warn('⚠️ فشل تحميل الفوتر:', err));
+        }
+    })();
+</script>
+<script src="js/pages/how-it-works.js"></script>
+
+</body>
+</html>

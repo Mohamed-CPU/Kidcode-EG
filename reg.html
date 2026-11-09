@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GT-TB7R77BQ"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'GT-TB7R77BQ');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>كيدكود-ايجي - سجّل طفلك</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Inter:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/all.min.css">
+    <link rel="stylesheet" href="css/base/main.css">
+    <link rel="stylesheet" href="css/pages/reg.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/logo2.png">
+    <link rel="canonical" href="https://www.kidcode-eg.com/reg" />
+</head>
+<body>
+
+<div id="headerPlaceholder"></div>
+
+<main class="neo-reg-main">
+    
+    <div class="container neo-container">
+        
+        <!-- عنوان الصفحة -->
+        <h1 class="page-title">سجّل بيانات طفلك</h1>
+
+        <!-- Card 1: الصور -->
+        <div class="neo-card active">
+            <div class="neo-card-header">
+                <div class="neo-card-title">
+                    <i class="fas fa-camera"></i>
+                    <span>صور الطفل والتحقق</span>
+                </div>
+                <i class="fas fa-chevron-down neo-accordion-icon"></i>
+            </div>
+            
+            <div class="neo-card-body">
+                <div class="neo-image-grid">
+                    <!-- صورة الطفل -->
+                    <div class="form-group">
+                        <label class="required">صورة الطفل</label>
+                        <input type="file" id="childImage" accept="image/jpeg" style="display: none;">
+                        <div class="image-preview neo-dropzone" id="imagePreview" onclick="document.getElementById('childImage').click()">
+                            <div class="placeholder">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>اضغط لاختيار صورة</span>
+                            </div>
+                        </div>
+                        <div class="error-message" id="imageError">يرجى إضافة صورة الطفل</div>
+                    </div>
+
+                    <!-- صورة الوجه -->
+                    <div class="form-group face-feature-group">
+                        <label>
+                            صورة الوجه للتحقق (اختياري)
+                        </label>
+                        
+                        <div class="face-preview-wrapper" style="display: flex; flex-direction: column; align-items: center;">
+                            <!-- المعاينة (Dropzone) -->
+                            <div class="face-preview neo-dropzone" id="facePreview">
+                                <div class="placeholder">
+                                    <i class="fas fa-user-circle"></i>
+                                    <span>صورة الوجه</span>
+                                </div>
+                            </div>
+                            
+                            <!-- الأزرار تحت المعاينة -->
+                            <div class="face-action-buttons" style="margin-top: 10px; display: flex; gap: 8px; width: 100%;">
+                                <button type="button" id="uploadFaceBtn" class="btn btn-outline btn-sm" style="flex: 1;">
+                                    <i class="fas fa-upload"></i> رفع
+                                </button>
+                                <button type="button" id="cameraFaceBtn" class="btn btn-secondary btn-sm" style="flex: 1;">
+                                    <i class="fas fa-camera"></i> كاميرا
+                                </button>
+                            </div>
+
+                            <button type="button" id="cancelFaceBtn" class="btn btn-sm btn-outline-danger" style="display:none; margin-top:8px; width: 100%;">
+                                <i class="fas fa-times"></i> إلغاء
+                            </button>
+                        </div>
+
+                        <input type="file" id="faceImageInput" accept="image/jpeg,image/png" style="display: none;">
+
+                        <div id="cameraContainer" style="display: none; margin-top: 10px; border-radius: 12px; overflow: hidden; background: #000; position: relative;">
+                            <video id="cameraVideo" autoplay playsinline style="width: 100%; max-height: 250px; object-fit: cover;"></video>
+                            <button type="button" id="capturePhotoBtn" style="position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); background: white; border: none; border-radius: 50%; width: 56px; height: 56px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+                                <i class="fas fa-circle" style="color: var(--danger-color); font-size: 2rem;"></i>
+                            </button>
+                            <button type="button" id="closeCameraBtn" style="position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.6); color: white; border: none; border-radius: 50%; width: 36px; height: 36px; cursor: pointer; font-size: 1.2rem;">✕</button>
+                        </div>
+
+                        <div class="face-guidelines" id="faceGuidelines" style="display:none;">
+                            <div class="guideline-item"><i class="fas fa-check-circle"></i> وجه الطفل مواجه للكاميرا</div>
+                            <div class="guideline-item"><i class="fas fa-check-circle"></i> إضاءة كافية</div>
+                            <div class="guideline-item"><i class="fas fa-check-circle"></i> لا نظارات أو غطاء للرأس</div>
+                        </div>
+
+                        <div id="faceStatus" class="face-status"></div>
+
+                        <div class="checkbox-group face-consent" style="margin-top: 15px;">
+                            <input type="checkbox" id="faceConsentCheck">
+                            <label for="faceConsentCheck">أوافق على تخزين بيانات وجه طفلي.</label>
+                        </div>
+                        <div class="error-message" id="faceConsentError">يجب الموافقة على استخدام بيانات الوجه</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: البيانات الأساسية -->
+        <div class="neo-card">
+            <div class="neo-card-header">
+                <div class="neo-card-title">
+                    <i class="fas fa-child"></i>
+                    <span>البيانات الأساسية</span>
+                </div>
+                <i class="fas fa-chevron-down neo-accordion-icon"></i>
+            </div>
+            
+            <div class="neo-card-body">
+                <div class="neo-grid-3">
+                    <div class="form-group">
+                        <label class="required">اسم الطفل رباعي</label>
+                        <input type="text" id="childName" placeholder="محمد أحمد علي حسن">
+                        <div class="error-message" id="nameError">يجب أن يكون الاسم رباعي</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="required">تاريخ الميلاد</label>
+                        <input type="date" id="birthDate">
+                        <div class="error-message" id="dateError">يرجى اختيار تاريخ الميلاد</div>
+                    </div>
+                    <div class="form-group">
+                        <label>اسم الأم</label>
+                        <input type="text" id="motherName" placeholder="اسم الأم">
+                    </div>
+                    <div class="form-group span-2">
+                        <label class="required">العنوان التفصيلي</label>
+                        <input type="text" id="detailedAddress" placeholder="الشارع، رقم المبنى، المنطقة...">
+                        <div class="error-message" id="detailedError">يرجى إدخال العنوان التفصيلي</div>
+                    </div>
+                    <div class="form-group">
+                        <label>العنوان (Google Maps)</label>
+                        <input type="text" id="googleMapsAddress" placeholder="https://maps.app.goo.gl/..." dir="ltr">
+                        <div class="error-message" id="mapsError">رابط غير صحيح</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3: التواصل والأمان -->
+        <div class="neo-card">
+            <div class="neo-card-header">
+                <div class="neo-card-title">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>التواصل والأمان</span>
+                </div>
+                <i class="fas fa-chevron-down neo-accordion-icon"></i>
+            </div>
+            
+            <div class="neo-card-body">
+                <div class="neo-grid-3">
+                    <div class="form-group">
+                        <label>رقم هاتف الأب (واتساب)</label>
+                        <input type="tel" id="fatherPhone" dir="ltr" inputmode="numeric" pattern="[0-9]*" placeholder="01234567890" maxlength="11" autocomplete="tel">
+                        <div class="error-message" id="fatherPhoneError">رقم غير صحيح</div>
+                    </div>
+                    <div class="form-group">
+                        <label>رقم هاتف الأم (واتساب)</label>
+                        <input type="tel" id="motherPhone" dir="ltr" inputmode="numeric" pattern="[0-9]*" placeholder="01234567890" maxlength="11" autocomplete="tel">
+                        <div class="error-message" id="motherPhoneError">رقم غير صحيح</div>
+                    </div>
+                    <div class="form-group">
+                        <label>كود المسوّق (اختياري)</label>
+                        <input type="text" id="marketerIdInput" dir="ltr" placeholder="أدخل الكود إن وجد">
+                    </div>
+                    <div class="form-group span-2">
+                        <label>ملاحظات خاصة بالطفل</label>
+                        <div class="notes-container neo-notes">
+                            <ul class="notes-list" id="notesList"></ul>
+                            <div class="add-note">
+                                <input type="text" id="noteInput" placeholder="مثل: يعاني من حساسية، فصيلة الدم...">
+                                <button type="button" class="btn-add" id="addNoteBtn">إضافة</button>
+                            </div>
+                        </div>
+                        <div class="error-message" id="notesError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="required">بريدك الإلكتروني</label>
+                        <input type="email" id="emailCode" placeholder="example@email.com" dir="ltr">
+                        <div class="error-message" id="emailCodeError"></div>
+                    </div>
+                    <div class="form-group span-3">
+                        <label class="required">كلمة السر (للوحة التحكم)</label>
+                        <div class="password-wrapper neo-password">
+                            <input type="password" id="childPassword" dir="ltr" placeholder="8+ أحرف، حرف، رقم، ورمز خاص" autocomplete="new-password">
+                            <button type="button" class="password-toggle" onclick="togglePasswordVisibility('childPassword', this)" aria-label="إظهار كلمة السر">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="error-message" id="childPasswordError">كلمة السر لا تستوفي الشروط</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4: الاشتراك -->
+        <div class="neo-card">
+            <div class="neo-card-header">
+                <div class="neo-card-title">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>الخطة والاشتراك</span>
+                </div>
+                <i class="fas fa-chevron-down neo-accordion-icon"></i>
+            </div>
+            
+            <div class="neo-card-body">
+                <div class="form-group">
+                    <label class="required">طريقة استلام الإشعارات</label>
+                    <div class="notification-methods neo-notif">
+                        <label class="notification-option">
+                            <input type="radio" name="notificationMethod" value="telegram" checked>
+                            <div class="notification-option-content">
+                                <i class="fab fa-telegram notification-option-icon telegram-icon"></i>
+                                <strong>تليجرام</strong>
+                                <small>إشعارات فورية</small>
+                            </div>
+                        </label>
+                        <label class="notification-option">
+                            <input type="radio" name="notificationMethod" value="email">
+                            <div class="notification-option-content">
+                                <i class="fas fa-envelope notification-option-icon email-icon"></i>
+                                <strong>البريد الإلكتروني</strong>
+                                <small>على بريدك المسجّل</small>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="neo-grid-3 mt-4">
+                    <div class="form-group span-3">
+                        <label class="required">اختر الخطة</label>
+                        <select id="planSelect" class="neo-select">
+                            <option value="">-- اختر الخطة --</option>
+                            <option value="launch">🎁 عرض بداية الإطلاق (مجاناً)</option>
+                            <option value="6months">📅 6 أشهر</option>
+                            <option value="1year">📅 عام واحد</option>
+                        </select>
+                        <div class="offer-notice" id="offerNotice">⚠️ عرض خاص: متبقي <span id="remainingCount">—</span> اشتراك!</div>
+                        <div class="free-notice" id="freeNotice">🎉 عرض مجاني لمدة شهر!</div>
+                        <div class="price-display" id="priceDisplay"></div>
+                        <div class="error-message" id="planError">يرجى اختيار خطة الاشتراك</div>
+                    </div>
+                </div>
+
+                <div class="neo-agreements mt-4">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="acknowledgement">
+                        <label>أقر بأن جميع البيانات المدخلة صحيحة.</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="privacyPolicy">
+                        <label>أوافق على جميع بنود <a href="/privacy-policy" target="_blank">سياسة الخصوصية</a></label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="termsConditions">
+                        <label>أوافق على جميع <a href="/terms-and-conditions" target="_blank">الشروط والأحكام</a></label>
+                    </div>
+                </div>
+
+                <button class="submit-btn neo-submit" id="submitBtn">تسجيل البيانات والاشتراك</button>
+                <div class="loading" id="loading">⏳ جاري حفظ البيانات...</div>
+
+                <div class="result-box" id="resultBox">
+                    <strong id="resultTitle">✅ تم التسجيل بنجاح!</strong><br>
+                    <div id="resultMessage"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<div id="footerPlaceholder"></div>
+
+<!-- ============================================================
+     🎉 Success Modal الجديد
+     ============================================================ -->
+<div id="successModal" class="success-modal-overlay" style="display: none;">
+    <div class="success-modal-new">
+        <div class="success-icon-header">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <h2 class="success-title">تم تسجيل طفلك بنجاح!</h2>
+
+        <div class="child-code-box">
+            <span class="child-code-label">🆔 كود الطفل</span>
+            <strong class="child-code-value" id="modalChildID">--</strong>
+        </div>
+
+        <!-- 🆕 قسم إتمام الدفع (للخطط المدفوعة) -->
+        <div id="modalPaymentSection" class="modal-payment-section" style="display: none;">
+            <div class="payment-required-badge">
+                <i class="fas fa-credit-card"></i>
+                <strong>💳 يرجى إتمام الدفع</strong>
+            </div>
+            <p class="payment-required-desc">
+                تم تسجيل بيانات طفلك بنجاح. لإتمام تفعيل الحساب، يرجى إتمام عملية الدفع.
+            </p>
+            <a id="goToPaymentBtn" href="#" class="btn-go-to-payment">
+                <i class="fas fa-lock"></i>
+                توجه إلى صفحة الدفع
+            </a>
+            <p class="payment-required-hint">
+                🔒 دفع آمن ومشفّر عبر Paymob
+            </p>
+        </div>
+
+        <!-- قسم تليجرام -->
+        <div id="modalTelegramSection" class="modal-section-telegram" style="display: none;">
+            <div class="telegram-header-modal">
+                <i class="fab fa-telegram"></i>
+                <strong>📱 ربط تليجرام</strong>
+            </div>
+            <p class="telegram-desc-modal">من سيقوم بالربط الآن؟</p>
+
+            <div class="parent-type-selector">
+                <label class="parent-type-option">
+                    <input type="radio" name="parentType" value="father" checked>
+                    <span class="parent-type-content">
+                        <span class="parent-type-icon">👨</span>
+                        <span class="parent-type-label">الأب</span>
+                    </span>
+                </label>
+                <label class="parent-type-option">
+                    <input type="radio" name="parentType" value="mother">
+                    <span class="parent-type-content">
+                        <span class="parent-type-icon">👩</span>
+                        <span class="parent-type-label">الأم</span>
+                    </span>
+                </label>
+            </div>
+
+            <div class="qr-code-container-new">
+                <div id="qrLoadingText" class="qr-loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>جاري توليد الرمز...</p>
+                </div>
+                <img id="qrCodeImageNew" src="" alt="QR Code" style="display: none;">
+            </div>
+
+            <div class="linking-status-modal">
+                <p id="linkingStatusTextNew">
+                    <i class="fas fa-spinner fa-spin"></i> في انتظار الربط...
+                </p>
+                <p class="countdown-text">
+                    ⏱️ الرابط صالح: <span id="countdownTextNew">05:00</span>
+                </p>
+            </div>
+
+            <a id="openTelegramBtnNew" href="#" target="_blank" rel="noopener" class="btn-open-telegram">
+                <i class="fab fa-telegram"></i> افتح تليجرام
+            </a>
+
+            <!-- قسم ما بعد الربط -->
+            <div id="afterLinkSuccessSection" style="display: none;">
+                <div class="linked-success-badge">
+                    <i class="fas fa-check-circle"></i>
+                    <span id="linkedSuccessText">تم ربط الأب بنجاح!</span>
+                </div>
+
+                <p class="link-other-hint-modal">
+                    💡 يمكنك ربط الطرف الآخر من لوحة تحكم الأسرة
+                </p>
+
+                <button id="linkOtherParentBtn" class="btn-link-other">
+                    <i class="fas fa-user-plus"></i>
+                    <span id="linkOtherParentText">ربط الطرف الآخر</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- قسم الإيميل -->
+        <div id="modalEmailSection" class="modal-section-email" style="display: none;">
+            <i class="fas fa-envelope email-icon-modal"></i>
+            <strong>📧 الإشعارات ستصلك على</strong>
+            <p id="modalEmailAddress" class="email-address-modal">--</p>
+            <p class="email-note-modal">
+                📩 سيصلك رمز الطفل (QR Code) على هذا البريد خلال دقائق
+            </p>
+        </div>
+
+        <!-- الأزرار النهائية -->
+        <div class="modal-final-actions">
+            <a href="/dashboard" class="btn-modal-login">
+                <i class="fas fa-tachometer-alt"></i> تسجيل الدخول للوحة التحكم
+            </a>
+        </div>
+    </div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/header.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/pages/reg.js"></script>
+<script>
+    fetch('/header.html')
+        .then(response => response.text())
+        .then(data => { document.getElementById('headerPlaceholder').innerHTML = data; })
+        .catch(err => console.warn('⚠️ فشل تحميل الهيدر:', err));
+</script>
+<script>
+    (function() {
+        const footerPlaceholder = document.getElementById('footerPlaceholder');
+        if (!footerPlaceholder) return;
+
+        fetch('/footer.html')
+            .then(response => response.text())
+            .then(html => { footerPlaceholder.innerHTML = html; })
+            .catch(err => console.warn('⚠️ فشل تحميل الفوتر:', err));
+    })();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+<script>
+  if (location.search.includes('debug=1')) {
+    eruda.init();
+  }
+</script>
+
+<script>
+    // 🔥 Warm-up GAS فور تحميل الصفحة
+    (function() {
+        fetch('/api?action=child&id=WARMUP&_t=' + Date.now(), { cache: 'no-store' })
+            .catch(function() {});
+    })();
+</script>
+
+</body>
+</html>
