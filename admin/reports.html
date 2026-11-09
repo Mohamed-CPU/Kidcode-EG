@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>البلاغات — لوحة الأدمن</title>
+
+  <script>
+    (function() {
+      try {
+        var theme = localStorage.getItem('admin_theme') || 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {}
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/all.min.css">
+
+  <link rel="stylesheet" href="/admin/css/admin.css">
+  <link rel="stylesheet" href="/admin/css/theme-light.css">
+  <link rel="stylesheet" href="/admin/css/theme-dark.css">
+  <link rel="stylesheet" href="/admin/css/components.css">
+  <link rel="stylesheet" href="/admin/css/reports.css">
+</head>
+<body>
+
+  <div class="admin-layout">
+    <div id="navbarPlaceholder"></div>
+
+    <main class="admin-main">
+      <header class="admin-topbar">
+        <button class="topbar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+        <h1 class="topbar-title">البلاغات</h1>
+        <div class="topbar-actions">
+          <button class="topbar-btn" id="reloadListBtn" title="تحديث">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+          <button class="topbar-btn" id="themeToggleBtn" title="تبديل الثيم">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+      </header>
+
+      <div class="admin-content">
+
+        <div class="page-header">
+          <h1><i class="fas fa-exclamation-triangle"></i> بلاغات الاختفاء</h1>
+          <p>إدارة بلاغات الأطفال المفقودين وتأكيد العثور عليهم</p>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card primary">
+            <div class="stat-icon"><i class="fas fa-database"></i></div>
+            <div class="stat-info">
+              <span class="stat-label">إجمالي البلاغات</span>
+              <div class="stat-value" id="statTotal">—</div>
+            </div>
+          </div>
+          <div class="stat-card danger">
+            <div class="stat-icon"><i class="fas fa-circle-exclamation"></i></div>
+            <div class="stat-info">
+              <span class="stat-label">مفتوحة</span>
+              <div class="stat-value" id="statOpen">—</div>
+            </div>
+          </div>
+          <div class="stat-card warning">
+            <div class="stat-icon"><i class="fas fa-hourglass-half"></i></div>
+            <div class="stat-info">
+              <span class="stat-label">في انتظار التأكيد</span>
+              <div class="stat-value" id="statAwaiting">—</div>
+            </div>
+          </div>
+          <div class="stat-card success">
+            <div class="stat-icon"><i class="fas fa-circle-check"></i></div>
+            <div class="stat-info">
+              <span class="stat-label">مغلقة</span>
+              <div class="stat-value" id="statResolved">—</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="filters-bar">
+          <input type="text" id="searchInput" class="form-control search" placeholder="🔍 بحث برقم البلاغ، كود الطفل، اسم المتطوع...">
+          <select id="statusFilter" class="form-select">
+            <option value="">كل الحالات</option>
+            <option value="open">مفتوحة</option>
+            <option value="awaiting">في انتظار التأكيد</option>
+            <option value="resolved">مغلقة</option>
+          </select>
+          <button class="btn btn-secondary" id="clearFiltersBtn">
+            <i class="fas fa-times"></i> مسح
+          </button>
+        </div>
+
+        <div class="toolbar">
+          <span class="toolbar-info" id="listInfo">جاري التحميل...</span>
+        </div>
+
+        <div class="reports-table-wrapper">
+          <table class="reports-table">
+            <thead>
+              <tr>
+                <th>رقم البلاغ</th>
+                <th>الكود</th>
+                <th>الطفل</th>
+                <th>الحالة</th>
+                <th>وقت البلاغ</th>
+                <th class="col-governorate">المحافظة</th>
+                <th class="col-district">الحي</th>
+                <th class="col-volunteer">المتطوع</th>
+                <th class="cell-actions">إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="reportsTableBody">
+              <tr><td colspan="9" style="text-align:center; padding:40px;">
+                <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; color:var(--accent);"></i>
+              </td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="pagination-bar" id="paginationBar"></div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ============================================================
+       مودال تفاصيل البلاغ (static)
+       ============================================================ -->
+  <div class="modal-overlay" id="reportDetailsModal" data-static="true">
+    <div class="modal modal-lg">
+
+      <div class="modal-header">
+        <h3 class="modal-title" id="reportModalTitle">تفاصيل البلاغ</h3>
+        <button class="modal-close" id="closeModalBtn"><i class="fas fa-times"></i></button>
+      </div>
+
+      <div class="modal-body" id="reportModalBody">
+        <div class="loading-state">
+          <i class="fas fa-spinner fa-spin"></i>
+          <p>جاري التحميل...</p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cancelEditBtn">إغلاق</button>
+        <button class="btn btn-primary" id="saveChangesBtn" style="display:none;">
+          <i class="fas fa-save"></i> حفظ التغييرات
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- مودال معاينة الصورة -->
+  <div class="modal-overlay" id="imageViewerModal" data-static="true">
+    <div class="modal modal-lg" style="background: rgba(15, 23, 42, 0.98); padding: 20px;">
+      <div style="text-align: center;">
+        <img id="imageViewerImg" style="max-width: 100%; max-height: 80vh; border-radius: 8px;" src="" alt="">
+        <div style="margin-top: 12px;">
+          <button class="btn btn-secondary" id="closeImageViewerBtn">
+            <i class="fas fa-times"></i> إغلاق
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/admin/js/utils.js"></script>
+  <script src="/js/config.js"></script>
+  <script src="/js/error-reporter.js" defer></script>
+  <script src="/admin/js/ui.js"></script>
+  <script src="/admin/js/core.js"></script>
+  <script src="/admin/js/freeze.js"></script>
+  <script src="/admin/js/navbar.js"></script>
+  <script src="/admin/js/reports.js"></script>
+
+  <script>
+    window.onSessionFrozen = function(info) {
+      if (window.FreezeOverlay) window.FreezeOverlay.show(info);
+    };
+    window.onFreezeUpdate = function(info) {
+      if (window.FreezeOverlay) window.FreezeOverlay.update(info);
+    };
+    window.onSessionUnfrozen = function() {
+      if (window.FreezeOverlay) window.FreezeOverlay.hide();
+      if (window.UI) window.UI.toast.success('تم رفع التجميد.');
+    };
+    window.onAccountDisabled = function() {
+      if (window.FreezeOverlay) window.FreezeOverlay.hide();
+      if (window.UI) {
+        window.UI.toast.error('الحساب معطَّل. تواصل مع superAdmin.', { duration: 0, title: 'معطَّل' });
+      }
+    };
+
+    (async function() {
+      const ok = await window.Core.guard();
+      if (!ok) return;
+
+      await window.Navbar.load('navbarPlaceholder');
+
+      const themeBtn = document.getElementById('themeToggleBtn');
+      if (themeBtn) {
+        themeBtn.addEventListener('click', async function() {
+          await window.Core.toggleTheme();
+        });
+      }
+
+      const reloadBtn = document.getElementById('reloadListBtn');
+      if (reloadBtn) {
+        reloadBtn.addEventListener('click', function() {
+          if (window.ReportsPage) window.ReportsPage.reload();
+        });
+      }
+
+      if (window.ReportsPage) window.ReportsPage.init();
+    })();
+  </script>
+
+</body>
+</html>

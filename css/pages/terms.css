@@ -1,0 +1,196 @@
+/* ============================================================
+   PAGE: TERMS - الشروط والأحكام
+   تصميم جديد متوافق مع هوية الموقع
+   ============================================================ */
+
+.terms-wrapper {
+    max-width: 850px;
+    margin: 0 auto;
+    padding: 0 20px 40px;
+}
+
+.terms-card {
+    background: var(--bg-white);
+    border-radius: var(--radius-lg);
+    padding: 40px 36px;
+    margin-top: 30px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(34, 85, 159, 0.06);
+}
+
+.terms-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.terms-header .icon-big {
+    font-size: 3.5rem;
+    color: var(--secondary-color);
+    display: block;
+    margin-bottom: 10px;
+}
+
+.terms-header h1 {
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: var(--primary-color);
+    margin: 0;
+}
+
+.terms-header h1 .kid {
+    color: var(--primary-color);
+}
+.terms-header h1 .eg {
+    color: var(--secondary-color);
+}
+
+.terms-header .sub-title {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin-top: 4px;
+}
+
+.terms-section {
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.terms-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.terms-section h2 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.terms-section h2 i {
+    color: var(--secondary-color);
+    font-size: 1.3rem;
+    width: 30px;
+    text-align: center;
+}
+
+.terms-section p {
+    font-size: 1rem;
+    line-height: 1.9;
+    color: var(--text-secondary);
+    margin: 8px 0;
+}
+
+.terms-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+}
+
+.terms-section ul li {
+    padding: 6px 0 6px 30px;
+    position: relative;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+
+.terms-section ul li::before {
+    content: "•";
+    position: absolute;
+    right: 0;
+    color: var(--secondary-color);
+    font-weight: 900;
+    font-size: 1.2rem;
+}
+
+.terms-section .highlight-box {
+    background: var(--bg-body);
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    margin: 12px 0;
+    border-right: 4px solid var(--secondary-color);
+}
+
+.terms-section .highlight-box strong {
+    color: var(--primary-color);
+}
+
+.terms-section .highlight-box ul {
+    margin: 5px 0 0 0;
+    padding-right: 10px;
+}
+
+.terms-section .highlight-box ul li {
+    padding: 3px 20px 3px 0;
+    font-size: 0.95rem;
+}
+
+.terms-section .highlight-box ul li::before {
+    content: "•";
+    position: absolute;
+    right: 0;
+    color: var(--secondary-color);
+    font-weight: 900;
+}
+
+.terms-section .highlight-box a {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+/* ===== استجابة للشاشات ===== */
+
+@media (max-width: 768px) {
+    .terms-card {
+        padding: 28px 20px;
+        border-radius: var(--radius-md);
+    }
+    .terms-header h1 {
+        font-size: 1.8rem;
+    }
+    .terms-section h2 {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .terms-wrapper {
+        padding: 0 12px;
+    }
+    .terms-card {
+        padding: 20px 16px;
+        border-radius: var(--radius-sm);
+        margin-top: 20px;
+    }
+    .terms-header h1 {
+        font-size: 1.5rem;
+    }
+    .terms-header .icon-big {
+        font-size: 2.8rem;
+    }
+    .terms-section h2 {
+        font-size: 1.05rem;
+    }
+    .terms-section h2 i {
+        font-size: 1rem;
+        width: 24px;
+    }
+    .terms-section p {
+        font-size: 0.9rem;
+    }
+    .terms-section .highlight-box {
+        padding: 12px 14px;
+        font-size: 0.9rem;
+    }
+    .terms-section ul li {
+        font-size: 0.85rem;
+    }
+}

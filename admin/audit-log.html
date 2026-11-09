@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>سجل العمليات — لوحة الأدمن</title>
+
+  <script>
+    (function() {
+      try {
+        var theme = localStorage.getItem('admin_theme') || 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {}
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/all.min.css">
+
+  <link rel="stylesheet" href="/admin/css/admin.css">
+  <link rel="stylesheet" href="/admin/css/theme-light.css">
+  <link rel="stylesheet" href="/admin/css/theme-dark.css">
+  <link rel="stylesheet" href="/admin/css/components.css">
+  <link rel="stylesheet" href="/admin/css/audit-log.css">
+</head>
+<body>
+
+  <div class="admin-layout">
+    <div id="navbarPlaceholder"></div>
+
+    <main class="admin-main">
+      <header class="admin-topbar">
+        <button class="topbar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+        <h1 class="topbar-title">سجل العمليات</h1>
+        <div class="topbar-actions">
+          <button class="topbar-btn" id="reloadBtn" title="تحديث">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+          <button class="topbar-btn" id="themeToggleBtn" title="تبديل الثيم">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+      </header>
+
+      <div class="admin-content">
+
+        <div class="page-header">
+          <div>
+            <h1><i class="fas fa-clipboard-list"></i> سجل العمليات</h1>
+            <p>كل عمليات الأدمن — تتبع كامل لكل التغييرات</p>
+          </div>
+          <div class="page-header-actions">
+            <button class="btn btn-secondary" id="exportBtn">
+              <i class="fas fa-file-csv"></i> تصدير CSV
+            </button>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon primary"><i class="fas fa-database"></i></div>
+            <div class="stat-info">
+              <span class="stat-label">إجمالي العمليات</span>
+              <div class="stat-value" id="statTotal">—</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon success"><i class="fas fa-calendar-day"></i></div>
+            <div class="stat-info">
+              <span class="stat-label">اليوم</span>
+              <div class="stat-value" id="statToday">—</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon warning"><i class="fas fa-calendar-week"></i></div>
+            <div class="stat-info">
+              <span class="stat-label">آخر 7 أيام</span>
+              <div class="stat-value" id="statWeek">—</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="filters-bar">
+          <input type="text" id="searchInput" class="form-control search" placeholder="🔍 بحث بالكود، الإجراء، المستخدم...">
+          <select id="usernameFilter" class="form-select">
+            <option value="">كل المستخدمين</option>
+          </select>
+          <select id="actionFilter" class="form-select">
+            <option value="">كل الإجراءات</option>
+          </select>
+          <select id="targetTableFilter" class="form-select">
+            <option value="">كل الجداول</option>
+          </select>
+          <div class="date-group">
+            <input type="date" id="fromDate" class="form-control">
+            <input type="date" id="toDate" class="form-control">
+          </div>
+          <button class="btn btn-secondary" id="clearFiltersBtn">
+            <i class="fas fa-times"></i> مسح
+          </button>
+        </div>
+
+        <div class="toolbar">
+          <span class="toolbar-info" id="listInfo">جاري التحميل...</span>
+        </div>
+
+        <div class="audit-table-wrapper">
+          <table class="audit-table">
+            <thead>
+              <tr>
+                <th class="cell-num">#</th>
+                <th>التاريخ والوقت</th>
+                <th>المستخدم</th>
+                <th>الإجراء</th>
+                <th class="col-target">الهدف</th>
+                <th class="col-ip">IP</th>
+                <th class="cell-actions">تفاصيل</th>
+              </tr>
+            </thead>
+            <tbody id="auditTableBody">
+              <tr><td colspan="7" style="text-align:center; padding:40px;">
+                <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; color:var(--accent);"></i>
+              </td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="pagination-bar" id="paginationBar"></div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Details Modal -->
+  <div class="modal-overlay" id="detailsModal" data-static="true">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <h3 class="modal-title">تفاصيل العملية</h3>
+        <button class="modal-close" id="closeDetailsBtn"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body" id="detailsBody">
+        <div class="loading-state"><i class="fas fa-spinner fa-spin"></i><p>جاري التحميل...</p></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="closeDetailsBtn2">إغلاق</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/admin/js/utils.js"></script>
+  <script src="/js/config.js"></script>
+  <script src="/js/error-reporter.js" defer></script>
+  <script src="/admin/js/ui.js"></script>
+  <script src="/admin/js/core.js"></script>
+  <script src="/admin/js/freeze.js"></script>
+  <script src="/admin/js/navbar.js"></script>
+  <script src="/admin/js/audit-log.js"></script>
+
+  <script>
+    window.onSessionFrozen = function(info) {
+      if (window.FreezeOverlay) window.FreezeOverlay.show(info);
+    };
+    window.onFreezeUpdate = function(info) {
+      if (window.FreezeOverlay) window.FreezeOverlay.update(info);
+    };
+    window.onSessionUnfrozen = function() {
+      if (window.FreezeOverlay) window.FreezeOverlay.hide();
+      if (window.UI) window.UI.toast.success('تم رفع التجميد.');
+    };
+    window.onAccountDisabled = function() {
+      if (window.FreezeOverlay) window.FreezeOverlay.hide();
+      if (window.UI) {
+        window.UI.toast.error('الحساب معطَّل. تواصل مع superAdmin.', { duration: 0, title: 'معطَّل' });
+      }
+    };
+
+    (async function() {
+      const ok = await window.Core.guard();
+      if (!ok) return;
+
+      await window.Navbar.load('navbarPlaceholder');
+
+      const themeBtn = document.getElementById('themeToggleBtn');
+      if (themeBtn) {
+        themeBtn.addEventListener('click', async function() {
+          await window.Core.toggleTheme();
+        });
+      }
+
+      const reloadBtn = document.getElementById('reloadBtn');
+      if (reloadBtn) {
+        reloadBtn.addEventListener('click', function() {
+          if (window.AuditLogPage) window.AuditLogPage.reload();
+        });
+      }
+
+      if (window.AuditLogPage) window.AuditLogPage.init();
+    })();
+  </script>
+
+</body>
+</html>

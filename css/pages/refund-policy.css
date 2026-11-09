@@ -1,0 +1,544 @@
+/* ============================================================
+   PAGE: REFUND POLICY (سياسة الاسترداد والإلغاء)
+   ============================================================ */
+
+.policy-wrapper {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.policy-card {
+    background: var(--bg-white);
+    border-radius: var(--radius-lg);
+    padding: 40px 44px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(34, 85, 159, 0.06);
+}
+
+/* ============================================================
+   Header
+   ============================================================ */
+.policy-header {
+    text-align: center;
+    padding-bottom: 28px;
+    border-bottom: 2px solid var(--border-color);
+    margin-bottom: 32px;
+}
+
+.policy-header .icon-big {
+    font-size: 3.5rem;
+    color: var(--primary-color);
+    display: block;
+    margin-bottom: 12px;
+}
+
+.policy-header h1 {
+    font-weight: 900;
+    color: var(--primary-color);
+    font-size: 2rem;
+    margin-bottom: 6px;
+}
+
+.policy-header h1 .kid {
+    color: var(--primary-color);
+}
+
+.policy-header h1 .eg {
+    color: var(--secondary-color);
+}
+
+.policy-header .sub-title {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.policy-header .last-update {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* ============================================================
+   Sections
+   ============================================================ */
+.policy-section {
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.policy-section:last-child {
+    border-bottom: none;
+}
+
+.policy-section .intro-text {
+    font-size: 1.05rem;
+    color: var(--text-primary);
+    font-weight: 600;
+    line-height: 1.9;
+    margin: 0;
+}
+
+.policy-section h2 {
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: var(--primary-color);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.policy-section h2 i {
+    color: var(--secondary-color);
+    font-size: 1.05rem;
+}
+
+.policy-section p {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.9;
+    margin-bottom: 12px;
+}
+
+.policy-section p strong {
+    color: var(--text-primary);
+    font-weight: 800;
+}
+
+.policy-section p a {
+    color: var(--primary-color);
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+/* ============================================================
+   Lists
+   ============================================================ */
+.policy-list {
+    list-style: none;
+    padding: 0;
+    margin: 12px 0;
+}
+
+.policy-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    font-size: 0.98rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+
+.policy-list li i {
+    font-size: 0.85rem;
+    margin-top: 6px;
+    flex-shrink: 0;
+}
+
+.policy-list li strong {
+    color: var(--text-primary);
+    font-weight: 800;
+}
+
+.policy-list-success li i { color: var(--secondary-color); }
+.policy-list-danger li i { color: var(--danger-color); }
+.policy-list-warning li i { color: #f59e0b; }
+.policy-list li i.fa-info-circle { color: var(--primary-color); }
+
+/* ============================================================
+   Highlight Boxes
+   ============================================================ */
+.highlight-box {
+    padding: 16px 20px;
+    border-radius: var(--radius-sm);
+    margin: 16px 0;
+    font-size: 0.98rem;
+    line-height: 1.85;
+    border-right: 4px solid;
+}
+
+.highlight-success {
+    background: #e8f5ee;
+    border-right-color: var(--secondary-color);
+    color: #166534;
+}
+
+.highlight-primary {
+    background: #f0f4ff;
+    border-right-color: var(--primary-color);
+    color: var(--text-primary);
+}
+
+.highlight-box strong {
+    font-weight: 800;
+}
+
+/* ============================================================
+   Steps (خطوات طلب الاسترداد)
+   ============================================================ */
+.policy-steps {
+    list-style: none;
+    padding: 0;
+    margin: 16px 0;
+    counter-reset: step-counter;
+}
+
+.policy-steps li {
+    display: flex;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px dashed var(--border-color);
+}
+
+.policy-steps li:last-child {
+    border-bottom: none;
+}
+
+.policy-steps .step-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    background: linear-gradient(135deg, var(--primary-color), #1A437C);
+    color: white;
+    border-radius: 50%;
+    font-weight: 900;
+    font-size: 1rem;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(34, 85, 159, 0.2);
+}
+
+.policy-steps .step-content {
+    flex: 1;
+}
+
+.policy-steps .step-content strong {
+    display: block;
+    font-size: 1.02rem;
+    color: var(--primary-color);
+    font-weight: 800;
+    margin-bottom: 4px;
+}
+
+.policy-steps .step-content p {
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.7;
+}
+
+.policy-steps .step-content p a {
+    color: var(--secondary-color);
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+/* ============================================================
+   Timeline Grid
+   ============================================================ */
+.timeline-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 16px 0;
+}
+
+.timeline-item {
+    background: var(--bg-body);
+    border-radius: var(--radius-sm);
+    padding: 18px 14px;
+    text-align: center;
+    border: 2px solid transparent;
+    transition: all 0.25s ease;
+}
+
+.timeline-item:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(34, 85, 159, 0.08);
+}
+
+.timeline-item .timeline-icon {
+    width: 46px;
+    height: 46px;
+    background: linear-gradient(135deg, var(--primary-color), #1A437C);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 12px rgba(34, 85, 159, 0.2);
+}
+
+.timeline-item .timeline-icon i {
+    color: white;
+    font-size: 1.05rem;
+}
+
+.timeline-item .timeline-content strong {
+    display: block;
+    font-size: 0.95rem;
+    color: var(--primary-color);
+    font-weight: 800;
+    margin-bottom: 4px;
+}
+
+.timeline-item .timeline-content span {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.timeline-note {
+    text-align: center;
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    margin-top: 14px;
+    padding: 10px 16px;
+    background: #f0f4ff;
+    border-radius: var(--radius-sm);
+    border-right: 3px solid var(--primary-color);
+}
+
+.timeline-note i {
+    color: var(--primary-color);
+    margin-left: 6px;
+}
+
+.timeline-note strong {
+    color: var(--primary-color);
+}
+
+/* ============================================================
+   Contact Boxes
+   ============================================================ */
+.contact-boxes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 16px 0;
+}
+
+.contact-box {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: all 0.25s ease;
+    border: 2px solid transparent;
+}
+
+.contact-box:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.contact-box i {
+    font-size: 1.6rem;
+    flex-shrink: 0;
+}
+
+.contact-box strong {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 800;
+    margin-bottom: 2px;
+}
+
+.contact-box span {
+    font-size: 0.85rem;
+    font-weight: 600;
+    direction: ltr;
+    display: inline-block;
+}
+
+.contact-whatsapp {
+    background: #e8f9ed;
+    color: #166534;
+}
+
+.contact-whatsapp i {
+    color: #25D366;
+}
+
+.contact-email {
+    background: #f0f4ff;
+    color: var(--primary-color);
+}
+
+.contact-email i {
+    color: var(--primary-color);
+}
+
+/* ============================================================
+   Final Section
+   ============================================================ */
+.policy-final-section {
+    margin-top: 8px;
+}
+
+/* ============================================================
+   WhatsApp CTA
+   ============================================================ */
+.whatsapp-cta {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.btn-wa {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 28px;
+    background: #25D366;
+    color: white;
+    border-radius: 40px;
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.3);
+    font-family: inherit;
+}
+
+.btn-wa:hover {
+    background: #1FA855;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 28px rgba(37, 211, 102, 0.4);
+}
+
+.btn-wa i {
+    font-size: 1.3rem;
+}
+
+/* ============================================================
+   Responsive - Tablet
+   ============================================================ */
+@media (max-width: 768px) {
+    .policy-card {
+        padding: 30px 24px;
+        border-radius: var(--radius-md);
+    }
+
+    .policy-header h1 {
+        font-size: 1.65rem;
+    }
+
+    .policy-header .icon-big {
+        font-size: 3rem;
+    }
+
+    .timeline-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .timeline-item {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        text-align: right;
+        padding: 14px 18px;
+    }
+
+    .timeline-item .timeline-icon {
+        margin-bottom: 0;
+        flex-shrink: 0;
+    }
+
+    .timeline-item .timeline-content {
+        flex: 1;
+    }
+
+    .timeline-item .timeline-content strong {
+        display: inline;
+        margin-left: 8px;
+    }
+
+    .timeline-item .timeline-content span {
+        display: inline;
+    }
+}
+
+/* ============================================================
+   Responsive - Mobile
+   ============================================================ */
+@media (max-width: 480px) {
+    .policy-wrapper {
+        margin: 20px auto;
+        padding: 0 14px;
+    }
+
+    .policy-card {
+        padding: 24px 18px;
+        border-radius: var(--radius-md);
+    }
+
+    .policy-header {
+        padding-bottom: 20px;
+        margin-bottom: 24px;
+    }
+
+    .policy-header h1 {
+        font-size: 1.45rem;
+    }
+
+    .policy-header .sub-title {
+        font-size: 1rem;
+    }
+
+    .policy-header .icon-big {
+        font-size: 2.6rem;
+    }
+
+    .policy-section h2 {
+        font-size: 1.05rem;
+    }
+
+    .policy-section p {
+        font-size: 0.95rem;
+    }
+
+    .policy-list li {
+        font-size: 0.92rem;
+    }
+
+    .policy-steps li {
+        gap: 12px;
+        padding: 12px 0;
+    }
+
+    .policy-steps .step-number {
+        width: 34px;
+        height: 34px;
+        font-size: 0.9rem;
+    }
+
+    .contact-boxes {
+        grid-template-columns: 1fr;
+    }
+
+    .btn-wa {
+        width: 100%;
+        justify-content: center;
+        font-size: 0.92rem;
+        padding: 13px 20px;
+    }
+}
+
+@media (max-width: 360px) {
+    .policy-card {
+        padding: 20px 14px;
+    }
+
+    .policy-header h1 {
+        font-size: 1.3rem;
+    }
+}

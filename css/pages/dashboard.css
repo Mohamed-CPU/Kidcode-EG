@@ -1,0 +1,819 @@
+/* ============================================================
+   6. PAGE: DASHBOARD (dashboard.html)
+   ============================================================ */
+
+.dashboard-container {
+    max-width: 850px;
+    margin: 0 auto;
+}
+.dashboard-container .card {
+    background: white;
+    border-radius: 28px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    padding: 28px 30px;
+    margin-bottom: 25px;
+    transition: 0.2s;
+}
+
+.warning-banner {
+    background: #fef3c7;
+    border-right: 5px solid #f59e0b;
+    padding: 14px 18px;
+    border-radius: 20px;
+    margin-bottom: 25px;
+    font-weight: bold;
+    color: #92400e;
+}
+.warning-banner.expired-banner {
+    background: #fee2e2;
+    border-right-color: #dc2626;
+    color: #991b1b;
+}
+
+/* Override for dashboard specific ID field */
+.dashboard-container .id-field-wrapper {
+    display: flex;
+    align-items: stretch;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    background: white;
+    transition: all 0.2s;
+    overflow: hidden;
+    direction: ltr;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+/* ============================================================
+   مودال الإبلاغ عن الاختفاء
+   ============================================================ */
+
+#missingReportModal .modal-container {
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+#missingReportModal .modal-field {
+    margin-bottom: 14px;
+}
+
+#missingReportModal .modal-field label {
+    display: block;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+#missingReportModal .modal-field input,
+#missingReportModal .modal-field select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    font-size: 0.95rem;
+    font-family: var(--font-arabic);
+    background: var(--bg-white);
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+}
+
+#missingReportModal .modal-field input:focus,
+#missingReportModal .modal-field select:focus {
+    outline: none;
+    border-color: var(--danger-color);
+    box-shadow: 0 0 0 4px rgba(230, 57, 70, 0.08);
+}
+
+#missingReportModal .modal-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+#missingReportModal .modal-actions button {
+    min-height: 48px;
+    font-size: 1rem;
+}
+
+@media (max-width: 480px) {
+    #missingReportModal .modal-actions {
+        flex-direction: column;
+    }
+    #missingReportModal .modal-actions button {
+        flex: 1 !important;
+        width: 100%;
+    }
+}
+
+/* ============================================================
+   FACE VERIFICATION SECTION - التحقق الرقمي بالوجه
+   ============================================================ */
+
+.face-verification-section {
+    margin-top: 20px;
+    border-top: 2px solid var(--border-color);
+    padding-top: 20px;
+}
+
+.face-verification-section .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.face-verification-section .card-header h2 {
+    font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+    font-weight: 800;
+    color: var(--primary-color);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.face-verification-section .card-header h2 i {
+    color: var(--secondary-color);
+}
+
+.face-verification-section .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 16px;
+    border-radius: 40px;
+    font-size: clamp(0.7rem, 1.5vw, 0.8rem);
+    font-weight: 700;
+    background: var(--bg-body);
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+.face-verification-section .section-desc {
+    color: var(--text-secondary);
+    font-size: clamp(0.85rem, 1.8vw, 0.95rem);
+    margin-bottom: 16px;
+    line-height: 1.7;
+}
+
+.face-verification-section .section-desc i {
+    color: var(--secondary-color);
+    margin-left: 6px;
+}
+
+.face-verification-section .data-status-box {
+    background: var(--bg-body);
+    border-radius: var(--radius-sm);
+    padding: clamp(12px, 2vw, 18px);
+    margin-bottom: 16px;
+    border-right: 4px solid var(--primary-color);
+}
+
+.face-verification-section .data-status-box .status-text {
+    margin: 0;
+    font-weight: 700;
+    font-size: clamp(0.9rem, 2vw, 1rem);
+}
+
+.face-verification-section .data-status-box .status-detail {
+    margin: 4px 0 0;
+    font-size: clamp(0.75rem, 1.5vw, 0.85rem);
+    color: var(--text-secondary);
+}
+
+/* ===== أزرار الإجراءات (عمودية) ===== */
+.face-verification-section .action-buttons-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.face-verification-section .action-buttons-vertical .btn-block {
+    width: 100%;
+    min-height: 48px;
+    justify-content: center;
+    font-size: clamp(0.85rem, 1.6vw, 0.95rem);
+}
+
+/* ===== زر حذف بيانات الوجه ===== */
+#deleteFaceBtn {
+    background: var(--danger-color);
+    color: white;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+#deleteFaceBtn:hover:not(:disabled) {
+    background: #c62836;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(230, 57, 70, 0.3);
+}
+
+#deleteFaceBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+#deleteFaceBtn i {
+    margin-left: 8px;
+}
+
+#faceDeleteMessage {
+    margin-top: 8px;
+    font-weight: 700;
+    text-align: center;
+    font-size: 0.9rem;
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    display: none;
+}
+
+/* ===== حاوية الكاميرا ===== */
+.face-verification-section .camera-container {
+    display: none;
+    margin-top: 10px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: #000;
+    position: relative;
+}
+
+.face-verification-section .camera-container video {
+    width: 100%;
+    max-height: 350px;
+    object-fit: cover;
+    display: block;
+}
+
+.face-verification-section .camera-container .capture-btn {
+    position: absolute;
+    bottom: clamp(16px, 3vw, 24px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    border: none;
+    border-radius: 50%;
+    width: clamp(50px, 10vw, 60px);
+    height: clamp(50px, 10vw, 60px);
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.face-verification-section .camera-container .capture-btn:hover {
+    transform: translateX(-50%) scale(1.05);
+}
+
+.face-verification-section .camera-container .capture-btn i {
+    color: var(--danger-color);
+    font-size: clamp(1.8rem, 4vw, 2.2rem);
+}
+
+.face-verification-section .camera-container .close-camera-btn {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: background 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.face-verification-section .camera-container .close-camera-btn:hover {
+    background: rgba(230, 57, 70, 0.8);
+}
+
+/* ============================================================
+   MEDIA QUERIES
+   ============================================================ */
+
+@media (max-width: 768px) {
+    .face-verification-section .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+    
+    .face-verification-section .camera-container video {
+        max-height: 280px;
+    }
+}
+
+@media (max-width: 480px) {
+    .face-verification-section {
+        margin-top: 16px;
+        padding-top: 16px;
+    }
+    
+    .face-verification-section .card-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+    
+    .face-verification-section .card-header h2 {
+        justify-content: center;
+        font-size: clamp(0.95rem, 3vw, 1.1rem);
+    }
+    
+    .face-verification-section .badge {
+        align-self: center;
+        font-size: clamp(0.65rem, 2vw, 0.75rem);
+        padding: 3px 12px;
+    }
+    
+    .face-verification-section .section-desc {
+        text-align: center;
+        font-size: clamp(0.8rem, 2.2vw, 0.9rem);
+    }
+    
+    .face-verification-section .data-status-box {
+        text-align: center;
+        padding: clamp(10px, 2vw, 14px);
+    }
+    
+    .face-verification-section .data-status-box .status-text {
+        font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+    }
+    
+    .face-verification-section .data-status-box .status-detail {
+        font-size: clamp(0.7rem, 2vw, 0.8rem);
+    }
+    
+    .face-verification-section .action-buttons-vertical .btn-block {
+        min-height: 44px;
+        font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+    }
+    
+    #deleteFaceBtn {
+        font-size: 0.9rem;
+        padding: 12px 16px;
+        min-height: 44px;
+    }
+    
+    .face-verification-section .camera-container video {
+        max-height: 240px;
+    }
+    
+    .face-verification-section .camera-container .capture-btn {
+        width: clamp(44px, 14vw, 52px);
+        height: clamp(44px, 14vw, 52px);
+        bottom: clamp(12px, 3vw, 18px);
+    }
+    
+    .face-verification-section .camera-container .capture-btn i {
+        font-size: clamp(1.4rem, 4.5vw, 1.8rem);
+    }
+    
+    .face-verification-section .camera-container .close-camera-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+        top: 8px;
+        left: 8px;
+    }
+}
+
+@media (max-width: 360px) {
+    .face-verification-section .card-header h2 {
+        font-size: clamp(0.85rem, 3.5vw, 0.95rem);
+        gap: 6px;
+    }
+    
+    .face-verification-section .badge {
+        font-size: clamp(0.55rem, 2vw, 0.65rem);
+        padding: 2px 10px;
+    }
+    
+    .face-verification-section .action-buttons-vertical .btn-block {
+        min-height: 40px;
+        font-size: clamp(0.75rem, 3vw, 0.85rem);
+        padding: 10px 14px;
+    }
+    
+    #deleteFaceBtn {
+        font-size: 0.8rem;
+        padding: 10px 12px;
+        min-height: 38px;
+    }
+    
+    .face-verification-section .camera-container video {
+        max-height: 200px;
+    }
+    
+    .face-verification-section .camera-container .capture-btn {
+        width: clamp(40px, 16vw, 46px);
+        height: clamp(40px, 16vw, 46px);
+    }
+    
+    .face-verification-section .camera-container .capture-btn i {
+        font-size: clamp(1.2rem, 5vw, 1.6rem);
+    }
+}
+
+/* ============================================================
+   TELEGRAM NOTIFICATIONS SECTION
+   ============================================================ */
+
+.telegram-section {
+    margin-top: 20px;
+    border-top: 3px solid #0088cc;
+}
+
+.telegram-section .card-header h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--primary-color);
+}
+
+.telegram-section .section-desc {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 18px;
+    line-height: 1.7;
+}
+
+.telegram-section .section-desc i {
+    color: #0088cc;
+    margin-left: 6px;
+}
+
+.telegram-state-view {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== المميزات ===== */
+.telegram-benefits {
+    background: #f0f9ff;
+    border-right: 4px solid #0088cc;
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    margin-bottom: 18px;
+    text-align: right;
+}
+
+.telegram-benefits .benefits-title {
+    font-weight: 800;
+    color: #0c4a6e;
+    margin: 0 0 10px;
+    font-size: 0.95rem;
+}
+
+.telegram-benefits ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.telegram-benefits ul li {
+    padding: 6px 0;
+    color: #155e75;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.telegram-benefits ul li strong {
+    color: #0c4a6e;
+}
+
+/* ===== زر المتابعة بالبريد ===== */
+.email-hint {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--text-light);
+    margin-top: 12px;
+    font-style: italic;
+}
+
+/* ===== حالة مربوط ===== */
+.telegram-linked-info {
+    background: #e8f5ee;
+    border-right: 4px solid var(--secondary-color);
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    margin-bottom: 18px;
+}
+
+.linked-status-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.linked-status-row .linked-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+}
+
+.telegram-linked-info .linked-title {
+    font-weight: 800;
+    color: var(--secondary-dark);
+    margin: 0 0 4px;
+    font-size: 1rem;
+}
+
+.telegram-linked-info .linked-detail {
+    font-size: 0.82rem;
+    color: #166534;
+    margin: 2px 0;
+    font-family: 'Courier New', monospace;
+    direction: ltr;
+    text-align: right;
+}
+
+/* ===== خيارات طريقة الإشعارات ===== */
+.notification-method-box {
+    background: var(--bg-body);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.notification-method-box .method-title {
+    font-weight: 800;
+    margin: 0 0 12px;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+.method-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: white;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.radio-option:hover {
+    border-color: #0088cc;
+}
+
+.radio-option input[type="radio"] {
+    width: 20px;
+    height: 20px;
+    accent-color: #0088cc;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.radio-option input[type="radio"]:checked + span {
+    color: #0088cc;
+}
+
+.radio-option:has(input[type="radio"]:checked) {
+    border-color: #0088cc;
+    background: #f0f9ff;
+    box-shadow: 0 2px 8px rgba(0, 136, 204, 0.1);
+}
+
+.radio-option span {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.radio-option span strong {
+    font-size: 0.95rem;
+    font-weight: 800;
+}
+
+.radio-option span small {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+}
+
+/* ===== أزرار تليجرام ===== */
+.telegram-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.telegram-section .btn-block {
+    width: 100%;
+    min-height: 50px;
+    justify-content: center;
+    font-size: 0.95rem;
+}
+
+/* ===== مودال QR ===== */
+#telegramLinkModal .modal-container {
+    position: relative;
+}
+
+.modal-close-x {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: var(--bg-body);
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-close-x:hover {
+    background: var(--danger-color);
+    color: white;
+}
+
+.qr-code-box {
+    background: white;
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 260px;
+    max-width: 280px;
+}
+
+.qr-code-box img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.linking-status {
+    margin-top: 18px;
+    padding: 14px 16px;
+    background: #f0f9ff;
+    border-radius: var(--radius-md);
+    border-right: 4px solid #0088cc;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 480px) {
+    .telegram-section .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .telegram-benefits {
+        padding: 14px 16px;
+    }
+    
+    .telegram-benefits ul li {
+        font-size: 0.85rem;
+    }
+    
+    .linked-status-row {
+        gap: 12px;
+    }
+    
+    .linked-status-row .linked-icon {
+        font-size: 1.6rem;
+    }
+    
+    .radio-option {
+        padding: 10px 14px;
+    }
+    
+    .qr-code-box {
+        min-height: 220px;
+        max-width: 240px;
+        padding: 16px;
+    }
+}
+
+/* ============================================================
+   Parents Grid (Telegram)
+   ============================================================ */
+
+.parents-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 18px 0;
+}
+
+@media (max-width: 600px) {
+    .parents-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.parent-card {
+    background: white;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    transition: all 0.2s ease;
+}
+
+.parent-card:hover {
+    border-color: #0088cc;
+    box-shadow: 0 4px 12px rgba(0, 136, 204, 0.08);
+}
+
+.parent-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.parent-card-header h3 {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--primary-color);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.badge-small {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    background: #f3f4f6;
+    color: var(--text-secondary);
+}
+
+.badge-small.linked {
+    background: #e8f5ee;
+    color: var(--secondary-dark);
+}
+
+.badge-small.not-linked {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.parent-action-area {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.linked-detail-small {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin: 0;
+    font-family: 'Courier New', monospace;
+    direction: ltr;
+    text-align: right;
+}
+
+.parent-action-area .btn {
+    min-height: 40px;
+    font-size: 0.85rem;
+    padding: 8px 14px;
+}
+
+.parent-action-area .btn-outline {
+    background: transparent;
+    color: var(--danger-color);
+    border: 2px solid var(--danger-color);
+}
+
+.parent-action-area .btn-outline:hover {
+    background: var(--danger-color);
+    color: white;
+}

@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>الأطفال — لوحة الأدمن</title>
+
+  <script>
+    (function() {
+      try {
+        var theme = localStorage.getItem('admin_theme') || 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {}
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/all.min.css">
+
+  <link rel="stylesheet" href="/admin/css/admin.css">
+  <link rel="stylesheet" href="/admin/css/theme-light.css">
+  <link rel="stylesheet" href="/admin/css/theme-dark.css">
+  <link rel="stylesheet" href="/admin/css/components.css">
+  <link rel="stylesheet" href="/admin/css/children.css">
+</head>
+<body>
+
+  <div class="admin-layout">
+    <div id="navbarPlaceholder"></div>
+
+    <main class="admin-main">
+      <header class="admin-topbar">
+        <button class="topbar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+        <h1 class="topbar-title">الأطفال</h1>
+        <div class="topbar-actions">
+          <button class="topbar-btn" id="reloadListBtn" title="تحديث">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+          <button class="topbar-btn" id="themeToggleBtn" title="تبديل الثيم">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+      </header>
+
+      <div class="admin-content">
+
+        <div class="page-header">
+          <h1><i class="fas fa-child"></i> إدارة الأطفال</h1>
+          <p>عرض وتعديل وإدارة حسابات الأطفال</p>
+        </div>
+
+        <div class="filters-bar">
+          <input type="text" id="searchInput" class="form-control search" placeholder="🔍 بحث بالاسم، الكود، الهاتف، الإيميل...">
+          <select id="statusFilter" class="form-select">
+            <option value="">كل الحالات</option>
+            <option value="active">نشط</option>
+            <option value="pending">قيد التفعيل</option>
+            <option value="disabled">معطَّل</option>
+            <option value="suspended">موقوف</option>
+            <option value="expired">منتهي</option>
+            <option value="refunding">قيد الاسترداد</option>
+            <option value="refunded">مسترد</option>
+            <option value="deleted">محذوف</option>
+          </select>
+          <select id="planFilter" class="form-select">
+            <option value="">كل الخطط</option>
+            <option value="عرض بداية الإطلاق">عرض الإطلاق</option>
+            <option value="6 أشهر">6 أشهر</option>
+            <option value="عام واحد">عام واحد</option>
+          </select>
+          <button class="btn btn-secondary" id="clearFiltersBtn">
+            <i class="fas fa-times"></i> مسح
+          </button>
+        </div>
+
+        <div class="bulk-bar" id="bulkBar">
+          <span class="bulk-count"><span id="bulkCount">0</span> محدد</span>
+          <select id="bulkStatusSelect" class="form-select">
+            <option value="">تغيير الحالة إلى...</option>
+            <option value="active">نشط</option>
+            <option value="pending">قيد التفعيل</option>
+            <option value="disabled">معطَّل</option>
+            <option value="suspended">موقوف</option>
+            <option value="expired">منتهي</option>
+          </select>
+          <button class="btn btn-secondary btn-sm" id="bulkApplyBtn">
+            <i class="fas fa-check"></i> تطبيق
+          </button>
+          <button class="btn btn-ghost btn-sm" id="bulkClearBtn">
+            <i class="fas fa-times"></i> إلغاء
+          </button>
+        </div>
+
+        <div class="toolbar">
+          <span class="toolbar-info" id="listInfo">جاري التحميل...</span>
+        </div>
+
+        <div class="children-table-wrapper">
+          <table class="children-table" id="childrenTable">
+            <thead>
+              <tr>
+                <th class="cell-checkbox"><input type="checkbox" id="selectAllCheckbox"></th>
+                <th>الكود</th>
+                <th>الاسم</th>
+                <th class="col-age">العمر</th>
+                <th>الحالة</th>
+                <th class="col-plan">الخطة</th>
+                <th class="col-phone">الهاتف</th>
+                <th class="col-lastscan">آخر مسحة</th>
+                <th class="cell-actions">إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="childrenTableBody">
+              <tr><td colspan="9" style="text-align:center; padding:40px;">
+                <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; color:var(--accent);"></i>
+              </td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="pagination-bar" id="paginationBar"></div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ============================================================
+       مودال التعديل
+       ============================================================ -->
+  <div class="modal-overlay" id="editChildModal" data-static="true">
+    <div class="modal modal-lg">
+
+      <div class="modal-header">
+        <h3 class="modal-title" id="editModalTitle">تعديل بيانات الطفل</h3>
+        <button class="modal-close" id="closeEditModalBtn"><i class="fas fa-times"></i></button>
+      </div>
+
+      <div class="modal-body" id="editModalBody">
+
+        <div class="tabs-header" id="tabsHeader">
+          <button class="tab-btn active" data-tab="basic">بيانات أساسية</button>
+          <button class="tab-btn" data-tab="parents">بيانات الوالدين</button>
+          <button class="tab-btn" data-tab="subscription">الاشتراك</button>
+          <button class="tab-btn" data-tab="payments">المدفوعات</button>
+          <button class="tab-btn" data-tab="notifications">الإشعارات</button>
+          <button class="tab-btn" data-tab="security">الأمان</button>
+        </div>
+
+        <!-- Tab: Basic -->
+        <div class="tab-panel active" data-panel="basic">
+          <div class="form-group">
+            <label class="form-label">صورة الطفل</label>
+            <div class="image-upload-row">
+              <img id="edit_childImage" class="child-image-preview" alt="">
+              <button type="button" class="btn btn-secondary" id="changeChildImageBtn">
+                <i class="fas fa-camera"></i> تغيير الصورة
+              </button>
+              <input type="file" id="childImageInput" accept="image/*" hidden>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">كود الطفل</label>
+            <div class="locked-field"><input type="text" class="form-control" id="edit_childID" readonly dir="ltr"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label required">اسم الطفل</label>
+            <input type="text" class="form-control" id="edit_childName">
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label required">تاريخ الميلاد</label>
+              <input type="date" class="form-control" id="edit_birthDate">
+              <div class="form-hint">سيتم تحديث العمر تلقائيًا عند التغيير</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">العمر (محسوب)</label>
+              <div class="locked-field"><input type="text" class="form-control" id="edit_age" readonly></div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">العنوان على خرائط Google</label>
+            <input type="text" class="form-control" id="edit_googleMaps" dir="ltr">
+          </div>
+          <div class="form-group">
+            <label class="form-label">العنوان التفصيلي</label>
+            <input type="text" class="form-control" id="edit_detailedAddress">
+          </div>
+          <div class="form-group">
+            <label class="form-label">الملاحظات</label>
+            <ul class="notes-list" id="notesList"></ul>
+            <div class="add-note-row">
+              <input type="text" class="form-control" id="newNoteInput" placeholder="أضف ملاحظة...">
+              <button class="btn btn-secondary" id="addNoteBtn"><i class="fas fa-plus"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Parents -->
+        <div class="tab-panel" data-panel="parents">
+          <div class="form-group">
+            <label class="form-label">رقم هاتف الأب</label>
+            <input type="tel" class="form-control" id="edit_fatherPhone" dir="ltr" maxlength="20">
+          </div>
+          <div class="form-group">
+            <label class="form-label">اسم الأم</label>
+            <input type="text" class="form-control" id="edit_motherName">
+          </div>
+          <div class="form-group">
+            <label class="form-label">رقم هاتف الأم</label>
+            <input type="tel" class="form-control" id="edit_motherPhone" dir="ltr" maxlength="20">
+          </div>
+          <div class="form-group">
+            <label class="form-label">البريد الإلكتروني</label>
+            <input type="email" class="form-control" id="edit_email" dir="ltr">
+          </div>
+        </div>
+
+        <!-- Tab: Subscription -->
+        <div class="tab-panel" data-panel="subscription">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">الحالة</label>
+              <select class="form-select" id="edit_status">
+                <option value="active">نشط</option>
+                <option value="pending">قيد التفعيل</option>
+                <option value="disabled">معطَّل</option>
+                <option value="suspended">موقوف</option>
+                <option value="expired">منتهي</option>
+                <option value="deleted">محذوف</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">الخطة</label>
+              <select class="form-select" id="edit_plan">
+                <option value="عرض بداية الإطلاق">عرض الإطلاق</option>
+                <option value="6 أشهر">6 أشهر</option>
+                <option value="عام واحد">عام واحد</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">السعر</label>
+              <input type="number" class="form-control" id="edit_planPrice" dir="ltr" min="0">
+            </div>
+            <div class="form-group">
+              <label class="form-label">حالة الدفع</label>
+              <select class="form-select" id="edit_paymentStatus">
+                <option value="free">مجاني</option>
+                <option value="pending">قيد المراجعة</option>
+                <option value="confirmed">مؤكد</option>
+                <option value="failed">فشل</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">تاريخ التسجيل</label>
+              <div class="locked-field"><input type="text" class="form-control" id="edit_registrationDate" readonly></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">تاريخ الانتهاء</label>
+              <div class="locked-field"><input type="text" class="form-control" id="edit_expiryDate" readonly></div>
+            </div>
+          </div>
+          <button class="btn btn-success btn-block" id="extendSubscriptionBtn">
+            <i class="fas fa-calendar-plus"></i> تمديد الاشتراك
+          </button>
+          <div class="form-group" style="margin-top:16px;">
+            <label class="form-label">كود المسوق</label>
+            <input type="text" class="form-control" id="edit_marketerID" dir="ltr" maxlength="20" placeholder="MA0001">
+            <div class="form-hint">سيتم التحقق من وجود الكود ونشاطه قبل الحفظ</div>
+          </div>
+        </div>
+
+        <!-- Tab: Payments (✅ جديد) -->
+        <div class="tab-panel" data-panel="payments">
+          <div class="payments-header">
+            <h4 style="margin:0 0 4px;font-size:0.95rem;font-weight:900;">
+              <i class="fas fa-receipt" style="color:var(--accent);"></i> سجل المدفوعات
+            </h4>
+            <p style="margin:0;font-size:0.8rem;color:var(--text-muted);">
+              عرض كل المدفوعات + إمكانية الاسترداد خلال 14 يومًا
+            </p>
+          </div>
+
+          <!-- حالة التحميل -->
+          <div id="paymentsLoading" class="payments-state">
+            <i class="fas fa-spinner fa-spin" style="font-size:1.5rem;color:var(--accent);"></i>
+            <p style="margin-top:8px;">جاري تحميل المدفوعات...</p>
+          </div>
+
+          <!-- حالة فارغة -->
+          <div id="paymentsEmpty" class="payments-state" style="display:none;">
+            <i class="fas fa-receipt" style="font-size:2rem;color:var(--text-muted);"></i>
+            <p style="margin-top:8px;">لا توجد مدفوعات مسجلة لهذا الطفل</p>
+          </div>
+
+          <!-- تنبيه المسح -->
+          <div id="paymentsAlert" class="payments-alert" style="display:none;">
+            <i class="fas fa-info-circle"></i>
+            <span id="paymentsAlertText"></span>
+          </div>
+
+          <!-- الجدول -->
+          <div id="paymentsContent" style="display:none;">
+            <div class="payments-table-wrapper">
+              <table class="payments-table">
+                <thead>
+                  <tr>
+                    <th>التاريخ</th>
+                    <th>المبلغ</th>
+                    <th>الخطة</th>
+                    <th>النوع</th>
+                    <th>الحالة</th>
+                    <th>الأهلية</th>
+                    <th>إجراءات</th>
+                  </tr>
+                </thead>
+                <tbody id="paymentsTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Notifications -->
+        <div class="tab-panel" data-panel="notifications">
+          <div class="form-group">
+            <label class="form-label">طريقة الإشعارات</label>
+            <select class="form-select" id="edit_notificationMethod">
+              <option value="email">البريد الإلكتروني</option>
+              <option value="telegram">تليجرام</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">تليجرام الأب</label>
+            <div class="locked-field"><input type="text" class="form-control" id="edit_telegramFather" readonly dir="ltr"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">تليجرام الأم</label>
+            <div class="locked-field"><input type="text" class="form-control" id="edit_telegramMother" readonly dir="ltr"></div>
+          </div>
+        </div>
+
+        <!-- Tab: Security -->
+        <div class="tab-panel" data-panel="security">
+          <div class="form-group">
+            <label class="form-label">كلمة مرور الأسرة</label>
+            <div class="locked-field"><input type="text" class="form-control" id="edit_hasPassword" readonly></div>
+          </div>
+          <button class="btn btn-warning btn-block" id="resetChildPasswordBtn">
+            <i class="fas fa-key"></i> إعادة تعيين كلمة السر
+          </button>
+          <div class="form-hint" style="margin-top:8px;">
+            سيتم حذف كلمة السر الحالية. يجب على الأسرة تعيين كلمة جديدة عند الدخول التالي.
+          </div>
+
+          <div class="form-group" style="margin-top:16px;">
+            <label class="form-label">الطلب القضائي</label>
+            <select class="form-select" id="edit_courtRequested">
+              <option value="لا">لا</option>
+              <option value="نعم">نعم</option>
+            </select>
+            <div class="form-hint">عند التحديد بـ "نعم" يُمنع حذف الحساب نهائيًا</div>
+          </div>
+
+          <!-- 🔐 Revoke Zone -->
+          <div class="revoke-zone">
+            <div class="revoke-zone-title">
+              <i class="fas fa-key"></i> تغيير كود الطفل (Revoke)
+            </div>
+            <p class="revoke-zone-desc">
+              لو تم تسريب كود الطفل أو رمز QR، يمكنك توليد كود جديد للطفل.
+              الكود القديم هيتوقف فورًا، وكل البيانات هتنتقل للكود الجديد.
+            </p>
+            <button class="btn btn-warning btn-block" id="revokeChildIdBtn">
+              <i class="fas fa-shield-alt"></i> تغيير كود الطفل
+            </button>
+          </div>
+
+          <div class="danger-zone">
+            <div class="danger-zone-title">
+              <i class="fas fa-exclamation-triangle"></i>
+              منطقة الخطر
+            </div>
+            <p class="danger-zone-desc">
+              <strong>حذف نهائي:</strong> سيتم حذف الطفل وجميع بياناته المرتبطة من قاعدة البيانات (FaceFeatures, Sessions, Logs, ...). هذه العملية <strong>لا يمكن التراجع عنها</strong>.
+            </p>
+            <button class="btn btn-danger btn-block" id="hardDeleteChildBtn">
+              <i class="fas fa-trash-alt"></i> حذف نهائي (HARD)
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cancelEditBtn">إلغاء</button>
+        <button class="btn btn-primary" id="saveChangesBtn">
+          <i class="fas fa-save"></i> حفظ التغييرات
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================
+       مودال تمديد الاشتراك
+       ============================================================ -->
+  <div class="modal-overlay" id="extendModal">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3 class="modal-title">تمديد الاشتراك</h3>
+        <button class="modal-close" id="closeExtendModalBtn"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">مدة التمديد</label>
+          <select class="form-select" id="extendMonths">
+            <option value="1">شهر واحد</option>
+            <option value="3">3 أشهر</option>
+            <option value="6" selected>6 أشهر</option>
+            <option value="12">12 شهرًا (سنة)</option>
+          </select>
+        </div>
+        <p style="font-size:0.85rem; color:var(--text-secondary); margin-top:12px;">
+          سيتم التمديد من تاريخ الانتهاء الحالي (أو من اليوم إن كان منتهيًا)، وتصبح الحالة "نشط".
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cancelExtendBtn">إلغاء</button>
+        <button class="btn btn-success" id="confirmExtendBtn">
+          <i class="fas fa-calendar-plus"></i> تمديد
+        </button>
+      </div>
+    </div>
+  </div>
+
+    <!-- ============================================================
+       Revoke Child ID Modal
+       ============================================================ -->
+  <div class="modal-overlay" id="revokeChildIdModal" data-static="true">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <h3 class="modal-title">🔐 تأكيد تغيير كود الطفل</h3>
+        <button class="modal-close" id="closeRevokeModalBtn"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+
+        <div class="revoke-warning-box">
+          <div class="revoke-warning-title">
+            <i class="fas fa-exclamation-triangle"></i>
+            تنبيهات مهمة
+          </div>
+          <ul class="revoke-warning-list">
+            <li>الكود القديم هيتوقف فورًا ولن يعمل</li>
+            <li>كل الكروت والـ QR القديمة تصبح غير صالحة</li>
+            <li>يجب طباعة QR جديد وإعطاؤه للأسرة</li>
+            <li>سيتم إشعار الأسرة عبر طريقة الإشعارات المسجلة</li>
+            <li>لا يمكن التغيير مرة أخرى خلال 12 ساعة</li>
+          </ul>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">كود الطفل الحالي</label>
+          <div class="locked-field">
+            <input type="text" class="form-control" id="revoke_currentID" readonly dir="ltr">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label required">سبب التغيير</label>
+          <select class="form-select" id="revoke_reason">
+            <option value="">-- اختر السبب --</option>
+            <option value="leaked_data">تسريب بيانات الطفل</option>
+            <option value="lost_qr">فقدان أو سرقة رمز QR</option>
+            <option value="family_request">طلب من الأسرة</option>
+            <option value="other">سبب آخر</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label required">ملاحظات حول الواقعة (إلزامي)</label>
+          <textarea class="form-control" id="revoke_notes" rows="4" maxlength="500"
+            placeholder="اشرح الواقعة بالتفصيل... (مطلوب 10 أحرف على الأقل)"></textarea>
+          <div class="form-hint">
+            <span id="revoke_notes_count">0</span> / 500 حرف
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label required">للتأكيد، اكتب كود الطفل الحالي</label>
+          <input type="text" class="form-control" id="revoke_confirmID" dir="ltr" placeholder="KC-XXXXX">
+          <div class="form-hint">يجب أن يطابق الكود المعروض أعلاه</div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cancelRevokeBtn">إلغاء</button>
+        <button class="btn btn-warning" id="confirmRevokeBtn" disabled>
+          <i class="fas fa-key"></i> تأكيد التغيير
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       Revoke Success Modal
+  ============================================================= -->
+  <div class="modal-overlay" id="revokeSuccessModal" data-static="true">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <h3 class="modal-title" style="color: var(--success);">✅ تم تغيير كود الطفل بنجاح</h3>
+        <button class="modal-close" id="closeRevokeSuccessBtn"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="revoke-success-box">
+
+          <div class="revoke-code-display">
+            <div class="revoke-code-label">الكود الجديد</div>
+            <div class="revoke-code-value" id="revoke_newID">—</div>
+            <button class="btn btn-secondary btn-sm" id="copyNewIDBtn" style="margin-top:10px;">
+              <i class="fas fa-copy"></i> نسخ الكود
+            </button>
+          </div>
+
+          <div class="revoke-qr-preview">
+            <img id="revoke_qrImage" src="" alt="QR جديد">
+          </div>
+
+          <div class="revoke-status-box" id="revoke_notifyStatus"></div>
+
+          <div class="revoke-actions">
+            <button class="btn btn-primary" id="copyAllRevokeDataBtn">
+              <i class="fas fa-clipboard"></i> نسخ كل البيانات
+            </button>
+            <button class="btn btn-secondary" id="downloadQRBtn">
+              <i class="fas fa-download"></i> تحميل QR
+            </button>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" id="doneRevokeBtn">تم</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       💸 Refund Modal (✅ جديد)
+       ============================================================ -->
+  <div class="modal-overlay" id="refundModal" data-static="true">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <h3 class="modal-title">💸 تأكيد استرداد المبلغ</h3>
+        <button class="modal-close" id="closeRefundModalBtn"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+
+        <div class="refund-warning-box">
+          <div class="refund-warning-title">
+            <i class="fas fa-exclamation-triangle"></i>
+            تنبيهات مهمة قبل التأكيد
+          </div>
+          <ul class="refund-warning-list">
+            <li>تأكد من قيامك بتحويل المبلغ للعميل عبر بوابة Paymob</li>
+            <li>سيتم إلغاء اشتراك الطفل فورًا (status = refunded)</li>
+            <li>سيتم إشعار الأسرة تلقائيًا بحلول الموعد</li>
+            <li>العملية لا يمكن التراجع عنها</li>
+          </ul>
+        </div>
+
+        <div class="refund-summary">
+          <div class="refund-summary-row">
+            <span>كود الطفل:</span>
+            <strong id="refund_childID">—</strong>
+          </div>
+          <div class="refund-summary-row">
+            <span>المبلغ:</span>
+            <strong id="refund_amount">—</strong>
+          </div>
+          <div class="refund-summary-row">
+            <span>الخطة:</span>
+            <strong id="refund_plan">—</strong>
+          </div>
+          <div class="refund-summary-row">
+            <span>تاريخ الدفع:</span>
+            <strong id="refund_paidAt">—</strong>
+          </div>
+          <div class="refund-summary-row">
+            <span>عدد الأيام منذ الدفع:</span>
+            <strong id="refund_days">—</strong>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label required">سبب الاسترداد (إلزامي)</label>
+          <textarea class="form-control" id="refund_reason" rows="4" maxlength="500"
+            placeholder="اشرح سبب الاسترداد... (مطلوب 10 أحرف على الأقل)"></textarea>
+          <div class="form-hint">
+            <span id="refund_reason_count">0</span> / 500 حرف
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label required">للتأكيد، اكتب كود الطفل</label>
+          <input type="text" class="form-control" id="refund_confirmID" dir="ltr" placeholder="KC-XXXXX">
+          <div class="form-hint">يجب أن يطابق الكود المعروض أعلاه</div>
+        </div>
+
+        <!-- ✅ Override للـ super_admin فقط -->
+        <div class="form-group" id="refund_override_group" style="display:none;">
+          <label class="form-checkbox" style="display:flex; align-items:center; gap:10px; padding:12px; background:#FEF3C7; border:1px solid #F59E0B; border-radius:8px; cursor:pointer;">
+            <input type="checkbox" id="refund_override_scans" style="width:18px; height:18px;">
+            <span style="font-size:0.9rem; font-weight:700; color:#92400E;">
+              ⚠️ تخطي شرط عدد المسحات
+            </span>
+          </label>
+          <div class="form-hint" style="color:#DC2626; margin-top:6px;">
+            استخدم فقط في الحالات الاستثنائية — سيُسجَّل في Audit Log.
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cancelRefundBtn">إلغاء</button>
+        <button class="btn btn-danger" id="confirmRefundBtn" disabled>
+          <i class="fas fa-undo-alt"></i> تأكيد الاسترداد
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       💸 Refund Success Modal (✅ جديد)
+       ============================================================ -->
+  <div class="modal-overlay" id="refundSuccessModal" data-static="true">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3 class="modal-title" style="color:var(--success);">✅ تم الاسترداد بنجاح</h3>
+        <button class="modal-close" id="closeRefundSuccessBtn"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body" style="text-align:center;">
+        <div class="refund-success-box">
+          <i class="fas fa-check-circle" style="font-size:3rem;color:var(--success);margin-bottom:16px;"></i>
+          <h4 style="margin:0 0 12px;">تم استرداد المبلغ</h4>
+          <p id="refundSuccess_message" style="color:var(--text-secondary);margin:8px 0;font-size:0.9rem;"></p>
+          <div id="refundSuccess_refundId" style="font-family:var(--font-mono);font-size:0.78rem;color:var(--text-muted);direction:ltr;margin-top:12px;"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" id="doneRefundBtn">تم</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/admin/js/utils.js"></script>
+  <script src="/js/config.js"></script>
+  <script src="/js/error-reporter.js" defer></script>
+  <script src="/admin/js/ui.js"></script>
+  <script src="/admin/js/core.js"></script>
+  <script src="/admin/js/freeze.js"></script>
+  <script src="/admin/js/navbar.js"></script>
+  <script src="/admin/js/children.js"></script>
+
+  <script>
+    window.onSessionFrozen = function(info) {
+      if (window.FreezeOverlay) window.FreezeOverlay.show(info);
+    };
+    window.onFreezeUpdate = function(info) {
+      if (window.FreezeOverlay) window.FreezeOverlay.update(info);
+    };
+    window.onSessionUnfrozen = function() {
+      if (window.FreezeOverlay) window.FreezeOverlay.hide();
+      if (window.UI) window.UI.toast.success('تم رفع التجميد.');
+    };
+    window.onAccountDisabled = function() {
+      if (window.FreezeOverlay) window.FreezeOverlay.hide();
+      if (window.UI) {
+        window.UI.toast.error('الحساب معطَّل. تواصل مع superAdmin.', { duration: 0, title: 'معطَّل' });
+      }
+    };
+
+    (async function() {
+      const ok = await window.Core.guard();
+      if (!ok) return;
+
+      await window.Navbar.load('navbarPlaceholder');
+
+      const themeBtn = document.getElementById('themeToggleBtn');
+      if (themeBtn) {
+        themeBtn.addEventListener('click', async function() {
+          await window.Core.toggleTheme();
+        });
+      }
+
+      const reloadBtn = document.getElementById('reloadListBtn');
+      if (reloadBtn) {
+        reloadBtn.addEventListener('click', function() {
+          if (window.ChildrenPage) window.ChildrenPage.reload();
+        });
+      }
+
+      if (window.ChildrenPage) window.ChildrenPage.init();
+    })();
+  </script>
+
+</body>
+</html>

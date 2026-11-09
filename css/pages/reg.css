@@ -1,0 +1,459 @@
+/* ============================================================
+   🚀 NEO-GRID: تصميم صفحة التسجيل (متوافق مع هوية index.css)
+   ============================================================ */
+
+.neo-reg-main {
+    background: #f4f7fb;
+    padding-bottom: 60px;
+    min-height: 100vh;
+}
+
+/* محتوى الهيرو */
+.hero-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* كارت اللوجو الطائر */
+.hero-logo-card {
+    background: #ffffff;
+    padding: 15px 25px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    margin-bottom: 24px;
+    transition: transform 0.3s ease;
+}
+.hero-logo-card:hover {
+    transform: translateY(-5px);
+}
+
+.hero-logo-img {
+    max-width: 120px;
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* نصوص الترحيب */
+.hero-title {
+    font-size: 2rem;
+    font-weight: 900;
+    color: #ffffff;
+    margin-bottom: 12px;
+    font-family: var(--font-arabic);
+}
+
+.hero-title .brand-highlight {
+    font-family: var(--font-english);
+    color: var(--secondary-color);
+}
+
+.hero-subtitle {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.85);
+    max-width: 500px;
+    line-height: 1.6;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* ===== التجاوب مع الموبايل ===== */
+@media (max-width: 768px) {
+    .reg-hero {
+        padding: 35px 16px 45px;
+        border-radius: 0 0 20px 20px;
+    }
+    .hero-logo-card {
+        padding: 12px 20px;
+        margin-bottom: 16px;
+    }
+    .hero-logo-img {
+        max-width: 100px;
+    }
+    .hero-title {
+        font-size: 1.5rem;
+    }
+    .hero-subtitle {
+        font-size: 0.85rem;
+    }
+}
+
+/* 👈 تم مسح كود الـ Hero بالكامل لأنه اتنقل للهيدر الأساسي */
+
+/* تظبيط المسافة العلوية للحاوية عشان متبقاش لازقة في الهيدر الثابت */
+.neo-container {
+    max-width: 1000px;
+    margin: 40px auto 0; /* 40px مسافة أمان من الهيدر */
+    position: relative;
+    z-index: 10;
+    padding: 0 20px;
+}
+
+/* ===== عنوان الصفحة ===== */
+.page-title {
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: var(--primary-color);
+    margin-bottom: 24px;
+    margin-top: 0;
+    letter-spacing: -0.5px;
+}
+
+/* تجاوب الموبايل */
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 1.5rem;
+        margin-bottom: 16px;
+    }
+}
+
+/* ===== الكروت (Accordion) ===== */
+.neo-card {
+    background: var(--bg-white);
+    border-radius: var(--radius-md);
+    margin-bottom: 20px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(34, 85, 159, 0.06);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.neo-card-header {
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    background: #ffffff;
+    border-bottom: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.neo-card.active .neo-card-header {
+    border-bottom-color: var(--border-color);
+    background: #fcfdfe;
+}
+
+.neo-card-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: var(--primary-color);
+}
+.neo-card-title i {
+    color: var(--secondary-color);
+    font-size: 1.3rem;
+}
+
+.neo-accordion-icon {
+    color: var(--text-light);
+    transition: transform 0.3s ease;
+}
+
+/* ===== حركة الأكورديون الناعمة ===== */
+.neo-card-body {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    padding: 0 24px;
+    transition: max-height 0.5s ease-in-out, opacity 0.4s ease-in-out, padding 0.5s ease-in-out;
+}
+
+.neo-card.active .neo-card-body {
+    max-height: 3000px;
+    opacity: 1;
+    padding: 24px;
+}
+
+.neo-card.active .neo-accordion-icon {
+    transform: rotate(180deg);
+}
+
+/* كلاس الأيقونة عشان تدور بنعومة */
+.neo-accordion-icon {
+    transition: transform 0.4s ease;
+}
+
+/* ===== نظام الـ Grid الثلاثي ===== */
+.neo-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr) !important; /* إجبار 3 أعمدة */
+    gap: 16px 20px; /* مسافات مضبوطة بين الحقول */
+    align-items: start;
+}
+
+.span-2 { grid-column: span 2 !important; }
+.span-3 { grid-column: span 3 !important; }
+
+/* تصغير حجم الحقول نفسها عشان متبقاش ضخمة */
+.neo-grid-3 .form-group {
+    margin-bottom: 0; 
+}
+
+.neo-grid-3 input:not([type="checkbox"]):not([type="radio"]),
+.neo-grid-3 select {
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 10px 14px; /* تقليل المساحة الداخلية */
+    font-size: 0.9rem; /* خط أصغر شوية */
+    width: 100%;
+    transition: all 0.2s ease;
+}
+
+.neo-grid-3 input:focus,
+.neo-grid-3 select:focus {
+    background: #ffffff;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(34, 85, 159, 0.1);
+    outline: none;
+}
+
+/* شبكة الصور */
+.neo-image-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* مساحة متساوية */
+    gap: 30px;
+    align-items: start;
+}
+
+/* ===== تنسيق الحقول ===== */
+.neo-grid-3 input:not([type="checkbox"]):not([type="radio"]),
+.neo-grid-3 select,
+.neo-image-grid input:not([type="checkbox"]):not([type="radio"]),
+.neo-image-grid select {
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 0.95rem;
+    color: #1e293b;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.neo-grid-3 input:focus,
+.neo-grid-3 select:focus,
+.neo-image-grid input:focus,
+.neo-image-grid select:focus {
+    background: #ffffff;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(34, 85, 159, 0.1);
+    outline: none;
+}
+
+.neo-card-body label {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* ===== الحقول الخاصة ===== */
+.neo-dropzone {
+    width: 100%;
+    height: 180px;
+    background: #f8fafc;
+    border: 2px dashed #cbd5e1;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #64748b;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-align: center;
+}
+.neo-dropzone:hover {
+    border-color: var(--primary-color);
+    background: #eff6ff;
+    color: var(--primary-color);
+}
+.neo-dropzone img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 14px;
+}
+.neo-dropzone .placeholder i { font-size: 2rem; margin-bottom: 8px; }
+
+/* ===== الإشعارات ===== */
+.neo-notif {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+.neo-notif .notification-option-content {
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+    transition: all 0.3s ease;
+    text-align: center;
+    cursor: pointer;
+}
+.neo-notif .notification-option input[type="radio"] { display: none; }
+.neo-notif .notification-option input[type="radio"]:checked + .notification-option-content {
+    background: #eff6ff;
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 12px rgba(34, 85, 159, 0.1);
+}
+.neo-notif .notification-option-icon { font-size: 1.8rem; margin-bottom: 8px; display: block; }
+
+/* ===== الملاحظات ===== */
+.neo-notes {
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 12px;
+}
+.neo-notes:focus-within { border-color: var(--primary-color); background: #fff; }
+.neo-notes .add-note { display: flex; gap: 8px; }
+.neo-notes .btn-add {
+    border-radius: 8px;
+    padding: 0 20px;
+    font-weight: 800;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    transition: 0.2s;
+    white-space: nowrap;
+    cursor: pointer;
+}
+.neo-notes .btn-add:hover { background: var(--primary-dark); }
+.neo-notes .notes-list li {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+}
+.neo-notes .delete-note {
+    background: #fee2e2;
+    color: #ef4444;
+    border: none;
+    padding: 4px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.75rem;
+}
+
+/* ===== زر العين ===== */
+.password-wrapper { position: relative; display: flex; align-items: center; }
+.neo-password input { padding-right: 45px !important; }
+.neo-password .password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 1.1rem;
+}
+.neo-password .password-toggle:hover { color: var(--primary-color); }
+
+/* ===== الخطة والاشتراك ===== */
+.neo-select {
+    font-weight: 800 !important;
+    color: var(--primary-color) !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2322559f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") !important;
+    background-repeat: no-repeat !important;
+    background-position: left 16px center !important;
+    background-size: 20px !important;
+    padding-left: 48px !important;
+}
+.price-display {
+    background: #ecfdf5; color: #047857; font-size: 1.1rem; font-weight: 900;
+    padding: 16px; border-radius: 12px; text-align: center; margin-top: 16px;
+    border: 1px solid #10b981; display: none;
+}
+.offer-notice, .free-notice, .result-box { display: none; }
+.offer-notice.show, .free-notice.show, .result-box.show { display: block; }
+.offer-notice { background: #fffbeb; color: #b45309; padding: 12px; border-radius: 10px; margin-top: 12px; font-weight: 700; }
+.free-notice { background: #f0fdf4; color: #15803d; padding: 12px; border-radius: 10px; margin-top: 12px; font-weight: 700; }
+
+/* ===== الموافقات ===== */
+.neo-agreements {
+    background: #f8fafc;
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    margin-top: 30px; /* مسافة فاصلة بين الخطة والإقرارات */
+}
+.neo-agreements .checkbox-group { display: flex; gap: 10px; margin-bottom: 12px; }
+.neo-agreements input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--primary-color); margin-top: 3px; }
+.neo-agreements label { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; margin: 0; }
+
+/* ===== زر الإرسال ===== */
+.neo-submit {
+    width: 100%; background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    color: white; border: none; padding: 18px; border-radius: var(--radius-xl);
+    font-size: 1.1rem; font-weight: 900; cursor: pointer; margin-top: 24px;
+    box-shadow: 0 8px 20px rgba(34, 85, 159, 0.25); transition: all 0.3s ease;
+}
+.neo-submit:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(34, 85, 159, 0.35); }
+
+/* ===== رسائل الخطأ (كبسولة بحجم النص) ===== */
+.error-message.show {
+    display: inline-block !important; /* بتاخد حجم الكلام بس */
+    width: auto !important;
+    max-width: 100%;
+    background: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fca5a5;
+    padding: 6px 14px;
+    border-radius: 20px; /* حواف دائرية */
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-top: 8px;
+    animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideDown { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ===== Responsive (الموبايل) ===== */
+@media (max-width: 992px) {
+    .neo-image-grid { grid-template-columns: 1fr; }
+    .neo-grid-3 { grid-template-columns: 1fr 1fr !important; }
+    .span-3 { grid-column: span 2 !important; }
+    .hero-brand { font-size: 2.2rem; }
+}
+
+@media (max-width: 768px) {
+    .neo-grid-3 { grid-template-columns: 1fr !important; }
+    .span-2, .span-3 { grid-column: span 1 !important; }
+    .neo-container { padding: 0 12px; margin-top: -20px; }
+    .neo-card-header { padding: 16px 20px; }
+    .neo-card-title { font-size: 1.1rem; }
+    .neo-card-body { padding: 16px 20px; }
+    .neo-notif { grid-template-columns: 1fr; }
+    
+    /* تحويل الكروت لـ Accordion حقيقي */
+    .neo-card { border-radius: 16px; margin-bottom: 12px; }
+    .neo-card-header { background: #f8fafc; border-bottom: none; }
+    .neo-card.active .neo-card-header { background: #fff; border-bottom: 1px solid var(--border-color); }
+    
+    .neo-notes .add-note { flex-direction: column; }
+    .neo-notes .btn-add { padding: 10px; }
+    .hero-brand { font-size: 1.8rem; }
+}

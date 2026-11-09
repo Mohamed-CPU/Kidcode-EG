@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>دخول آمن — KidCode-EG</title>
+  <link rel="stylesheet" href="/assets/css/all.min.css">
+  <link rel="stylesheet" href="/admin/css/theme-light.css">
+  <link rel="stylesheet" href="/admin/css/theme-dark.css">
+  <link rel="stylesheet" href="/admin/css/enter.css">
+</head>
+<body>
+  <div class="enter-container">
+    <div class="enter-card">
+      <div class="enter-logo">
+        <i class="fas fa-shield-halved"></i>
+      </div>
+      <h1 class="enter-title">دخول آمن</h1>
+
+      <div id="statusBox" class="enter-status">
+        <div class="enter-spinner">
+          <i class="fas fa-circle-notch fa-spin"></i>
+        </div>
+        <p id="statusText" class="enter-status-text">جاري التحقق من الرابط...</p>
+      </div>
+
+      <div id="errorBox" class="enter-error" style="display:none;">
+        <i class="fas fa-circle-exclamation"></i>
+        <p id="errorText"></p>
+        <a class="enter-btn" href="https://t.me/KidcodeEGbot" target="_blank" rel="noopener">
+          <i class="fab fa-telegram"></i> الذهاب للبوت
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script src="/admin/js/enter.js"></script>
+</body>
+</html>

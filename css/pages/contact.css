@@ -1,0 +1,705 @@
+/* ============================================================
+   PAGE: CONTACT (تواصل معنا)
+   ============================================================ */
+
+.contact-page {
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* ============================================================
+   1. Hero
+   ============================================================ */
+.contact-hero {
+    background: linear-gradient(135deg, #EFF6FF 0%, #F8FAFC 50%, #E0F2FE 100%);
+    padding: clamp(60px, 10vw, 100px) 0 clamp(50px, 8vw, 80px);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.contact-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(34, 85, 159, 0.06) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.contact-hero .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    color: var(--primary-color);
+    padding: 8px 20px;
+    border-radius: 40px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    box-shadow: 0 4px 14px rgba(34, 85, 159, 0.1);
+    margin-bottom: 20px;
+    animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.contact-hero .hero-badge i {
+    color: #0088CC;
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.contact-hero h1 {
+    font-size: clamp(2rem, 6vw, 3.2rem);
+    font-weight: 900;
+    color: var(--primary-color);
+    margin-bottom: 18px;
+    line-height: 1.2;
+}
+
+.contact-hero .hero-tagline {
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    color: var(--text-secondary);
+    line-height: 1.8;
+    max-width: 620px;
+    margin: 0 auto;
+}
+
+/* ============================================================
+   2. Contact Methods
+   ============================================================ */
+.contact-methods {
+    padding: clamp(50px, 8vw, 70px) 0;
+    background: white;
+}
+
+.methods-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+}
+
+@media (max-width: 900px) {
+    .methods-grid {
+        grid-template-columns: 1fr;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+}
+
+.method-card {
+    background: white;
+    border: 2px solid var(--border-color);
+    border-radius: 24px;
+    padding: clamp(24px, 4vw, 32px) clamp(20px, 3vw, 28px);
+    text-align: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.method-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 5px;
+    transition: height 0.3s ease;
+}
+
+.method-whatsapp::before { background: linear-gradient(90deg, #25D366, #128C7E); }
+.method-email::before { background: linear-gradient(90deg, #22559F, #1A437C); }
+.method-form::before { background: linear-gradient(90deg, #8B5CF6, #6D28D9); }
+
+.method-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+}
+
+.method-whatsapp:hover { border-color: #25D366; }
+.method-email:hover { border-color: #22559F; }
+.method-form:hover { border-color: #8B5CF6; }
+
+.method-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 18px;
+    transition: transform 0.3s ease;
+}
+
+.method-card:hover .method-icon {
+    transform: scale(1.1) rotate(-5deg);
+}
+
+.method-whatsapp .method-icon { background: linear-gradient(135deg, #25D366, #128C7E); }
+.method-email .method-icon { background: linear-gradient(135deg, #22559F, #1A437C); }
+.method-form .method-icon { background: linear-gradient(135deg, #8B5CF6, #6D28D9); }
+
+.method-icon i {
+    color: white;
+    font-size: 1.8rem;
+}
+
+.method-card h3 {
+    font-size: clamp(1.15rem, 2.5vw, 1.35rem);
+    font-weight: 900;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.method-desc {
+    font-size: clamp(0.9rem, 2vw, 0.95rem);
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 18px;
+}
+
+/* Response time badge */
+.method-response {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--bg-body);
+    color: var(--text-secondary);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-bottom: 18px;
+}
+
+.method-response i {
+    color: var(--primary-color);
+    font-size: 0.85rem;
+}
+
+.method-response strong {
+    color: var(--primary-color);
+}
+
+/* Email list */
+.email-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.email-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--bg-body);
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border-right: 3px solid transparent;
+}
+
+.email-item:hover {
+    background: #EFF6FF;
+    border-right-color: var(--primary-color);
+    transform: translateX(-3px);
+}
+
+.email-item i {
+    color: var(--primary-color);
+    font-size: 0.95rem;
+    flex-shrink: 0;
+}
+
+.email-item span {
+    font-size: 0.82rem;
+    color: var(--text-primary);
+    font-weight: 700;
+    direction: ltr;
+    text-align: left;
+    word-break: break-all;
+}
+
+/* Buttons */
+.btn-method {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 20px;
+    border-radius: 40px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-top: auto;
+    min-height: 50px;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.btn-method-whatsapp {
+    background: #25D366;
+    color: white;
+}
+
+.btn-method-whatsapp:hover {
+    background: #1FA855;
+    box-shadow: 0 8px 20px rgba(37, 211, 102, 0.35);
+    transform: translateY(-2px);
+}
+
+.btn-method-form {
+    background: linear-gradient(135deg, #8B5CF6, #6D28D9);
+    color: white;
+}
+
+.btn-method-form:hover {
+    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.35);
+    transform: translateY(-2px);
+}
+
+/* ============================================================
+   3. Contact Form
+   ============================================================ */
+.contact-form-section {
+    padding: clamp(50px, 8vw, 80px) 0;
+    background: var(--bg-body);
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: clamp(30px, 5vw, 45px);
+}
+
+.section-icon {
+    display: inline-block;
+    font-size: 2.5rem;
+    margin-bottom: 12px;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+}
+
+.section-header h2 {
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    font-weight: 900;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.section-subtitle {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.form-wrapper {
+    max-width: 640px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 28px;
+    padding: clamp(28px, 5vw, 44px) clamp(22px, 4vw, 40px);
+    box-shadow: 0 10px 40px rgba(34, 85, 159, 0.06);
+    border: 1px solid rgba(226, 232, 240, 0.6);
+}
+
+/* Form Group */
+.form-group {
+    margin-bottom: 22px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.required {
+    color: #E63946;
+    font-weight: 900;
+}
+
+.optional {
+    color: var(--text-light);
+    font-size: 0.8rem;
+    font-weight: 400;
+}
+
+/* Inputs */
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 13px 16px;
+    border: 2px solid var(--border-color);
+    border-radius: 14px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    color: var(--text-primary);
+    background: white;
+    transition: all 0.2s ease;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 130px;
+    line-height: 1.7;
+}
+
+.form-group select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748B' d='M6 8L2 4h8z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: left 16px center;
+    padding-left: 40px;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(34, 85, 159, 0.08);
+}
+
+.form-group input.error,
+.form-group select.error,
+.form-group textarea.error {
+    border-color: #E63946;
+    box-shadow: 0 0 0 4px rgba(230, 57, 70, 0.08);
+}
+
+/* Field Error */
+.field-error {
+    color: #E63946;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-top: 6px;
+    min-height: 0;
+    display: none;
+}
+
+.field-error.show {
+    display: block;
+    animation: shake 0.3s ease;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+}
+
+/* Char Counter */
+.char-counter {
+    text-align: left;
+    font-size: 0.75rem;
+    color: var(--text-light);
+    margin-top: 6px;
+    font-weight: 600;
+    direction: ltr;
+}
+
+.char-counter.warning {
+    color: #F59E0B;
+}
+
+.char-counter.danger {
+    color: #E63946;
+}
+
+/* Checkbox */
+.checkbox-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+    background: var(--bg-body);
+    border-radius: 14px;
+    margin-bottom: 24px;
+    transition: all 0.2s ease;
+}
+
+.checkbox-group:has(input:checked) {
+    background: #EFF6FF;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--primary-color);
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.checkbox-group label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.7;
+    cursor: pointer;
+    margin: 0;
+}
+
+.checkbox-group label a {
+    color: var(--primary-color);
+    text-decoration: underline;
+    font-weight: 700;
+}
+
+.checkbox-group label a:hover {
+    color: #1A437C;
+}
+
+/* Submit Button */
+.btn-submit {
+    width: 100%;
+    min-height: 56px;
+    padding: 16px 28px;
+    font-size: 1.05rem;
+    font-weight: 800;
+    border-radius: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(135deg, #22559F, #1A437C);
+    color: white;
+    box-shadow: 0 8px 24px rgba(34, 85, 159, 0.25);
+    font-family: inherit;
+}
+
+.btn-submit:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(34, 85, 159, 0.35);
+}
+
+.btn-submit:active:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+.btn-submit:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* Status Messages */
+.form-message {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 18px 20px;
+    border-radius: 16px;
+    margin-top: 20px;
+    animation: fadeUp 0.4s ease;
+}
+
+.form-message i {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.form-message strong {
+    display: block;
+    font-size: 1rem;
+    margin-bottom: 4px;
+    font-weight: 800;
+}
+
+.form-message p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.form-success {
+    background: #E8F5EE;
+    color: #047857;
+    border-right: 4px solid #10B981;
+}
+
+.form-success i {
+    color: #10B981;
+}
+
+.form-error {
+    background: #FEE2E2;
+    color: #991B1B;
+    border-right: 4px solid #E63946;
+}
+
+.form-error i {
+    color: #E63946;
+}
+
+/* ============================================================
+   4. FAQ
+   ============================================================ */
+.contact-faq {
+    padding: clamp(50px, 8vw, 80px) 0;
+    background: white;
+}
+
+.faq-list {
+    max-width: 750px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.faq-item {
+    background: white;
+    border: 2px solid var(--border-color);
+    border-radius: 18px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.faq-item:hover {
+    border-color: var(--primary-color);
+}
+
+.faq-item[open] {
+    border-color: var(--primary-color);
+    box-shadow: 0 8px 24px rgba(34, 85, 159, 0.08);
+}
+
+.faq-item summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 20px 22px;
+    cursor: pointer;
+    font-weight: 800;
+    font-size: clamp(0.95rem, 2vw, 1.05rem);
+    color: var(--text-primary);
+    list-style: none;
+    transition: color 0.2s ease;
+}
+
+.faq-item summary::-webkit-details-marker {
+    display: none;
+}
+
+.faq-item summary:hover {
+    color: var(--primary-color);
+}
+
+.faq-item summary i {
+    color: var(--primary-color);
+    font-size: 0.9rem;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+}
+
+.faq-item[open] summary i {
+    transform: rotate(180deg);
+}
+
+.faq-answer {
+    padding: 0 22px 22px;
+    font-size: clamp(0.9rem, 1.9vw, 0.95rem);
+    color: var(--text-secondary);
+    line-height: 1.9;
+    border-top: 1px solid var(--border-color);
+    padding-top: 18px;
+    animation: fadeUp 0.3s ease;
+}
+
+.faq-answer strong {
+    color: var(--primary-color);
+}
+
+.faq-more {
+    text-align: center;
+    margin-top: 32px;
+}
+
+.link-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--primary-color);
+    font-weight: 800;
+    font-size: 1rem;
+    text-decoration: none;
+    padding: 12px 24px;
+    border-radius: 40px;
+    background: #EFF6FF;
+    transition: all 0.3s ease;
+}
+
+.link-more:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateX(-4px);
+}
+
+/* ============================================================
+   5. Responsive
+   ============================================================ */
+@media (max-width: 480px) {
+    .form-wrapper {
+        border-radius: 22px;
+        padding: 24px 18px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 0.95rem;
+        padding: 12px 14px;
+    }
+
+    .btn-submit {
+        min-height: 52px;
+        font-size: 1rem;
+    }
+
+    .checkbox-group {
+        padding: 14px;
+    }
+
+    .faq-item summary {
+        padding: 16px 18px;
+    }
+
+    .faq-answer {
+        padding: 0 18px 18px;
+    }
+}

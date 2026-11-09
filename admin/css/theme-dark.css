@@ -1,0 +1,59 @@
+/* ============================================================
+   THEME: DARK (الوضع الليلي)
+   ============================================================ */
+
+[data-theme="dark"] {
+
+    /* ===== الألوان الأساسية (نفسها) ===== */
+    --accent: #818CF8;
+    --accent-dark: #6366F1;
+    --accent-light: #A5B4FC;
+
+    --success: #34D399;
+    --success-dark: #10B981;
+    --warning: #FBBF24;
+    --warning-dark: #F59E0B;
+    --danger: #F87171;
+    --danger-dark: #EF4444;
+    --info: #38BDF8;
+
+    /* ===== الخلفيات ===== */
+    --bg-app: #0F172A;
+    --bg-card: #1E293B;
+    --bg-hover: #334155;
+    --bg-active: #475569;
+    --bg-input: #334155;
+
+    /* ===== السايدبار ===== */
+    --sidebar-bg: #020617;
+    --sidebar-hover: #1E293B;
+    --sidebar-text: #CBD5E1;
+    --sidebar-text-dim: #64748B;
+    --sidebar-border: #1E293B;
+
+    /* ===== النصوص ===== */
+    --text-primary: #F1F5F9;
+    --text-secondary: #CBD5E1;
+    --text-muted: #94A3B8;
+    --text-inverse: #0F172A;
+
+    /* ===== الحدود ===== */
+    --border: #334155;
+    --border-strong: #475569;
+
+    /* ===== الظلال ===== */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
+}
+
+/* تعديلات إضافية للوضع الليلي */
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
+    color-scheme: dark;
+}
+
+[data-theme="dark"] img {
+    opacity: 0.92;
+}

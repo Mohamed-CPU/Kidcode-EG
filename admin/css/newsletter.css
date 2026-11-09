@@ -1,0 +1,417 @@
+/* ============================================================
+   ADMIN — صفحة المشتركين
+   ============================================================ */
+
+/* ============================================================
+   1. Page Header
+   ============================================================ */
+.page-header {
+    margin-bottom: 20px;
+}
+.page-header h1 {
+    font-size: 1.5rem;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 4px;
+}
+.page-header h1 i {
+    color: var(--accent);
+}
+.page-header p {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+}
+
+/* ============================================================
+   2. Filters Bar
+   ============================================================ */
+.filters-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    margin-bottom: 16px;
+}
+.filters-bar .form-control,
+.filters-bar .form-select {
+    flex: 1;
+    min-width: 160px;
+}
+.filters-bar .form-control.search {
+    flex: 2;
+    min-width: 220px;
+}
+
+/* ============================================================
+   3. Bulk Bar
+   ============================================================ */
+.bulk-bar {
+    display: none;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, #4F46E5 0%, #4338CA 100%);
+    color: #FFFFFF;
+    border-radius: var(--radius-md);
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+.bulk-bar.show {
+    display: flex;
+}
+.bulk-bar .bulk-count {
+    font-weight: 800;
+    font-size: 0.9rem;
+    color: #FFFFFF;
+}
+.bulk-bar .form-select {
+    flex: 1;
+    min-width: 160px;
+    max-width: 240px;
+    background: #FFFFFF;
+    color: #0F172A;
+    border-color: rgba(255, 255, 255, 0.4);
+    font-weight: 700;
+}
+.bulk-bar .btn-ghost {
+    color: #FFFFFF;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+}
+.bulk-bar .btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #FFFFFF;
+}
+.bulk-bar .btn-secondary {
+    background: #FFFFFF;
+    color: #4F46E5;
+    border-color: #FFFFFF;
+    font-weight: 800;
+}
+.bulk-bar .btn-secondary:hover {
+    background: #F1F5F9;
+}
+.bulk-bar .btn-danger {
+    background: #DC2626;
+    color: #FFFFFF;
+    border-color: #DC2626;
+    font-weight: 800;
+}
+.bulk-bar .btn-danger:hover {
+    background: #B91C1C;
+}
+
+/* ============================================================
+   4. Toolbar
+   ============================================================ */
+.toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--bg-hover);
+    border-radius: var(--radius-md);
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+.toolbar-info {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+}
+
+/* ============================================================
+   5. Newsletter Table
+   ============================================================ */
+.newsletter-table-wrapper {
+    overflow-x: auto;
+    border-radius: var(--radius-lg);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    position: relative;
+    -webkit-overflow-scrolling: touch;
+}
+
+.newsletter-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    min-width: 800px;
+}
+
+.newsletter-table thead {
+    background: var(--bg-hover);
+}
+.newsletter-table thead th {
+    padding: 12px 14px;
+    text-align: right;
+    font-weight: 700;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    border-bottom: 2px solid var(--border);
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.newsletter-table tbody td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-primary);
+    vertical-align: middle;
+    white-space: nowrap;
+}
+.newsletter-table tbody tr {
+    cursor: pointer;
+    transition: background 0.12s;
+}
+.newsletter-table tbody tr:hover {
+    background: var(--bg-hover);
+}
+.newsletter-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.newsletter-table .cell-checkbox {
+    width: 36px;
+    text-align: center;
+}
+.newsletter-table .cell-email {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    direction: ltr;
+    max-width: 240px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.newsletter-table .cell-phone {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    direction: ltr;
+}
+.newsletter-table .cell-actions {
+    width: 1%;
+    text-align: center;
+}
+.newsletter-table .cell-date {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+/* ============================================================
+   6. Pagination
+   ============================================================ */
+.pagination-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 16px 8px;
+    flex-wrap: wrap;
+}
+.pagination-bar button {
+    min-width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 0.85rem;
+    transition: all 0.15s;
+    padding: 0 8px;
+    cursor: pointer;
+}
+.pagination-bar button:hover:not(:disabled) {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+.pagination-bar button.active {
+    background: var(--accent);
+    color: #FFFFFF;
+    border-color: var(--accent);
+}
+.pagination-bar button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+.pagination-bar .pagination-ellipsis {
+    padding: 0 6px;
+    color: var(--text-muted);
+    font-weight: 700;
+}
+
+/* ============================================================
+   7. Subscriber Info (في المودال)
+   ============================================================ */
+.subscriber-meta {
+    padding: 14px 18px;
+    background: var(--bg-hover);
+    border-radius: var(--radius-md);
+    margin-bottom: 18px;
+    border-right: 3px solid var(--accent);
+}
+.subscriber-meta .meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    gap: 10px;
+    font-size: 0.85rem;
+}
+.subscriber-meta .meta-row .meta-label {
+    color: var(--text-muted);
+    font-weight: 700;
+    flex-shrink: 0;
+}
+.subscriber-meta .meta-row .meta-value {
+    font-family: var(--font-mono);
+    direction: ltr;
+    word-break: break-all;
+    text-align: left;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+/* ============================================================
+   8. Danger Zone
+   ============================================================ */
+.danger-zone {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+.danger-zone-title {
+    font-size: 0.9rem;
+    font-weight: 900;
+    color: var(--danger);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.danger-zone-desc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    line-height: 1.7;
+}
+
+/* ============================================================
+   9. Responsive — Tablet
+   ============================================================ */
+@media (max-width: 1024px) {
+    .filters-bar .form-control.search {
+        flex: 1 1 100%;
+        min-width: 0;
+    }
+    .filters-bar .form-select {
+        flex: 1 1 calc(50% - 5px);
+    }
+    .newsletter-table {
+        min-width: 700px;
+    }
+}
+
+/* ============================================================
+   10. Responsive — Mobile
+   ============================================================ */
+@media (max-width: 768px) {
+    .page-header h1 { font-size: 1.2rem; }
+    .page-header p { font-size: 0.8rem; }
+
+    .filters-bar {
+        padding: 12px;
+        gap: 8px;
+    }
+    .filters-bar .form-control,
+    .filters-bar .form-select,
+    .filters-bar .form-control.search {
+        flex: 1 1 100%;
+        min-width: 0;
+    }
+    .filters-bar .btn-secondary {
+        flex: 1 1 100%;
+    }
+
+    .bulk-bar {
+        padding: 10px 12px;
+        gap: 8px;
+    }
+    .bulk-bar .bulk-count {
+        font-size: 0.82rem;
+        flex: 1 1 100%;
+    }
+    .bulk-bar .form-select {
+        flex: 1 1 100%;
+        max-width: none;
+    }
+    .bulk-bar .btn {
+        flex: 1;
+    }
+
+    .newsletter-table-wrapper {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+    .newsletter-table {
+        min-width: 600px !important;
+        font-size: 0.78rem;
+    }
+    .newsletter-table thead th,
+    .newsletter-table tbody td {
+        padding: 10px 8px;
+    }
+
+    /* إخفاء أعمدة غير حرجة */
+    .newsletter-table .col-phone,
+    .newsletter-table .col-date {
+        display: none;
+    }
+
+    .pagination-bar button {
+        min-width: 34px;
+        height: 34px;
+        font-size: 0.78rem;
+    }
+}
+
+/* ============================================================
+   11. Responsive — Small Mobile
+   ============================================================ */
+@media (max-width: 480px) {
+    .page-header h1 {
+        font-size: 1.05rem;
+        gap: 8px;
+    }
+    .page-header p { font-size: 0.75rem; }
+
+    .newsletter-table {
+        min-width: 480px !important;
+    }
+
+    .pagination-bar {
+        gap: 3px;
+        padding: 12px 4px;
+    }
+    .pagination-bar button {
+        min-width: 30px;
+        height: 30px;
+        font-size: 0.72rem;
+        padding: 0 5px;
+    }
+}
+
+/* ============================================================
+   12. Dark Mode
+   ============================================================ */
+[data-theme="dark"] .bulk-bar {
+    box-shadow: 0 4px 16px rgba(79, 70, 229, 0.5);
+}

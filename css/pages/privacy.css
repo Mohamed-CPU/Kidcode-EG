@@ -1,0 +1,152 @@
+/* ============================================================
+   PAGE: PRIVACY - سياسة الخصوصية
+   تصميم جديد متوافق مع هوية الموقع
+   ============================================================ */
+
+.privacy-wrapper {
+    max-width: 850px;
+    margin: 0 auto;
+    padding: 0 20px 40px;
+}
+
+.privacy-card {
+    background: var(--bg-white);
+    border-radius: var(--radius-lg);
+    padding: 40px 36px;
+    margin-top: 30px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(34, 85, 159, 0.06);
+}
+
+.privacy-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.privacy-header .icon-big {
+    font-size: 3.5rem;
+    color: var(--secondary-color);
+    display: block;
+    margin-bottom: 10px;
+}
+
+.privacy-header h1 {
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: var(--primary-color);
+    margin: 0;
+}
+
+.privacy-header h1 .kid {
+    color: var(--primary-color);
+}
+.privacy-header h1 .eg {
+    color: var(--secondary-color);
+}
+
+.privacy-header .sub-title {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin-top: 4px;
+}
+
+.privacy-section {
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.privacy-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.privacy-section h2 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.privacy-section h2 i {
+    color: var(--secondary-color);
+    font-size: 1.3rem;
+    width: 30px;
+    text-align: center;
+}
+
+.privacy-section p {
+    font-size: 1rem;
+    line-height: 1.9;
+    color: var(--text-secondary);
+    margin: 8px 0;
+}
+
+.privacy-section .highlight-box {
+    background: var(--bg-body);
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    margin: 12px 0;
+    border-right: 4px solid var(--secondary-color);
+}
+
+.privacy-section .highlight-box strong {
+    color: var(--primary-color);
+}
+
+.privacy-section .highlight-box a {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+/* ===== استجابة للشاشات ===== */
+
+@media (max-width: 768px) {
+    .privacy-card {
+        padding: 28px 20px;
+        border-radius: var(--radius-md);
+    }
+    .privacy-header h1 {
+        font-size: 1.8rem;
+    }
+    .privacy-section h2 {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .privacy-wrapper {
+        padding: 0 12px;
+    }
+    .privacy-card {
+        padding: 20px 16px;
+        border-radius: var(--radius-sm);
+        margin-top: 20px;
+    }
+    .privacy-header h1 {
+        font-size: 1.5rem;
+    }
+    .privacy-header .icon-big {
+        font-size: 2.8rem;
+    }
+    .privacy-section h2 {
+        font-size: 1.05rem;
+    }
+    .privacy-section h2 i {
+        font-size: 1rem;
+        width: 24px;
+    }
+    .privacy-section p {
+        font-size: 0.9rem;
+    }
+    .privacy-section .highlight-box {
+        padding: 12px 14px;
+        font-size: 0.9rem;
+    }
+}

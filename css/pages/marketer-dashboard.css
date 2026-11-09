@@ -1,0 +1,558 @@
+/* ============================================================
+   PAGE: MARKETER DASHBOARD - لوحة تحكم المسوق
+   تصميم خاص بالصفحة
+   ============================================================ */
+
+.dashboard-wrapper {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 30px;
+    background: var(--bg-white);
+    padding: 20px 28px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(34, 85, 159, 0.04);
+}
+
+.dashboard-header h1 {
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: var(--primary-color);
+    margin: 0;
+}
+
+.dashboard-header .user-info {
+    font-weight: 700;
+    color: var(--text-secondary);
+}
+
+.dashboard-header .logout-btn {
+    background: none;
+    border: none;
+    color: var(--danger-color);
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 0.95rem;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: var(--bg-white);
+    border-radius: var(--radius-md);
+    padding: 20px 24px;
+    box-shadow: var(--shadow-sm);
+    border-right: 4px solid var(--primary-color);
+}
+
+.stat-card .stat-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.stat-card .stat-value {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--text-primary);
+    margin-top: 4px;
+}
+
+.stat-card .stat-value.earned {
+    color: var(--secondary-color);
+}
+
+.stat-card .stat-value.pending {
+    color: var(--warning-color);
+}
+
+.stat-card .stat-value.children {
+    color: var(--primary-color);
+}
+
+.orders-table-wrapper {
+    background: var(--bg-white);
+    border-radius: var(--radius-lg);
+    padding: 20px 24px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(34, 85, 159, 0.04);
+    overflow-x: auto;
+}
+
+.orders-table-wrapper h2 {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--primary-color);
+    margin-bottom: 16px;
+}
+
+.orders-table-wrapper table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.orders-table-wrapper th {
+    background: var(--bg-body);
+    padding: 12px 14px;
+    text-align: right;
+    font-weight: 700;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.orders-table-wrapper td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.orders-table-wrapper .badge-earned {
+    display: inline-block;
+    background: #e8f5ee;
+    color: var(--secondary-dark);
+    padding: 2px 12px;
+    border-radius: 40px;
+    font-weight: 700;
+    font-size: 0.75rem;
+}
+
+.orders-table-wrapper .badge-pending {
+    display: inline-block;
+    background: #fef3c7;
+    color: #92400e;
+    padding: 2px 12px;
+    border-radius: 40px;
+    font-weight: 700;
+    font-size: 0.75rem;
+}
+
+.orders-table-wrapper .no-orders {
+    text-align: center;
+    padding: 30px;
+    color: var(--text-light);
+    font-weight: 700;
+}
+
+.loading-screen {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-secondary);
+}
+
+.loading-screen i {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+}
+
+@media (max-width: 768px) {
+    .dashboard-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    .stat-card .stat-value {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    .orders-table-wrapper {
+        padding: 12px;
+    }
+    .orders-table-wrapper th,
+    .orders-table-wrapper td {
+        padding: 8px 6px;
+        font-size: 0.8rem;
+    }
+}
+
+/* ============================================================
+   🆕 قسم إشعارات تليجرام (للمسوقين)
+   ============================================================ */
+
+.telegram-section-marketer {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: 24px 26px;
+    margin-top: 24px;
+    border: 1px solid rgba(34, 85, 159, 0.08);
+    box-shadow: var(--shadow-sm);
+}
+
+.telegram-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.telegram-section-header h2 {
+    font-size: 1.15rem;
+    font-weight: 900;
+    color: var(--primary-color);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.telegram-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 14px;
+    border-radius: 40px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    background: var(--bg-body);
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+.telegram-section-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 18px;
+}
+
+.telegram-benefits-box {
+    background: #f0f9ff;
+    border-right: 4px solid #0088CC;
+    border-radius: var(--radius-md);
+    padding: 14px 18px;
+    margin-bottom: 16px;
+}
+
+.telegram-benefits-box .benefits-title {
+    font-weight: 800;
+    color: #0c4a6e;
+    margin: 0 0 10px;
+    font-size: 0.92rem;
+}
+
+.telegram-benefits-box ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.telegram-benefits-box ul li {
+    padding: 5px 0;
+    font-size: 0.87rem;
+    color: #155e75;
+    line-height: 1.6;
+}
+
+.telegram-linked-info {
+    background: #e8f5ee;
+    border-right: 4px solid var(--secondary-color);
+    border-radius: var(--radius-md);
+    padding: 14px 18px;
+    margin-bottom: 16px;
+}
+
+.linked-status-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.linked-status-row .linked-icon {
+    font-size: 1.8rem;
+    flex-shrink: 0;
+}
+
+.telegram-linked-info .linked-title {
+    font-weight: 800;
+    color: var(--secondary-dark);
+    margin: 0 0 4px;
+    font-size: 0.95rem;
+}
+
+.telegram-linked-info .linked-detail {
+    font-size: 0.78rem;
+    color: #166534;
+    margin: 2px 0;
+    font-family: 'Courier New', monospace;
+    direction: ltr;
+    text-align: right;
+}
+
+.notification-method-box {
+    background: var(--bg-body);
+    border-radius: var(--radius-md);
+    padding: 14px;
+    margin-bottom: 14px;
+}
+
+.notification-method-box .method-title {
+    font-weight: 800;
+    margin: 0 0 10px;
+    font-size: 0.9rem;
+}
+
+.method-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    background: white;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.radio-option:hover { border-color: #0088CC; }
+
+.radio-option input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #0088CC;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.radio-option:has(input[type="radio"]:checked) {
+    border-color: #0088CC;
+    background: #f0f9ff;
+}
+
+.radio-option span {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.radio-option span strong {
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: var(--text-primary);
+}
+
+.radio-option span small {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+/* Modal Close Button */
+.modal-close-x {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: var(--bg-body);
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-close-x:hover {
+    background: var(--danger-color);
+    color: white;
+}
+
+.qr-code-box {
+    background: white;
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 260px;
+    max-width: 280px;
+}
+
+@media (max-width: 600px) {
+    .telegram-section-marketer {
+        padding: 18px 16px;
+    }
+    .telegram-section-header h2 {
+        font-size: 1rem;
+    }
+    .qr-code-box {
+        min-height: 220px;
+        max-width: 240px;
+        padding: 16px;
+    }
+}
+
+/* ============================================================
+   🔗 Referral Link Section (رابطك التسويقي)
+   ============================================================ */
+.referral-link-section {
+    margin-top: 24px;
+}
+
+.referral-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+.referral-header h2 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 900;
+    color: var(--primary-color);
+}
+.referral-badge {
+    background: linear-gradient(135deg, #ECFDF5, #D1FAE5);
+    color: #065F46;
+    padding: 6px 14px;
+    border-radius: 16px;
+    font-size: 0.78rem;
+    font-weight: 900;
+    white-space: nowrap;
+    border: 1px solid #10B981;
+}
+
+.referral-desc {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    margin: 0 0 16px;
+}
+
+.referral-link-box {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    background: #F8FAFC;
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 14px;
+}
+.referral-link-box input {
+    flex: 1;
+    padding: 14px 16px;
+    border: none;
+    background: transparent;
+    font-family: 'Courier New', monospace;
+    font-size: 0.82rem;
+    color: var(--primary-color);
+    font-weight: 700;
+    outline: none;
+    text-align: left;
+    min-width: 0;
+}
+.btn-copy-ref {
+    padding: 0 18px;
+    background: var(--primary-color);
+    color: #FFFFFF;
+    border: none;
+    cursor: pointer;
+    font-size: 1.05rem;
+    transition: background 0.2s;
+    flex-shrink: 0;
+}
+.btn-copy-ref:hover {
+    background: var(--primary-dark);
+}
+
+.referral-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.referral-actions .btn {
+    flex: 1;
+    min-width: 140px;
+}
+
+.referral-hint {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 14px;
+    padding: 12px 14px;
+    background: #EFF6FF;
+    border-right: 4px solid #22559F;
+    border-radius: 10px;
+    font-size: 0.82rem;
+    color: #1E3A8A;
+    line-height: 1.7;
+}
+.referral-hint i {
+    flex-shrink: 0;
+    margin-top: 3px;
+    color: #F59E0B;
+}
+
+/* QR Modal */
+#refQrImage img {
+    display: block;
+    margin: 0 auto;
+}
+
+/* Dark mode */
+[data-theme="dark"] .referral-link-box {
+    background: rgba(30, 41, 59, 0.6);
+}
+[data-theme="dark"] .referral-link-box input {
+    color: #93C5FD;
+}
+[data-theme="dark"] .referral-hint {
+    background: rgba(34, 85, 159, 0.15);
+    color: #93C5FD;
+}
+[data-theme="dark"] .referral-badge {
+    background: rgba(16, 185, 129, 0.15);
+    color: #6EE7B7;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    .referral-link-box input {
+        font-size: 0.72rem;
+        padding: 12px 10px;
+    }
+    .btn-copy-ref {
+        padding: 0 14px;
+    }
+    .referral-actions .btn {
+        min-width: 0;
+        flex: 1 1 100%;
+    }
+}

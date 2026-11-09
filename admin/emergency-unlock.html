@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>دخول طوارئ — KidCode-EG</title>
+  <link rel="stylesheet" href="/assets/css/all.min.css">
+  <link rel="stylesheet" href="/admin/css/theme-light.css">
+  <link rel="stylesheet" href="/admin/css/theme-dark.css">
+  <link rel="stylesheet" href="/admin/css/emergency-unlock.css">
+</head>
+<body>
+  <div class="eu-container">
+    <div class="eu-card">
+      <div class="eu-logo">
+        <i class="fas fa-triangle-exclamation"></i>
+      </div>
+      <h1 class="eu-title">دخول الطوارئ</h1>
+      <p class="eu-desc">استخدم هذا الحل فقط إذا كان تليجرام غير متاح.</p>
+
+      <div id="formBox" class="eu-form">
+        <label for="codeInput" class="eu-label">رمز الطوارئ أو Secret</label>
+        <input type="text" id="codeInput" class="eu-input"
+               placeholder="RC-XXXX-XXXX-XXXX" autocomplete="off"
+               autofocus spellcheck="false" dir="ltr">
+
+        <button id="submitBtn" class="eu-btn" type="button">
+          <i class="fas fa-unlock"></i> دخول
+        </button>
+
+        <p id="errorText" class="eu-error" style="display:none;"></p>
+      </div>
+
+      <div id="statusBox" class="eu-status" style="display:none;">
+        <i class="fas fa-circle-notch fa-spin"></i>
+        <span id="statusText">جاري التحقق...</span>
+      </div>
+
+      <div class="eu-warning">
+        <i class="fas fa-circle-info"></i>
+        <span>كل محاولة دخول طوارئ تُسجَّل وتُبلَّغ لـ super_admin فورًا.</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="/admin/js/emergency-unlock.js"></script>
+</body>
+</html>

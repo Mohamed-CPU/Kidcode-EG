@@ -1,0 +1,221 @@
+/* ============================================================
+   PAGE: CONFIRM FOUND - تأكيد العثور على الطفل
+   تصميم خاص بالصفحة
+   ============================================================ */
+
+.confirm-wrapper {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.confirm-card {
+    background: var(--bg-white);
+    border-radius: var(--radius-lg);
+    padding: 36px 32px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(34, 85, 159, 0.06);
+}
+
+.confirm-card .icon-big {
+    font-size: 3.5rem;
+    color: var(--secondary-color);
+    text-align: center;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.confirm-card h1 {
+    text-align: center;
+    font-weight: 900;
+    color: var(--primary-color);
+    font-size: 1.8rem;
+    margin-bottom: 6px;
+}
+
+.confirm-card .sub-desc {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 24px;
+    line-height: 1.8;
+}
+
+.confirm-card .sub-desc strong {
+    color: var(--primary-color);
+}
+
+.confirm-card .info-box {
+    background: #fef3c7;
+    border-right: 4px solid #f59e0b;
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    color: #92400e;
+}
+
+.confirm-card .info-box i {
+    margin-left: 6px;
+}
+
+.confirm-card .form-group {
+    margin-bottom: 18px;
+}
+
+.confirm-card .form-group label {
+    display: block;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.confirm-card .form-group label .required {
+    color: var(--danger-color);
+}
+
+.confirm-card .form-group input,
+.confirm-card .form-group select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+    font-family: var(--font-arabic);
+    background: var(--bg-white);
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+}
+
+.confirm-card .form-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(34, 85, 159, 0.08);
+}
+
+.confirm-card .form-group .hint {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    margin-top: 4px;
+}
+
+.confirm-card .image-upload-wrapper {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.confirm-card .image-upload-box {
+    flex: 1;
+    min-width: 140px;
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--bg-body);
+    position: relative;
+}
+
+.confirm-card .image-upload-box:hover {
+    border-color: var(--primary-color);
+    background: rgba(34, 85, 159, 0.03);
+}
+
+.confirm-card .image-upload-box .preview-img {
+    width: 100%;
+    max-height: 140px;
+    object-fit: cover;
+    border-radius: 8px;
+    display: none;
+}
+
+.confirm-card .image-upload-box .placeholder-text {
+    color: var(--text-light);
+    font-size: 0.85rem;
+}
+
+.confirm-card .image-upload-box .placeholder-text i {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.confirm-card .image-upload-box input[type="file"] {
+    display: none;
+}
+
+.confirm-card .btn-submit {
+    width: 100%;
+    padding: 16px;
+    font-size: 1.1rem;
+    font-weight: 800;
+    justify-content: center;
+    gap: 12px;
+    background: linear-gradient(135deg, var(--secondary-color) 0%, #2b8557 100%);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(57, 166, 111, 0.2);
+    margin-top: 10px;
+}
+
+.confirm-card .btn-submit:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(57, 166, 111, 0.3);
+}
+
+.confirm-card .btn-submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.confirm-card .btn-alternative {
+    display: block;
+    text-align: center;
+    margin-top: 16px;
+    color: var(--primary-color);
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+.confirm-card .message-box {
+    margin-top: 16px;
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    text-align: center;
+    font-weight: 700;
+    display: none;
+}
+
+.confirm-card .message-box.success {
+    display: block;
+    background: #e8f5ee;
+    color: var(--secondary-dark);
+    border-right: 4px solid var(--secondary-color);
+}
+
+.confirm-card .message-box.error {
+    display: block;
+    background: #fee2e2;
+    color: #991B1B;
+    border-right: 4px solid var(--danger-color);
+}
+
+@media (max-width: 480px) {
+    .confirm-card {
+        padding: 24px 16px;
+        border-radius: var(--radius-md);
+    }
+    .confirm-card .image-upload-wrapper {
+        flex-direction: column;
+    }
+    .confirm-card .image-upload-box {
+        min-width: auto;
+    }
+}

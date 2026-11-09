@@ -1,0 +1,964 @@
+/* ============================================================
+   ADMIN — صفحة الأطفال
+   ============================================================ */
+
+/* ============================================================
+   1. Page Header
+   ============================================================ */
+.page-header {
+    margin-bottom: 20px;
+}
+.page-header h1 {
+    font-size: 1.5rem;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 4px;
+}
+.page-header h1 i {
+    color: var(--accent);
+}
+.page-header p {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+}
+
+/* ============================================================
+   2. Filters Bar
+   ============================================================ */
+.filters-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    margin-bottom: 16px;
+}
+.filters-bar .form-control,
+.filters-bar .form-select {
+    flex: 1;
+    min-width: 160px;
+}
+.filters-bar .form-control.search {
+    flex: 2;
+    min-width: 220px;
+}
+
+/* ============================================================
+   3. Bulk Bar
+   ============================================================ */
+.bulk-bar {
+    display: none;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, #4F46E5 0%, #4338CA 100%);
+    color: #FFFFFF;
+    border-radius: var(--radius-md);
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+.bulk-bar.show {
+    display: flex;
+}
+.bulk-bar .bulk-count {
+    font-weight: 800;
+    font-size: 0.9rem;
+    color: #FFFFFF;
+}
+.bulk-bar .form-select {
+    flex: 1;
+    min-width: 160px;
+    max-width: 240px;
+    background: #FFFFFF;
+    color: #0F172A;
+    border-color: rgba(255, 255, 255, 0.4);
+    font-weight: 700;
+}
+.bulk-bar .form-select:focus {
+    outline: 2px solid rgba(255, 255, 255, 0.6);
+    outline-offset: 2px;
+}
+.bulk-bar .btn-ghost {
+    color: #FFFFFF;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+}
+.bulk-bar .btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #FFFFFF;
+}
+.bulk-bar .btn-secondary {
+    background: #FFFFFF;
+    color: #4F46E5;
+    border-color: #FFFFFF;
+    font-weight: 800;
+}
+.bulk-bar .btn-secondary:hover {
+    background: #F1F5F9;
+}
+
+/* ============================================================
+   4. Toolbar
+   ============================================================ */
+.toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--bg-hover);
+    border-radius: var(--radius-md);
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+.toolbar-info {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+}
+.toolbar-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* ============================================================
+   5. Children Table — Desktop First
+   ============================================================ */
+.children-table-wrapper {
+    overflow-x: auto;
+    border-radius: var(--radius-lg);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    position: relative;
+    -webkit-overflow-scrolling: touch;
+}
+
+.children-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    min-width: 750px;
+}
+
+.children-table thead {
+    background: var(--bg-hover);
+}
+
+.children-table thead th {
+    padding: 10px 8px;
+    text-align: right;
+    font-weight: 700;
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    border-bottom: 2px solid var(--border);
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.children-table tbody td {
+    padding: 10px 8px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-primary);
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+/* تقييد عرض الخلايا النصية الطويلة */
+.children-table .cell-id {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 0.78rem;
+}
+
+.children-table .cell-actions {
+    width: 1%;
+    text-align: center;
+    padding: 8px 6px;
+}
+
+.children-table .cell-phone {
+    direction: ltr;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    max-width: 110px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.children-table .cell-date {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* اسم الطفل — يقص لو طويل جدًا */
+.children-table tbody td:nth-child(3) {
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* عمود العمر */
+.children-table .col-age {
+    text-align: center;
+    width: 160px;
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.75rem;
+}
+
+/* عمود الخطة */
+.children-table .col-plan {
+    max-width: 130px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.75rem;
+}
+
+/* عمود الحالة */
+.children-table tbody td:nth-child(5) {
+    text-align: center;
+    width: 85px;
+    min-width: 85px;
+    white-space: nowrap;
+}
+
+.children-table tbody tr {
+    cursor: pointer;
+    transition: background 0.12s;
+}
+.children-table tbody tr:hover {
+    background: var(--bg-hover);
+}
+.children-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ============================================================
+   6. Pagination
+   ============================================================ */
+.pagination-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 16px 8px;
+    flex-wrap: wrap;
+}
+.pagination-bar button {
+    min-width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 0.85rem;
+    transition: all 0.15s;
+    padding: 0 8px;
+    cursor: pointer;
+}
+.pagination-bar button:hover:not(:disabled) {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+.pagination-bar button.active {
+    background: var(--accent);
+    color: #FFFFFF;
+    border-color: var(--accent);
+}
+.pagination-bar button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+.pagination-bar .pagination-ellipsis {
+    padding: 0 6px;
+    color: var(--text-muted);
+    font-weight: 700;
+}
+
+/* ============================================================
+   7. Edit Modal — Tabs
+   ============================================================ */
+.tabs-header {
+    display: flex;
+    gap: 4px;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 20px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+.tabs-header::-webkit-scrollbar {
+    display: none;
+}
+.tab-btn {
+    padding: 10px 16px;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: var(--text-secondary);
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+    margin-bottom: -2px;
+    font-family: inherit;
+}
+.tab-btn:hover {
+    color: var(--accent);
+}
+.tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+}
+.tab-panel {
+    display: none;
+}
+.tab-panel.active {
+    display: block;
+}
+
+/* ============================================================
+   8. Notes (داخل المودال)
+   ============================================================ */
+.notes-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 10px;
+}
+.notes-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 8px 12px;
+    background: var(--bg-hover);
+    border-radius: var(--radius-sm);
+    margin-bottom: 6px;
+    font-size: 0.85rem;
+    word-break: break-word;
+}
+.notes-list li .remove-note {
+    color: var(--danger);
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+.notes-list li .remove-note:hover {
+    background: rgba(239, 68, 68, 0.1);
+}
+.add-note-row {
+    display: flex;
+    gap: 8px;
+}
+.add-note-row input {
+    flex: 1;
+}
+
+/* ============================================================
+   9. Image Upload (داخل المودال)
+   ============================================================ */
+.image-upload-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+.child-image-preview {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--border);
+    display: none;
+    background: var(--bg-hover);
+}
+
+/* ============================================================
+   10. Danger Zone
+   ============================================================ */
+.danger-zone {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+.danger-zone-title {
+    font-size: 0.9rem;
+    font-weight: 900;
+    color: var(--danger);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.danger-zone-desc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    line-height: 1.7;
+}
+
+/* ============================================================
+   11. RESPONSIVE — Tablet (<= 1024px)
+   ============================================================ */
+@media (max-width: 1024px) {
+    .filters-bar .form-control.search {
+        flex: 1 1 100%;
+        min-width: 0;
+    }
+    .filters-bar .form-select {
+        flex: 1 1 calc(50% - 5px);
+    }
+    .children-table {
+        min-width: 650px;
+    }
+}
+
+/* ============================================================
+   12. RESPONSIVE — Mobile (<= 768px)
+   ============================================================ */
+@media (max-width: 768px) {
+    .page-header h1 {
+        font-size: 1.2rem;
+    }
+    .page-header p {
+        font-size: 0.8rem;
+    }
+
+    .filters-bar {
+        padding: 12px;
+        gap: 8px;
+    }
+    .filters-bar .form-control,
+    .filters-bar .form-select,
+    .filters-bar .form-control.search {
+        flex: 1 1 100%;
+        min-width: 0;
+    }
+    .filters-bar .btn-secondary {
+        flex: 1 1 100%;
+    }
+
+    .bulk-bar {
+        padding: 10px 12px;
+        gap: 8px;
+    }
+    .bulk-bar .bulk-count {
+        font-size: 0.82rem;
+        flex: 1 1 100%;
+    }
+    .bulk-bar .form-select {
+        flex: 1 1 100%;
+        max-width: none;
+    }
+    .bulk-bar .btn {
+        flex: 1;
+    }
+
+    .toolbar {
+        padding: 10px 12px;
+    }
+    .toolbar-info {
+        font-size: 0.78rem;
+    }
+
+    /* الجدول: عمودان sticky (checkbox + الكود) والبقية scroll */
+    .children-table {
+        min-width: 540px;
+        font-size: 0.76rem;
+    }
+    .children-table thead th,
+    .children-table tbody td {
+        padding: 8px 6px;
+    }
+
+    /* إخفاء أعمدة غير حرجة على الموبايل */
+    .children-table .col-age,
+    .children-table .col-plan,
+    .children-table .col-lastscan {
+        display: none;
+    }
+
+    .pagination-bar button {
+        min-width: 34px;
+        height: 34px;
+        font-size: 0.78rem;
+    }
+
+    /* المودال */
+    .tabs-header {
+        margin-bottom: 14px;
+    }
+    .tab-btn {
+        padding: 8px 12px;
+        font-size: 0.78rem;
+    }
+
+    .image-upload-row {
+        justify-content: center;
+    }
+}
+
+/* ============================================================
+   13. RESPONSIVE — Small Mobile (<= 480px)
+   ============================================================ */
+@media (max-width: 480px) {
+    .page-header h1 {
+        font-size: 1.05rem;
+        gap: 8px;
+    }
+    .page-header p {
+        font-size: 0.75rem;
+    }
+
+    /* إخفاء عمود الإجراءات واستبداله بزر داخل الصف */
+    .children-table .col-phone {
+        display: none;
+    }
+
+    /* جعل الأعمدة المتبقية: checkbox + كود + اسم + حالة + إجراءات */
+    .children-table {
+        min-width: 480px;
+    }
+
+    .pagination-bar {
+        gap: 3px;
+        padding: 12px 4px;
+    }
+    .pagination-bar button {
+        min-width: 30px;
+        height: 30px;
+        font-size: 0.72rem;
+        padding: 0 5px;
+    }
+
+    .tab-btn {
+        padding: 8px 10px;
+        font-size: 0.74rem;
+    }
+}
+
+/* ============================================================
+   14. Dark Mode Adjustments
+   ============================================================ */
+[data-theme="dark"] .bulk-bar {
+    box-shadow: 0 4px 16px rgba(79, 70, 229, 0.5);
+}
+
+[data-theme="dark"] .child-image-preview {
+    border-color: var(--border-strong);
+}
+
+/* ============================================================
+   15. Revoke Zone
+   ============================================================ */
+.revoke-zone {
+    margin-top: 24px;
+    padding: 18px;
+    background: rgba(245, 158, 11, 0.06);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-right: 4px solid var(--warning);
+    border-radius: var(--radius-lg);
+}
+.revoke-zone-title {
+    font-size: 0.9rem;
+    font-weight: 900;
+    color: var(--warning-dark);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.revoke-zone-desc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    line-height: 1.7;
+}
+
+/* ============================================================
+   Modal Warning — تنبيهات حرجة (أحمر عالي التباين)
+   ============================================================ */
+.revoke-warning-box {
+    background: #FEE2E2;
+    border: 2px solid #DC2626;
+    border-radius: var(--radius-lg);
+    padding: 0;
+    margin-bottom: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(220, 38, 38, 0.15);
+}
+
+/* Banner أحمر داكن بأيقونة كبيرة */
+.revoke-warning-title {
+    background: #DC2626;
+    color: #FFFFFF;
+    font-weight: 900;
+    font-size: 1rem;
+    padding: 14px 18px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    letter-spacing: 0.3px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+.revoke-warning-title i {
+    font-size: 1.3rem;
+    color: #FEF08A;
+    animation: pulseWarning 1.5s ease-in-out infinite;
+}
+
+@keyframes pulseWarning {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50%      { transform: scale(1.15); opacity: 0.85; }
+}
+
+/* القائمة — خطوط فاصلة + أيقونات */
+.revoke-warning-list {
+    margin: 0;
+    padding: 14px 18px 14px 18px;
+    list-style: none;
+    counter-reset: warningCounter;
+}
+.revoke-warning-list li {
+    position: relative;
+    padding: 10px 34px 10px 8px;
+    margin: 0;
+    color: #7F1D1D;
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1.7;
+    border-bottom: 1px dashed rgba(220, 38, 38, 0.25);
+    counter-increment: warningCounter;
+}
+.revoke-warning-list li:last-child {
+    border-bottom: none;
+    padding-bottom: 4px;
+}
+.revoke-warning-list li:first-child {
+    padding-top: 4px;
+}
+
+/* أيقونة قبل كل بند (رقم في دائرة حمراء) */
+.revoke-warning-list li::before {
+    content: "!";
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 22px;
+    height: 22px;
+    background: #DC2626;
+    color: #FFFFFF;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 0.85rem;
+    box-shadow: 0 2px 6px rgba(220, 38, 38, 0.4);
+}
+
+/* الوضع الليلي */
+[data-theme="dark"] .revoke-warning-box {
+    background: rgba(220, 38, 38, 0.12);
+    border-color: #EF4444;
+}
+[data-theme="dark"] .revoke-warning-list li {
+    color: #FCA5A5;
+    border-bottom-color: rgba(239, 68, 68, 0.3);
+}
+
+/* Success Modal */
+.revoke-success-box { text-align: center; }
+.revoke-code-display {
+    background: linear-gradient(135deg, #ECFDF5, #D1FAE5);
+    border: 2px solid #10B981;
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+.revoke-code-label {
+    font-size: 0.8rem;
+    color: #065F46;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+.revoke-code-value {
+    font-family: var(--font-mono);
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: #047857;
+    direction: ltr;
+    letter-spacing: 2px;
+}
+/* ============================================================
+   QR Preview — توسيط مضمون بـ Flexbox
+   ============================================================ */
+.revoke-qr-preview {
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+}
+.revoke-qr-preview img {
+    max-width: 220px;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-md);
+    border: 2px solid #10B981;
+    padding: 8px;
+    background: white;
+    display: block;
+    margin: 0 auto;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+}
+.revoke-status-box {
+    padding: 12px 16px;
+    border-radius: var(--radius-md);
+    margin: 16px 0;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+.revoke-status-box.success {
+    background: #ECFDF5;
+    color: #065F46;
+    border-right: 4px solid #10B981;
+}
+.revoke-status-box.warning {
+    background: #FEF3C7;
+    color: #92400E;
+    border-right: 4px solid #F59E0B;
+}
+.revoke-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 16px;
+}
+
+/* Dark mode */
+[data-theme="dark"] .revoke-warning-box {
+    background: rgba(245, 158, 11, 0.15);
+}
+[data-theme="dark"] .revoke-code-display {
+    background: rgba(16, 185, 129, 0.12);
+}
+
+/* ============================================================
+   💳 Payments Tab (✅ جديد)
+   ============================================================ */
+.payments-header {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+.payments-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+}
+
+.payments-alert {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: #FEF3C7;
+    border-right: 4px solid #F59E0B;
+    border-radius: var(--radius-md);
+    margin-bottom: 16px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #92400E;
+}
+.payments-alert i {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.payments-table-wrapper {
+    overflow-x: auto;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+}
+
+.payments-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    min-width: 600px;
+}
+.payments-table thead {
+    background: var(--bg-hover);
+}
+.payments-table thead th {
+    padding: 10px 12px;
+    text-align: right;
+    font-weight: 700;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    border-bottom: 2px solid var(--border);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+.payments-table tbody td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+    white-space: nowrap;
+}
+.payments-table tbody tr:last-child td {
+    border-bottom: none;
+}
+.payments-table tbody tr:hover {
+    background: var(--bg-hover);
+}
+.payments-table .cell-date {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+.payments-table .cell-amount {
+    font-family: var(--font-mono);
+    font-weight: 800;
+    color: var(--text-primary);
+}
+.payments-table .cell-actions {
+    text-align: center;
+    width: 1%;
+}
+
+/* ============================================================
+   💸 Refund Modal (✅ جديد)
+   ============================================================ */
+.refund-warning-box {
+    background: #FEE2E2;
+    border: 2px solid #DC2626;
+    border-radius: var(--radius-lg);
+    padding: 0;
+    margin-bottom: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(220, 38, 38, 0.15);
+}
+
+.refund-warning-title {
+    background: #DC2626;
+    color: #FFFFFF;
+    font-weight: 900;
+    font-size: 0.95rem;
+    padding: 12px 18px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    letter-spacing: 0.3px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+.refund-warning-title i {
+    font-size: 1.2rem;
+    color: #FEF08A;
+}
+
+.refund-warning-list {
+    margin: 0;
+    padding: 14px 18px;
+    list-style: none;
+}
+.refund-warning-list li {
+    position: relative;
+    padding: 8px 30px 8px 8px;
+    color: #7F1D1D;
+    font-size: 0.88rem;
+    font-weight: 700;
+    line-height: 1.6;
+    border-bottom: 1px dashed rgba(220, 38, 38, 0.25);
+}
+.refund-warning-list li:last-child {
+    border-bottom: none;
+}
+.refund-warning-list li::before {
+    content: "!";
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    background: #DC2626;
+    color: #FFFFFF;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 0.8rem;
+}
+
+/* ملخص الاسترداد */
+.refund-summary {
+    background: var(--bg-hover);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border);
+}
+.refund-summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--border);
+    font-size: 0.88rem;
+}
+.refund-summary-row:last-child {
+    border-bottom: none;
+}
+.refund-summary-row span {
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+.refund-summary-row strong {
+    color: var(--text-primary);
+    font-weight: 800;
+    direction: ltr;
+}
+
+/* نجاح الاسترداد */
+.refund-success-box {
+    padding: 20px 8px;
+}
+
+/* Dark mode */
+[data-theme="dark"] .payments-alert {
+    background: rgba(245, 158, 11, 0.12);
+    color: #FBBF24;
+}
+[data-theme="dark"] .refund-warning-box {
+    background: rgba(220, 38, 38, 0.12);
+    border-color: #EF4444;
+}
+[data-theme="dark"] .refund-warning-list li {
+    color: #FCA5A5;
+    border-bottom-color: rgba(239, 68, 68, 0.3);
+}

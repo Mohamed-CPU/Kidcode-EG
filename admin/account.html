@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>حسابي — لوحة الأدمن</title>
+
+  <script>
+    (function() {
+      try {
+        var theme = localStorage.getItem('admin_theme') || 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {}
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/all.min.css">
+
+  <link rel="stylesheet" href="/admin/css/admin.css">
+  <link rel="stylesheet" href="/admin/css/theme-light.css">
+  <link rel="stylesheet" href="/admin/css/theme-dark.css">
+  <link rel="stylesheet" href="/admin/css/components.css">
+
+  <style>
+    .page-header {
+      margin-bottom: 24px;
+    }
+    .page-header h1 {
+      font-size: 1.5rem;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .page-header h1 i { color: var(--accent); }
+    .page-header p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    @media (min-width: 1100px) {
+      .content-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .card-full {
+        grid-column: 1 / -1;
+      }
+    }
+    .session-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      background: var(--bg-hover);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      margin-bottom: 10px;
+    }
+    .session-item.current {
+      border-color: var(--success);
+      background: rgba(16, 185, 129, 0.05);
+    }
+    .session-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      background: var(--bg-card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+    .session-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .session-title {
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .session-meta {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+      font-family: var(--font-mono);
+      direction: ltr;
+      text-align: right;
+      word-break: break-all;
+    }
+    .audit-item {
+      display: flex;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .audit-item:last-child {
+      border-bottom: none;
+    }
+    .audit-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--bg-hover);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+    .audit-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .audit-action {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+    .audit-time {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+    .password-field {
+      position: relative;
+    }
+    .password-field .form-control {
+      padding-left: 46px;
+    }
+    .password-toggle {
+      position: absolute;
+      left: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .password-toggle:hover {
+      background: var(--bg-hover);
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="admin-layout">
+    <div id="navbarPlaceholder"></div>
+
+    <main class="admin-main">
+      <header class="admin-topbar">
+        <button class="topbar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+        <h1 class="topbar-title">حسابي</h1>
+        <div class="topbar-actions">
+          <button class="topbar-btn" id="themeToggleBtn" title="تبديل الثيم">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+      </header>
+
+      <div class="admin-content">
+
+        <div class="page-header">
+          <h1><i class="fas fa-user-cog"></i> إدارة الحساب</h1>
+          <p>بياناتك، كلمة السر، الجلسات النشطة، وآخر عملياتك</p>
+        </div>
+
+        <div class="content-grid">
+
+          <!-- بيانات الحساب -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title"><i class="fas fa-id-card"></i> بيانات الحساب</h2>
+            </div>
+            <div class="card-body">
+              <div class="form-group">
+                <label class="form-label">اسم المستخدم</label>
+                <div class="locked-field">
+                  <input type="text" class="form-control" id="accountUsername" readonly dir="ltr">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label required" for="accountFullName">الاسم الكامل</label>
+                <input type="text" class="form-control" id="accountFullName" placeholder="أدخل الاسم الكامل">
+              </div>
+              <button class="btn btn-primary" id="saveProfileBtn">
+                <i class="fas fa-save"></i> حفظ الاسم
+              </button>
+            </div>
+          </div>
+
+          <!-- تغيير كلمة السر -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title"><i class="fas fa-key"></i> تغيير كلمة السر</h2>
+            </div>
+            <div class="card-body">
+              <div class="form-group">
+                <label class="form-label required" for="currentPassword">كلمة السر الحالية</label>
+                <div class="password-field">
+                  <input type="password" class="form-control" id="currentPassword" dir="ltr">
+                  <button type="button" class="password-toggle" data-target="currentPassword">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label required" for="newPassword">كلمة السر الجديدة</label>
+                <div class="password-field">
+                  <input type="password" class="form-control" id="newPassword" dir="ltr">
+                  <button type="button" class="password-toggle" data-target="newPassword">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                </div>
+                <div class="form-hint">10+ أحرف، حرف كبير وصغير، رقم، ورمز خاص</div>
+              </div>
+              <div class="form-group">
+                <label class="form-label required" for="confirmPassword">تأكيد كلمة السر</label>
+                <div class="password-field">
+                  <input type="password" class="form-control" id="confirmPassword" dir="ltr">
+                  <button type="button" class="password-toggle" data-target="confirmPassword">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                </div>
+              </div>
+              <button class="btn btn-primary" id="changePasswordBtn">
+                <i class="fas fa-lock"></i> تغيير كلمة السر
+              </button>
+            </div>
+          </div>
+
+          <!-- الجلسات النشطة -->
+          <div class="card card-full">
+            <div class="card-header">
+              <h2 class="card-title"><i class="fas fa-desktop"></i> الجلسات النشطة</h2>
+              <button class="btn btn-secondary btn-sm" id="refreshSessionsBtn">
+                <i class="fas fa-sync-alt"></i> تحديث
+              </button>
+            </div>
+            <div class="card-body" id="sessionsContainer">
+              <div class="loading-state">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>جاري التحميل...</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- آخر العمليات -->
+          <div class="card card-full">
+            <div class="card-header">
+              <h2 class="card-title"><i class="fas fa-history"></i> آخر العمليات</h2>
+              <button class="btn btn-secondary btn-sm" id="refreshAuditBtn">
+                <i class="fas fa-sync-alt"></i> تحديث
+              </button>
+            </div>
+            <div class="card-body" id="auditContainer">
+              <div class="loading-state">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>جاري التحميل...</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="/admin/js/utils.js"></script>
+  <script src="/js/config.js"></script>
+  <script src="/js/error-reporter.js" defer></script>
+  <script src="/admin/js/ui.js"></script>
+  <script src="/admin/js/core.js"></script>
+  <script src="/admin/js/freeze.js"></script>
+  <script src="/admin/js/navbar.js"></script>
+  <script src="/admin/js/account.js"></script>
+
+  <script>
+    // ✅ Freeze handlers
+    window.onSessionFrozen = function(info) {
+      if (window.FreezeOverlay) window.FreezeOverlay.show(info);
+    };
+    window.onFreezeUpdate = function(info) {
+      if (window.FreezeOverlay) window.FreezeOverlay.update(info);
+    };
+    window.onSessionUnfrozen = function() {
+      if (window.FreezeOverlay) window.FreezeOverlay.hide();
+      if (window.UI) window.UI.toast.success('تم رفع التجميد.');
+      if (window.AccountPage) window.AccountPage.reload();
+    };
+    window.onAccountDisabled = function() {
+      if (window.FreezeOverlay) window.FreezeOverlay.hide();
+      if (window.UI) {
+        window.UI.toast.error('الحساب معطَّل. تواصل مع superAdmin.', { duration: 0, title: 'معطَّل' });
+      }
+    };
+
+    // ✅ Bootstrap
+    (async function() {
+      const ok = await window.Core.guard();
+      if (!ok) return;
+
+      await window.Navbar.load('navbarPlaceholder');
+
+      // زر الثيم
+      const themeBtn = document.getElementById('themeToggleBtn');
+      if (themeBtn) {
+        themeBtn.addEventListener('click', async function() {
+          await window.Core.toggleTheme();
+        });
+      }
+
+      // تهيئة صفحة الحساب
+      if (window.AccountPage) window.AccountPage.init();
+    })();
+  </script>
+
+</body>
+</html>

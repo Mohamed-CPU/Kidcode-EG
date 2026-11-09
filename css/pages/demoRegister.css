@@ -1,0 +1,353 @@
+/* ============================================================
+   PAGE: DEMO REGISTER - صفحة التسجيل التجريبي
+   ============================================================ */
+
+.demo-main {
+    min-height: calc(100vh - 160px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 20px;
+    background: var(--bg-body);
+}
+
+.demo-wrapper {
+    width: 100%;
+    max-width: 580px;
+    margin: 0 auto;
+}
+
+.demo-card {
+    background: var(--bg-white);
+    border-radius: var(--radius-lg);
+    padding: 40px 36px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(34, 85, 159, 0.06);
+    transition: all 0.3s ease;
+}
+
+.demo-card:hover {
+    box-shadow: var(--shadow-lg);
+}
+
+/* ===== Header ===== */
+.demo-header {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.demo-icon {
+    font-size: 2.8rem;
+    color: var(--secondary-color);
+    margin-bottom: 8px;
+    display: inline-block;
+}
+
+.demo-header h1 {
+    font-family: var(--font-english);
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: var(--text-primary);
+    margin: 0 0 4px 0;
+    line-height: 1.2;
+}
+
+.demo-header h1 .kid {
+    color: var(--primary-color);
+}
+
+.demo-header h1 .eg {
+    color: var(--secondary-color);
+}
+
+.demo-subtitle {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin: 0;
+    font-weight: 600;
+}
+
+/* ===== Form ===== */
+#registerForm {
+    margin-top: 8px;
+}
+
+#registerForm .form-group {
+    margin-bottom: 20px;
+}
+
+#registerForm .form-group label {
+    display: block;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+}
+
+#registerForm .form-group label i {
+    color: var(--secondary-color);
+    width: 20px;
+    margin-left: 6px;
+}
+
+.required-star {
+    color: var(--danger-color);
+    font-weight: 700;
+}
+
+#registerForm .form-group input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+    font-family: var(--font-arabic);
+    background: var(--bg-white);
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+}
+
+#registerForm .form-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(34, 85, 159, 0.08);
+}
+
+#registerForm .form-group input::placeholder {
+    color: var(--text-light);
+}
+
+.hint {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-top: 6px;
+}
+
+.hint i {
+    color: var(--secondary-color);
+    margin-left: 4px;
+}
+
+/* ===== Checkbox ===== */
+#registerForm .checkbox-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 24px 0 20px;
+    padding: 14px 16px;
+    background: var(--bg-body);
+    border-radius: var(--radius-sm);
+    border-right: 4px solid var(--secondary-color);
+}
+
+#registerForm .checkbox-group input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    margin-top: 2px;
+    cursor: pointer;
+    accent-color: var(--primary-color);
+}
+
+#registerForm .checkbox-group label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    line-height: 1.6;
+}
+
+#registerForm .checkbox-group label strong {
+    color: var(--text-primary);
+}
+
+/* ===== Button ===== */
+.btn-start {
+    width: 100%;
+    padding: 16px !important;
+    font-size: 1.1rem !important;
+    font-weight: 800 !important;
+    justify-content: center !important;
+    gap: 12px !important;
+    background: linear-gradient(135deg, var(--primary-color) 0%, #1a437c 100%) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: var(--radius-md) !important;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(34, 85, 159, 0.2);
+}
+
+.btn-start:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(34, 85, 159, 0.3);
+}
+
+.btn-start:active:not(:disabled) {
+    transform: scale(0.97);
+}
+
+.btn-start:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.btn-start i {
+    font-size: 1.2rem;
+}
+
+/* ===== Status Message ===== */
+.status-msg {
+    margin-top: 16px;
+    min-height: 2.8rem;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    transition: all 0.3s ease;
+}
+
+.status-msg.error {
+    color: var(--danger-color);
+    background: #fee2e2;
+}
+
+.status-msg.success {
+    color: var(--secondary-dark);
+    background: #e8f5ee;
+}
+
+.status-msg.info {
+    color: var(--primary-color);
+    background: #e8f0fe;
+}
+
+/* ===== Footer Note ===== */
+.demo-footer-note {
+    text-align: center;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 2px solid var(--border-color);
+    font-size: 0.8rem;
+    color: var(--text-light);
+}
+
+.demo-footer-note i {
+    color: var(--secondary-color);
+    margin-left: 6px;
+}
+
+/* ============================================================
+   MEDIA QUERIES
+   ============================================================ */
+
+@media (max-width: 768px) {
+    .demo-main {
+        padding: 20px 16px;
+        min-height: calc(100vh - 140px);
+    }
+
+    .demo-card {
+        padding: 28px 20px;
+        border-radius: var(--radius-md);
+    }
+
+    .demo-header h1 {
+        font-size: 1.8rem;
+    }
+
+    .demo-icon {
+        font-size: 2.2rem;
+    }
+
+    .demo-subtitle {
+        font-size: 0.85rem;
+    }
+
+    #registerForm .form-group input {
+        padding: 10px 14px;
+        font-size: 0.95rem;
+    }
+
+    #registerForm .checkbox-group {
+        padding: 12px 14px;
+    }
+
+    #registerForm .checkbox-group label {
+        font-size: 0.85rem;
+    }
+
+    .btn-start {
+        font-size: 1rem !important;
+        padding: 14px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .demo-main {
+        padding: 16px 12px;
+        min-height: calc(100vh - 130px);
+    }
+
+    .demo-card {
+        padding: 20px 16px;
+        border-radius: var(--radius-sm);
+    }
+
+    .demo-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .demo-icon {
+        font-size: 1.8rem;
+    }
+
+    .demo-subtitle {
+        font-size: 0.8rem;
+    }
+
+    #registerForm .form-group {
+        margin-bottom: 16px;
+    }
+
+    #registerForm .form-group label {
+        font-size: 0.8rem;
+    }
+
+    #registerForm .form-group input {
+        padding: 10px 12px;
+        font-size: 0.9rem;
+    }
+
+    #registerForm .checkbox-group {
+        padding: 10px 12px;
+        gap: 10px;
+    }
+
+    #registerForm .checkbox-group input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        min-width: 18px;
+    }
+
+    #registerForm .checkbox-group label {
+        font-size: 0.8rem;
+    }
+
+    .btn-start {
+        font-size: 0.95rem !important;
+        padding: 12px !important;
+    }
+
+    .demo-footer-note {
+        font-size: 0.7rem;
+    }
+
+    .status-msg {
+        font-size: 0.85rem;
+        min-height: 2.4rem;
+    }
+}

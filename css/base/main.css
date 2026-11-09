@@ -1,0 +1,793 @@
+/* ============================================================
+   1. RESET & BASE (المتغيرات الجديدة)
+============================================================ */
+
+:root {
+    /* الألوان الأساسية من الشعار */
+    --primary-color: #22559f;      /* KidCode */
+    --primary-dark: #1a437c;       /* أزرق غامق للـ Hover */
+    --secondary-color: #39a66f;    /* -EG */
+    --secondary-dark: #2b8557;     /* أخضر غامق للـ Hover */
+    --text-slogan: #3f596f;        /* لون الجملة "أمان طفلك في صفحة واحدة" */
+
+    /* الألوان المكملة */
+    --danger-color: #e63946;       /* أحمر للنجدة */
+    --warning-color: #f4a261;      /* برتقالي للتنبيهات */
+
+    /* الخلفيات والنصوص */
+    --bg-body: #f4f7fb;
+    --bg-white: #ffffff;
+    --text-primary: #1A1A2E;
+    --text-secondary: #64748B;
+    --text-light: #94A3B8;
+    --border-color: #dce3ed;
+
+    /* الظلال */
+    --shadow-sm: 0 2px 8px rgba(34, 85, 159, 0.06);
+    --shadow-md: 0 8px 30px rgba(34, 85, 159, 0.10);
+    --shadow-lg: 0 20px 50px rgba(34, 85, 159, 0.15);
+
+    /* الزوايا */
+    --radius-sm: 12px;
+    --radius-md: 20px;
+    --radius-lg: 28px;
+    --radius-xl: 60px;
+
+    /* الخطوط */
+    --font-arabic: 'Cairo', 'Segoe UI', Tahoma, Arial, sans-serif;
+    --font-english: 'Inter', 'Segoe UI', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ✅ إضافة التمرير السلس هنا (في المكان الصحيح) */
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-arabic);
+    background-color: var(--bg-body);
+    color: var(--text-primary);
+    line-height: 1.7;
+    padding-top: 80px;
+    min-height: 100vh;
+}
+
+/* ============================================================
+   Fix: منع الهيدر الثابت من تغطية بداية الأقسام
+   عند الضغط على روابط الـ Anchor (مثل #services)
+   ============================================================ */
+html {
+    scroll-padding-top: 25px;
+    scroll-behavior: smooth;
+}
+
+/* ============================================================
+   2. الهيدر الموحد مع قائمة الهامبورغر
+   ============================================================ */
+
+.unified-header {
+    background: var(--primary-color);
+    padding: 10px 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    direction: rtl;
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* ✅ زر الهامبورغر - هنا تتحكم في الحجم */
+.hamburger-btn {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 38px;
+    height: 30px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    z-index: 1001;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+}
+
+.hamburger-btn:hover {
+    transform: scale(1.05);
+}
+
+.hamburger-line {
+    display: block;
+    width: 100%;
+    height: 4px;
+    background: #ffffff;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+    transform-origin: center;
+}
+
+/* تحويل الخطوط إلى علامة X عند الفتح */
+.hamburger-btn.active .hamburger-line:nth-child(1) {
+    transform: translateY(12px) rotate(45deg);
+}
+
+.hamburger-btn.active .hamburger-line:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+}
+
+.hamburger-btn.active .hamburger-line:nth-child(3) {
+    transform: translateY(-12px) rotate(-45deg);
+}
+
+/* الشعار داخل الهيدر الموحد */
+.unified-header .logo {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+    text-decoration: none;
+    color: white;
+    text-align: center;
+    flex: 1;
+}
+
+.unified-header .logo .brand {
+    font-family: var(--font-english);
+    font-size: 1.6rem;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+}
+
+.unified-header .logo .brand .kid {
+    color: #ffffff;
+}
+
+.unified-header .logo .brand .eg {
+    color: var(--secondary-color);
+}
+
+.unified-header .logo .tagline {
+    font-size: 0.65rem;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.7);
+    letter-spacing: 1px;
+    margin-top: -4px;
+}
+
+/* القائمة المنسدلة */
+.nav-menu {
+    position: fixed;
+    top: 0;
+    right: -320px;
+    width: 300px;
+    height: 100vh;
+    background: var(--bg-white);
+    box-shadow: 4px 0 30px rgba(0, 0, 0, 0.15);
+    padding: 80px 20px 30px;
+    transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 999;
+    overflow-y: auto;
+    direction: rtl;
+}
+
+.nav-menu.open {
+    right: 0;
+}
+
+/* خلفية مظللة خلف القائمة */
+.nav-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    z-index: 998;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.nav-overlay.show {
+    display: block;
+    opacity: 1;
+}
+
+/* روابط القائمة */
+.nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-list li {
+    margin-bottom: 6px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.nav-list li:last-child {
+    border-bottom: none;
+}
+
+.nav-list a {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 1.05rem;
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    transition: all 0.25s ease;
+}
+
+.nav-list a:hover {
+    background: var(--bg-body);
+    color: var(--primary-color);
+    transform: translateX(-6px);
+}
+
+.nav-list a i {
+    width: 24px;
+    color: var(--secondary-color);
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+/* ===== استجابة للشاشات الصغيرة ===== */
+@media (max-width: 768px) {
+    .unified-header .logo .brand {
+        font-size: 1.3rem;
+    }
+    .unified-header .logo .tagline {
+        font-size: 0.55rem;
+    }
+    .hamburger-btn {
+        width: 32px;
+        height: 26px;
+    }
+    .hamburger-line {
+        height: 3px;
+    }
+    .hamburger-btn.active .hamburger-line:nth-child(1) {
+        transform: translateY(10px) rotate(45deg);
+    }
+    .hamburger-btn.active .hamburger-line:nth-child(3) {
+        transform: translateY(-10px) rotate(-45deg);
+    }
+    .nav-menu {
+        width: 280px;
+        right: -300px;
+        padding: 70px 16px 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .unified-header {
+        padding: 8px 12px;
+    }
+    .unified-header .logo .brand {
+        font-size: 1.1rem;
+    }
+    .unified-header .logo .tagline {
+        font-size: 0.5rem;
+    }
+    .hamburger-btn {
+        width: 28px;
+        height: 22px;
+    }
+    .hamburger-line {
+        height: 3px;
+    }
+    .hamburger-btn.active .hamburger-line:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+    }
+    .hamburger-btn.active .hamburger-line:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+    }
+    .nav-menu {
+        width: 260px;
+        right: -280px;
+        padding: 60px 12px 20px;
+    }
+    .nav-list a {
+        font-size: 0.95rem;
+        padding: 12px 12px;
+    }
+}
+
+/* ============================================================
+   3. الروابط العامة
+   ============================================================ */
+
+a {
+    color: var(--primary-color);
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+a:hover {
+    color: var(--secondary-color);
+    text-decoration: none;
+}
+
+hr {
+    border: none;
+    border-top: 2px solid var(--border-color);
+    margin: 30px 0;
+}
+
+/* ============================================================
+   4. المكونات العامة (CARDS, BUTTONS, FORMS, إلخ)
+   ============================================================ */
+
+.card {
+    background: var(--bg-white);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: 28px 30px;
+    margin-bottom: 25px;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(34, 85, 159, 0.04);
+}
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+.card-header {
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 15px;
+    margin-bottom: 22px;
+}
+.card-header h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 32px;
+    border-radius: var(--radius-xl);
+    font-weight: 700;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: var(--font-arabic);
+    text-decoration: none;
+    min-height: 56px;
+}
+.btn:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+.btn:active {
+    transform: scale(0.97);
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: white;
+}
+.btn-primary:hover {
+    background: var(--primary-dark);
+    color: white;
+}
+
+.btn-secondary {
+    background: var(--secondary-color);
+    color: white;
+}
+.btn-secondary:hover {
+    background: var(--secondary-dark);
+    color: white;
+}
+
+.btn-danger {
+    background: var(--danger-color);
+    color: white;
+}
+.btn-danger:hover {
+    background: #c62836;
+    color: white;
+}
+
+.btn-warning {
+    background: var(--warning-color);
+    color: var(--text-primary);
+}
+.btn-warning:hover {
+    background: #e69500;
+    color: var(--text-primary);
+}
+
+.btn-outline {
+    background: transparent;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+}
+.btn-outline:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-outline-light {
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    color: white;
+}
+.btn-outline-light:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: white;
+    color: white;
+    transform: translateY(-3px);
+}
+
+.btn-lg {
+    padding: 16px 40px;
+    font-size: 1.1rem;
+    min-height: 64px;
+}
+
+.form-group {
+    margin-bottom: 24px;
+}
+.form-group label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+.form-group .required::after {
+    content: " *";
+    color: var(--danger-color);
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 14px 18px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    font-family: var(--font-arabic);
+    background: var(--bg-white);
+    color: var(--text-primary);
+}
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(34, 85, 159, 0.08);
+}
+
+/* ============================================================
+   ✅ القواعد العامة لاتجاه الحقول (RTL vs LTR)
+   ============================================================ */
+
+/* 1. الحقول النصية العربية (RTL) */
+input[type="text"],
+input[type="search"],
+input[type="tel"],
+textarea,
+select {
+    direction: rtl;
+    text-align: right;
+}
+
+/* 2. الحقول الإنجليزية والأرقام وكلمات السر (LTR) */
+input[type="password"],
+input[type="email"],
+input[type="url"],
+input[type="number"] {
+    direction: ltr;
+    text-align: left;
+}
+
+/* 3. احترام أي اتجاه يتم فرضه يدوياً من الـ HTML */
+input[dir="ltr"], textarea[dir="ltr"] {
+    direction: ltr !important;
+    text-align: left !important;
+}
+input[dir="rtl"], textarea[dir="rtl"] {
+    direction: rtl !important;
+    text-align: right !important;
+}
+
+.id-field-wrapper {
+    display: flex;
+    align-items: stretch;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background: var(--bg-white);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    direction: ltr;
+}
+.id-field-wrapper:focus-within {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(34, 85, 159, 0.08);
+}
+.id-prefix {
+    background: var(--bg-body);
+    padding: 0 18px;
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--primary-color);
+    border-left: 2px solid var(--border-color);
+    font-family: var(--font-english);
+    display: flex;
+    align-items: center;
+}
+.id-input-field {
+    flex: 1;
+    padding: 14px 16px;
+    border: none;
+    background: transparent;
+    font-size: 1rem;
+    font-family: var(--font-english);
+    direction: ltr;
+    text-align: left;
+    outline: none;
+    font-weight: 600;
+}
+
+.image-preview {
+    width: 150px;
+    height: 150px;
+    border-radius: var(--radius-md);
+    border: 2px dashed var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: var(--bg-body);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.image-preview:hover {
+    border-color: var(--primary-color);
+    background: rgba(34, 85, 159, 0.03);
+}
+.image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.image-preview .placeholder {
+    color: var(--text-light);
+    font-size: 0.85rem;
+    text-align: center;
+    padding: 15px;
+}
+
+.message {
+    margin-top: 16px;
+    padding: 14px 20px;
+    border-radius: var(--radius-sm);
+    text-align: center;
+    font-weight: 600;
+    display: none;
+}
+.message.success {
+    background: #e8f5ee;
+    color: var(--secondary-dark);
+    display: block;
+    border-right: 4px solid var(--secondary-color);
+}
+.message.error {
+    background: #fee2e2;
+    color: #991B1B;
+    display: block;
+    border-right: 4px solid var(--danger-color);
+}
+
+.error-message {
+    color: var(--danger-color);
+    font-size: 0.8rem;
+    margin-top: 6px;
+    display: none;
+}
+.error-message.show {
+    display: block;
+}
+.success-message {
+    background: #e8f5ee;
+    color: var(--secondary-dark);
+    padding: 14px;
+    border-radius: var(--radius-sm);
+    text-align: center;
+    margin-top: 20px;
+    display: none;
+    font-weight: 700;
+    border-right: 4px solid var(--secondary-color);
+}
+.success-message.show {
+    display: block;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+.modal-overlay.show {
+    display: flex;
+}
+.modal-container {
+    background: var(--bg-white);
+    border-radius: var(--radius-lg);
+    max-width: 520px;
+    width: 90%;
+    padding: 32px;
+    box-shadow: var(--shadow-lg);
+    animation: modalFadeIn 0.3s ease;
+}
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: scale(0.96) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin: 20px 0 25px;
+}
+.checkbox-group input[type="checkbox"] {
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    margin-top: 4px;
+    cursor: pointer;
+    accent-color: var(--primary-color);
+}
+.checkbox-group label {
+    margin: 0;
+    cursor: pointer;
+    font-weight: 400;
+    font-size: 0.95rem;
+}
+
+.loading {
+    display: none;
+    text-align: center;
+    margin-top: 15px;
+    color: var(--primary-color);
+    font-weight: 700;
+}
+.loading.show {
+    display: block;
+}
+
+.hint {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-top: 6px;
+    text-align: center;
+}
+
+.btn-wa-container {
+    text-align: center;
+    margin: 20px 0;
+}
+.btn-wa {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: #25D366;
+    color: white;
+    padding: 14px 28px;
+    font-size: 1rem;
+    border-radius: var(--radius-xl);
+    text-decoration: none;
+    font-weight: 700;
+    max-width: 100%;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
+}
+.btn-wa:hover {
+    background: #128C7E;
+    transform: scale(1.02);
+    color: white;
+    text-decoration: none;
+}
+
+/* ============================================================
+   5. الفوتر
+   ============================================================ */
+
+.site-footer {
+    background: var(--primary-color);
+    color: rgba(255, 255, 255, 0.8);
+    padding: 30px 24px;
+    text-align: center;
+    margin-top: 50px;
+    direction: rtl;
+}
+.site-footer a {
+    color: var(--secondary-color);
+    font-weight: 600;
+}
+.site-footer a:hover {
+    color: white;
+}
+.site-footer .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+.site-footer .footer-links a {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+}
+.site-footer .footer-links a:hover {
+    color: var(--secondary-color);
+}
+.site-footer p {
+    font-size: 0.8rem;
+    opacity: 0.6;
+    margin: 0;
+}
+
+/* ============================================================
+   6. MEDIA QUERIES (العامة)
+   ============================================================ */
+
+@media (max-width: 768px) {
+    body {
+        padding-top: 70px;
+    }
+    .card {
+        padding: 20px;
+    }
+    .btn {
+        padding: 12px 24px;
+        font-size: 0.9rem;
+        min-height: 48px;
+    }
+}
+
+@media (max-width: 480px) {
+    .site-footer .footer-links {
+        gap: 12px;
+    }
+    .site-footer .footer-links a {
+        font-size: 0.8rem;
+    }
+}

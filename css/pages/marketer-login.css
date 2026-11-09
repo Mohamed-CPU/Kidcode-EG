@@ -1,0 +1,181 @@
+/* ============================================================
+   PAGE: MARKETER LOGIN - تسجيل دخول المسوقين
+   ============================================================ */
+
+.login-wrapper {
+    max-width: 450px;
+    margin: 80px auto;
+    padding: 0 20px;
+}
+
+.login-card {
+    background: var(--bg-white);
+    border-radius: var(--radius-lg);
+    padding: 40px 32px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(34, 85, 159, 0.06);
+}
+
+.login-card .icon-big {
+    font-size: 3.5rem;
+    color: var(--secondary-color);
+    text-align: center;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.login-card h1 {
+    text-align: center;
+    font-weight: 900;
+    color: var(--primary-color);
+    font-size: 1.8rem;
+    margin-bottom: 6px;
+}
+
+.login-card .sub-desc {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 24px;
+}
+
+.login-card .form-group {
+    margin-bottom: 18px;
+}
+
+.login-card .form-group label {
+    display: block;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.login-card .form-group input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+    background: var(--bg-white);
+    transition: 0.3s;
+    text-align: center;
+    letter-spacing: 1px;
+    box-sizing: border-box;
+}
+
+.login-card .form-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(34, 85, 159, 0.08);
+}
+
+.login-card .btn-login {
+    width: 100%;
+    padding: 14px;
+    font-size: 1.1rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--primary-color) 0%, #1a437c 100%);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 4px 15px rgba(34, 85, 159, 0.2);
+}
+
+.login-card .btn-login:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(34, 85, 159, 0.3);
+}
+
+.login-card .btn-login:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.login-card .forgot-link {
+    text-align: center;
+    margin-top: 12px;
+    display: block;
+}
+
+.login-card .forgot-link a {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.login-card .forgot-link a:hover {
+    color: var(--primary-color);
+}
+
+.login-card .register-link {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+}
+
+.login-card .register-link a {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+.login-card .message-box {
+    margin-top: 16px;
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    text-align: center;
+    font-weight: 700;
+    display: none;
+}
+
+.login-card .message-box.error {
+    display: block;
+    background: #fee2e2;
+    color: #991B1B;
+    border-right: 4px solid var(--danger-color);
+}
+
+.login-card .message-box.success {
+    display: block;
+    background: #e8f5ee;
+    color: var(--secondary-dark);
+    border-right: 4px solid var(--secondary-color);
+}
+
+/* حقل كلمة السر مع زر العين */
+.password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.password-wrapper input {
+    padding-left: 45px !important;
+    text-align: center;
+}
+
+.password-toggle-btn {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 5px;
+    z-index: 5;
+    line-height: 1;
+}
+
+.password-toggle-btn:hover {
+    color: var(--primary-color);
+}
+
+@media (max-width: 480px) {
+    .login-card {
+        padding: 28px 16px;
+    }
+}

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>تسجيل الدخول — لوحة الأدمن</title>
+
+  <!-- ثيم قبل التحميل (منع الوميض) -->
+  <script>
+    (function() {
+      try {
+        var theme = localStorage.getItem('admin_theme') || 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {}
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/all.min.css">
+
+  <link rel="stylesheet" href="/admin/css/admin.css">
+  <link rel="stylesheet" href="/admin/css/theme-light.css">
+  <link rel="stylesheet" href="/admin/css/theme-dark.css">
+  <link rel="stylesheet" href="/admin/css/components.css">
+
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .login-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      padding: 44px 36px 32px;
+      max-width: 440px;
+      width: 100%;
+      border-top: 4px solid var(--accent);
+      animation: cardEnter 0.4s ease;
+    }
+    @keyframes cardEnter {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .login-logo {
+      width: 68px;
+      height: 68px;
+      margin: 0 auto 18px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFFFFF;
+      font-size: 1.6rem;
+      font-weight: 900;
+      box-shadow: 0 10px 24px rgba(99, 102, 241, 0.3);
+    }
+    .login-title {
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .login-sub {
+      text-align: center;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-bottom: 30px;
+    }
+    .login-form .form-group {
+      margin-bottom: 18px;
+    }
+    .login-btn {
+      width: 100%;
+      padding: 14px;
+      font-size: 1rem;
+      min-height: 52px;
+      margin-top: 6px;
+    }
+    .login-error {
+      background: rgba(239, 68, 68, 0.1);
+      border-right: 4px solid var(--danger);
+      color: var(--danger);
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-top: 16px;
+      display: none;
+      text-align: center;
+    }
+    .login-error.show { display: block; }
+    .login-footer {
+      text-align: center;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+        /* حقل كلمة السر + زر الإظهار */
+    .password-field {
+      position: relative;
+    }
+    .password-field .form-control {
+      padding-left: 46px;
+    }
+    .password-toggle {
+      position: absolute;
+      left: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+    .password-toggle:hover {
+      background: var(--bg-hover);
+      color: var(--accent);
+    }
+    .password-toggle:active {
+      transform: translateY(-50%) scale(0.95);
+    }
+    
+  </style>
+</head>
+<body>
+
+  <div class="login-card">
+
+    <div class="login-logo">KC</div>
+    <h1 class="login-title">لوحة الأدمن</h1>
+    <p class="login-sub">KidCode-EG · نظام الإدارة</p>
+
+    <form class="login-form" id="loginForm" autocomplete="on">
+
+      <div class="form-group">
+        <label class="form-label required" for="username">اسم المستخدم</label>
+        <input
+          type="text"
+          id="username"
+          class="form-control"
+          placeholder="أدخل اسم المستخدم"
+          autocomplete="username"
+          dir="ltr"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label required" for="password">كلمة السر</label>
+        <div class="password-field">
+          <input
+            type="password"
+            id="password"
+            class="form-control"
+            placeholder="أدخل كلمة السر"
+            autocomplete="current-password"
+            dir="ltr"
+            required
+          />
+          <button type="button" class="password-toggle" id="passwordToggle" aria-label="إظهار/إخفاء كلمة السر">
+            <i class="fas fa-eye"></i>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary login-btn" id="loginBtn">
+        <i class="fas fa-sign-in-alt"></i>
+        <span>تسجيل الدخول</span>
+      </button>
+
+      <div class="login-error" id="loginError"></div>
+
+    </form>
+
+    <div class="login-footer">
+      © KidCode-EG 2026 · جميع الحقوق محفوظة
+    </div>
+
+  </div>
+
+  <script src="/js/config.js"></script>
+  <script src="/js/error-reporter.js" defer></script>
+  <script src="/admin/js/ui.js"></script>
+  <script src="/admin/js/core.js"></script>
+  <script src="/admin/js/login.js"></script>
+
+</body>
+</html>

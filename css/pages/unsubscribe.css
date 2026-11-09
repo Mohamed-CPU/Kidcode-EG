@@ -1,0 +1,192 @@
+/* ============================================================
+   PAGE: UNSUBSCRIBE - إلغاء الاشتراك من النشرة
+   تصميم جديد متوافق مع هوية الموقع
+   ============================================================ */
+
+.unsubscribe-wrapper {
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 0 20px 40px;
+}
+
+.unsubscribe-card {
+    background: var(--bg-white);
+    border-radius: var(--radius-lg);
+    padding: 48px 36px;
+    margin-top: 30px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(34, 85, 159, 0.06);
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+/* ===== أيقونة الحالة ===== */
+.status-icon {
+    font-size: 4.5rem;
+    display: block;
+    margin-bottom: 16px;
+    transition: all 0.4s ease;
+}
+
+.status-icon.loading {
+    color: var(--primary-color);
+    animation: spin 1s linear infinite;
+}
+
+.status-icon.success {
+    color: var(--secondary-color);
+    animation: none;
+}
+
+.status-icon.error {
+    color: var(--danger-color);
+    animation: none;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ===== العنوان ===== */
+.unsubscribe-card h1 {
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: var(--primary-color);
+    margin-bottom: 8px;
+    transition: color 0.3s ease;
+}
+
+.unsubscribe-card h1.error {
+    color: var(--danger-color);
+}
+
+.unsubscribe-card h1.success {
+    color: var(--secondary-color);
+}
+
+/* ===== الرسالة ===== */
+.unsubscribe-card p {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    line-height: 1.9;
+    margin-bottom: 24px;
+}
+
+.unsubscribe-card p .highlight {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+/* ===== زر الإجراء ===== */
+.action-button {
+    margin-top: 10px;
+}
+
+.action-button .btn {
+    display: inline-block;
+    padding: 14px 40px;
+    border-radius: var(--radius-xl);
+    font-weight: 700;
+    font-size: 1.05rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-family: var(--font-arabic);
+    border: none;
+    cursor: pointer;
+    min-height: 54px;
+    min-width: 180px;
+}
+
+.action-button .btn-primary {
+    background: var(--primary-color);
+    color: white;
+    box-shadow: 0 4px 15px rgba(34, 85, 159, 0.2);
+}
+
+.action-button .btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(34, 85, 159, 0.3);
+}
+
+.action-button .btn-secondary {
+    background: var(--secondary-color);
+    color: white;
+    box-shadow: 0 4px 15px rgba(57, 166, 111, 0.2);
+}
+
+.action-button .btn-secondary:hover {
+    background: var(--secondary-dark);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(57, 166, 111, 0.3);
+}
+
+.action-button .btn-outline {
+    background: transparent;
+    border: 2px solid var(--border-color);
+    color: var(--text-secondary);
+}
+
+.action-button .btn-outline:hover {
+    background: var(--bg-body);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    transform: translateY(-3px);
+}
+
+/* ===== تذييل البطاقة ===== */
+.unsubscribe-card .card-footer {
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-color);
+    font-size: 0.8rem;
+    color: var(--text-light);
+}
+
+.unsubscribe-card .card-footer a {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+/* ===== استجابة للشاشات ===== */
+
+@media (max-width: 768px) {
+    .unsubscribe-card {
+        padding: 36px 24px;
+        border-radius: var(--radius-md);
+    }
+    .unsubscribe-card h1 {
+        font-size: 1.6rem;
+    }
+    .status-icon {
+        font-size: 3.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .unsubscribe-wrapper {
+        padding: 0 12px;
+    }
+    .unsubscribe-card {
+        padding: 28px 16px;
+        border-radius: var(--radius-sm);
+        margin-top: 20px;
+    }
+    .unsubscribe-card h1 {
+        font-size: 1.3rem;
+    }
+    .unsubscribe-card p {
+        font-size: 0.95rem;
+    }
+    .status-icon {
+        font-size: 3.2rem;
+    }
+    .action-button .btn {
+        padding: 12px 28px;
+        font-size: 0.95rem;
+        min-height: 48px;
+        min-width: 140px;
+        width: 100%;
+    }
+}

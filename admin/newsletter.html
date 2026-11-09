@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>المشتركون — لوحة الأدمن</title>
+
+  <script>
+    (function() {
+      try {
+        var theme = localStorage.getItem('admin_theme') || 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {}
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/all.min.css">
+
+  <link rel="stylesheet" href="/admin/css/admin.css">
+  <link rel="stylesheet" href="/admin/css/theme-light.css">
+  <link rel="stylesheet" href="/admin/css/theme-dark.css">
+  <link rel="stylesheet" href="/admin/css/components.css">
+  <link rel="stylesheet" href="/admin/css/newsletter.css">
+</head>
+<body>
+
+  <div class="admin-layout">
+    <div id="navbarPlaceholder"></div>
+
+    <main class="admin-main">
+      <header class="admin-topbar">
+        <button class="topbar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+        <h1 class="topbar-title">المشتركون</h1>
+        <div class="topbar-actions">
+          <button class="topbar-btn" id="reloadListBtn" title="تحديث">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+          <button class="topbar-btn" id="themeToggleBtn" title="تبديل الثيم">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+      </header>
+
+      <div class="admin-content">
+
+        <div class="page-header">
+          <h1><i class="fas fa-bell"></i> إدارة المشتركين</h1>
+          <p>عرض وتعديل وحذف المشتركين في نشرة إنذار الاختفاء</p>
+        </div>
+
+        <div class="filters-bar">
+          <input type="text" id="searchInput" class="form-control search" placeholder="🔍 بحث بالبريد، الاسم، الهاتف...">
+          <select id="statusFilter" class="form-select">
+            <option value="">كل الحالات</option>
+            <option value="active">نشط</option>
+            <option value="inactive">غير نشط</option>
+          </select>
+          <button class="btn btn-secondary" id="clearFiltersBtn">
+            <i class="fas fa-times"></i> مسح
+          </button>
+        </div>
+
+        <div class="bulk-bar" id="bulkBar">
+          <span class="bulk-count"><span id="bulkCount">0</span> محدد</span>
+          <select id="bulkStatusSelect" class="form-select">
+            <option value="">تغيير الحالة إلى...</option>
+            <option value="نشط">نشط</option>
+            <option value="غير نشط">غير نشط</option>
+          </select>
+          <button class="btn btn-secondary btn-sm" id="bulkApplyBtn">
+            <i class="fas fa-check"></i> تطبيق
+          </button>
+          <button class="btn btn-danger btn-sm" id="bulkDeleteBtn">
+            <i class="fas fa-trash-alt"></i> حذف
+          </button>
+          <button class="btn btn-ghost btn-sm" id="bulkClearBtn">
+            <i class="fas fa-times"></i> إلغاء
+          </button>
+        </div>
+
+        <div class="toolbar">
+          <span class="toolbar-info" id="listInfo">جاري التحميل...</span>
+        </div>
+
+        <div class="newsletter-table-wrapper">
+          <table class="newsletter-table">
+            <thead>
+              <tr>
+                <th class="cell-checkbox"><input type="checkbox" id="selectAllCheckbox"></th>
+                <th>البريد الإلكتروني</th>
+                <th>الاسم</th>
+                <th class="col-phone">الهاتف</th>
+                <th>الحالة</th>
+                <th class="col-date">تاريخ الاشتراك</th>
+                <th class="cell-actions">إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="newsletterTableBody">
+              <tr><td colspan="7" style="text-align:center; padding:40px;">
+                <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; color:var(--accent);"></i>
+              </td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="pagination-bar" id="paginationBar"></div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ============================================================
+       مودال التعديل (static — لا يُغلق من الخلفية)
+       ============================================================ -->
+  <div class="modal-overlay" id="editSubscriberModal" data-static="true">
+    <div class="modal">
+
+      <div class="modal-header">
+        <h3 class="modal-title" id="editModalTitle">تعديل بيانات المشترك</h3>
+        <button class="modal-close" id="closeEditModalBtn"><i class="fas fa-times"></i></button>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="subscriber-meta">
+          <div class="meta-row">
+            <span class="meta-label">تاريخ الاشتراك:</span>
+            <span class="meta-value" id="meta_timestamp">—</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-label">رمز إلغاء الاشتراك:</span>
+            <span class="meta-value" id="meta_hasToken">—</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label required">البريد الإلكتروني</label>
+          <input type="email" class="form-control" id="edit_email" dir="ltr" placeholder="example@email.com">
+          <div class="form-hint">عند تغيير البريد، تأكد أنه غير مستخدم من مشترك آخر.</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">الاسم</label>
+          <input type="text" class="form-control" id="edit_name" placeholder="الاسم الكامل">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">رقم الهاتف</label>
+          <input type="tel" class="form-control" id="edit_phone" dir="ltr" maxlength="20" placeholder="01XXXXXXXXX">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">الحالة</label>
+          <select class="form-select" id="edit_isActive">
+            <option value="نعم">نشط (يستقبل التنبيهات)</option>
+            <option value="لا">غير نشط (لن يستقبل)</option>
+          </select>
+          <div class="form-hint">المشتركون النشطون فقط يستقبلون رسائل تنبيهات الاختفاء.</div>
+        </div>
+
+        <div class="danger-zone">
+          <div class="danger-zone-title">
+            <i class="fas fa-exclamation-triangle"></i>
+            منطقة الخطر
+          </div>
+          <p class="danger-zone-desc">
+            <strong>حذف نهائي:</strong> سيتم حذف المشترك من قاعدة البيانات نهائيًا. لا يمكن التراجع.
+          </p>
+          <button class="btn btn-danger btn-block" id="hardDeleteBtn">
+            <i class="fas fa-trash-alt"></i> حذف نهائي
+          </button>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cancelEditBtn">إلغاء</button>
+        <button class="btn btn-primary" id="saveChangesBtn">
+          <i class="fas fa-save"></i> حفظ التغييرات
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="/admin/js/utils.js"></script>
+  <script src="/js/config.js"></script>
+  <script src="/js/error-reporter.js" defer></script>
+  <script src="/admin/js/ui.js"></script>
+  <script src="/admin/js/core.js"></script>
+  <script src="/admin/js/freeze.js"></script>
+  <script src="/admin/js/navbar.js"></script>
+  <script src="/admin/js/newsletter.js"></script>
+
+  <script>
+    window.onSessionFrozen = function(info) {
+      if (window.FreezeOverlay) window.FreezeOverlay.show(info);
+    };
+    window.onFreezeUpdate = function(info) {
+      if (window.FreezeOverlay) window.FreezeOverlay.update(info);
+    };
+    window.onSessionUnfrozen = function() {
+      if (window.FreezeOverlay) window.FreezeOverlay.hide();
+      if (window.UI) window.UI.toast.success('تم رفع التجميد.');
+    };
+    window.onAccountDisabled = function() {
+      if (window.FreezeOverlay) window.FreezeOverlay.hide();
+      if (window.UI) {
+        window.UI.toast.error('الحساب معطَّل. تواصل مع superAdmin.', { duration: 0, title: 'معطَّل' });
+      }
+    };
+
+    (async function() {
+      const ok = await window.Core.guard();
+      if (!ok) return;
+
+      await window.Navbar.load('navbarPlaceholder');
+
+      const themeBtn = document.getElementById('themeToggleBtn');
+      if (themeBtn) {
+        themeBtn.addEventListener('click', async function() {
+          await window.Core.toggleTheme();
+        });
+      }
+
+      const reloadBtn = document.getElementById('reloadListBtn');
+      if (reloadBtn) {
+        reloadBtn.addEventListener('click', function() {
+          if (window.NewsletterPage) window.NewsletterPage.reload();
+        });
+      }
+
+      if (window.NewsletterPage) window.NewsletterPage.init();
+    })();
+  </script>
+
+</body>
+</html>

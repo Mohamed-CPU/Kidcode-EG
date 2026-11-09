@@ -1,0 +1,100 @@
+<!-- ================================================================
+     admin/navbar.html — السايدبار الموحد
+     يعتمد على Core + UI
+     ================================================================ -->
+<aside class="admin-sidebar" id="adminSidebar">
+
+  <!-- الشعار -->
+  <div class="sidebar-brand">
+    <div class="sidebar-brand-icon">KC</div>
+    <div class="sidebar-brand-text">
+      <span class="sidebar-brand-title">لوحة الأدمن</span>
+      <span class="sidebar-brand-sub">KidCode-EG</span>
+    </div>
+  </div>
+
+  <!-- القائمة -->
+  <nav class="sidebar-nav" id="sidebarNav">
+
+    <div class="sidebar-nav-section">
+      <div class="sidebar-nav-title">الرئيسية</div>
+      <a class="sidebar-nav-item" data-page="dashboard" href="/admin/dashboard.html">
+        <i class="fas fa-chart-pie"></i>
+        <span>لوحة المعلومات</span>
+      </a>
+    </div>
+
+    <div class="sidebar-nav-section">
+      <div class="sidebar-nav-title">البيانات</div>
+      <a class="sidebar-nav-item" data-page="children" data-perm="children.view" href="/admin/children.html">
+        <i class="fas fa-child"></i>
+        <span>الأطفال</span>
+      </a>
+      <a class="sidebar-nav-item" data-page="marketers" data-perm="marketers.view" href="/admin/marketers.html">
+        <i class="fas fa-users"></i>
+        <span>المسوقون</span>
+      </a>
+      <a class="sidebar-nav-item" data-page="newsletter" data-perm="newsletter.view" href="/admin/newsletter.html">
+        <i class="fas fa-bell"></i>
+        <span>المشتركون</span>
+      </a>
+      <a class="sidebar-nav-item" data-page="scan-logs" data-perm="scan_logs.view" href="/admin/scan-logs.html">
+        <i class="fas fa-qrcode"></i>
+        <span>سجل المسحات</span>
+      </a>
+    </div>
+
+    <div class="sidebar-nav-section">
+      <div class="sidebar-nav-title">التواصل</div>
+      <a class="sidebar-nav-item" data-page="emails" data-perm="emails.send_individual" href="/admin/emails.html">
+        <i class="fas fa-envelope"></i>
+        <span>مركز البريد</span>
+      </a>
+      <a class="sidebar-nav-item" data-page="reports" data-perm="reports.view" href="/admin/reports.html">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span>البلاغات</span>
+        <span class="sidebar-nav-badge hidden" id="reportsBadge">0</span>
+      </a>
+    </div>
+
+    <div class="sidebar-nav-section">
+      <div class="sidebar-nav-title">الإدارة</div>
+      <a class="sidebar-nav-item" data-page="admins" data-perm="admins.view" href="/admin/admins.html">
+        <i class="fas fa-user-shield"></i>
+        <span>المسؤولون</span>
+      </a>
+      <a class="sidebar-nav-item" data-page="config" data-perm="config.view" href="/admin/config.html">
+        <i class="fas fa-cog"></i>
+        <span>الإعدادات</span>
+      </a>
+      <a class="sidebar-nav-item" data-page="audit-log" data-perm="audit_log.view" href="/admin/audit-log.html">
+        <i class="fas fa-clipboard-list"></i>
+        <span>سجل العمليات</span>
+      </a>
+    </div>
+
+  </nav>
+
+  <!-- المستخدم -->
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="sidebar-user-avatar" id="sidebarUserAvatar">?</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name" id="sidebarUserName">—</div>
+        <div class="sidebar-user-role" id="sidebarUserRole">—</div>
+      </div>
+      <div class="sidebar-user-actions">
+        <a class="sidebar-user-btn" href="/admin/account.html" title="حسابي">
+          <i class="fas fa-user-cog"></i>
+        </a>
+        <button class="sidebar-user-btn danger" id="sidebarLogoutBtn" title="تسجيل الخروج">
+          <i class="fas fa-sign-out-alt"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+</aside>
+
+<!-- Overlay للموبايل -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>

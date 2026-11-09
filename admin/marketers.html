@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>المسوقون — لوحة الأدمن</title>
+
+  <script>
+    (function() {
+      try {
+        var theme = localStorage.getItem('admin_theme') || 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {}
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/all.min.css">
+
+  <link rel="stylesheet" href="/admin/css/admin.css">
+  <link rel="stylesheet" href="/admin/css/theme-light.css">
+  <link rel="stylesheet" href="/admin/css/theme-dark.css">
+  <link rel="stylesheet" href="/admin/css/components.css">
+  <link rel="stylesheet" href="/admin/css/marketers.css">
+</head>
+<body>
+
+  <div class="admin-layout">
+    <div id="navbarPlaceholder"></div>
+
+    <main class="admin-main">
+      <header class="admin-topbar">
+        <button class="topbar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+        <h1 class="topbar-title">المسوقون</h1>
+        <div class="topbar-actions">
+          <button class="topbar-btn" id="reloadListBtn" title="تحديث">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+          <button class="topbar-btn" id="themeToggleBtn" title="تبديل الثيم">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+      </header>
+
+      <div class="admin-content">
+
+        <div class="page-header">
+          <h1><i class="fas fa-user-tie"></i> إدارة المسوقين</h1>
+          <p>عرض وتعديل بيانات المسوقين وإحصائياتهم</p>
+        </div>
+
+        <div class="filters-bar">
+          <input type="text" id="searchInput" class="form-control search" placeholder="🔍 بحث بالكود، الاسم، الهاتف، البريد...">
+          <select id="statusFilter" class="form-select">
+            <option value="">كل الحالات</option>
+            <option value="نشط">نشط</option>
+            <option value="غير نشط">غير نشط</option>
+            <option value="محذوف">محذوف</option>
+          </select>
+          <button class="btn btn-secondary" id="clearFiltersBtn">
+            <i class="fas fa-times"></i> مسح
+          </button>
+        </div>
+
+        <div class="bulk-bar" id="bulkBar">
+          <span class="bulk-count"><span id="bulkCount">0</span> محدد</span>
+          <select id="bulkStatusSelect" class="form-select">
+            <option value="">تغيير الحالة إلى...</option>
+            <option value="نشط">نشط</option>
+            <option value="غير نشط">غير نشط</option>
+            <option value="محذوف">محذوف</option>
+          </select>
+          <button class="btn btn-secondary btn-sm" id="bulkApplyBtn">
+            <i class="fas fa-check"></i> تطبيق
+          </button>
+          <button class="btn btn-ghost btn-sm" id="bulkClearBtn">
+            <i class="fas fa-times"></i> إلغاء
+          </button>
+        </div>
+
+        <div class="toolbar">
+          <span class="toolbar-info" id="listInfo">جاري التحميل...</span>
+        </div>
+
+        <div class="marketers-table-wrapper">
+          <table class="marketers-table">
+            <thead>
+              <tr>
+                <th class="cell-checkbox"><input type="checkbox" id="selectAllCheckbox"></th>
+                <th>الكود</th>
+                <th>الاسم</th>
+                <th class="col-phone">الهاتف</th>
+                <th class="col-email">البريد</th>
+                <th class="col-governorate">المحافظة</th>
+                <th style="text-align:center;">الخصم %</th>
+                <th>الحالة</th>
+                <th class="col-created">تاريخ التسجيل</th>
+                <th class="cell-actions">إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="marketersTableBody">
+              <tr><td colspan="10" style="text-align:center; padding:40px;">
+                <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; color:var(--accent);"></i>
+              </td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="pagination-bar" id="paginationBar"></div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ============================================================
+       مودال التعديل (static — لا يُغلق من الخلفية)
+       ============================================================ -->
+  <div class="modal-overlay" id="editMarketerModal" data-static="true">
+    <div class="modal modal-lg">
+
+      <div class="modal-header">
+        <h3 class="modal-title" id="editModalTitle">تعديل بيانات المسوق</h3>
+        <button class="modal-close" id="closeEditModalBtn"><i class="fas fa-times"></i></button>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="tabs-header">
+          <button class="tab-btn active" data-tab="basic">بيانات أساسية</button>
+          <button class="tab-btn" data-tab="settings">الإعدادات</button>
+          <button class="tab-btn" data-tab="stats">الإحصائيات</button>
+          <button class="tab-btn" data-tab="security">الأمان</button>
+        </div>
+
+        <!-- Tab: Basic -->
+        <div class="tab-panel active" data-panel="basic">
+          <div class="form-group">
+            <label class="form-label">كود المسوق</label>
+            <div class="locked-field"><input type="text" class="form-control" id="edit_code" readonly dir="ltr"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label required">الاسم الكامل</label>
+            <input type="text" class="form-control" id="edit_name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">رقم الهاتف</label>
+            <input type="tel" class="form-control" id="edit_phone" dir="ltr" maxlength="20">
+          </div>
+          <div class="form-group">
+            <label class="form-label">البريد الإلكتروني</label>
+            <input type="email" class="form-control" id="edit_email" dir="ltr">
+          </div>
+          <div class="form-group">
+            <label class="form-label">المحافظة</label>
+            <input type="text" class="form-control" id="edit_governorate" list="governoratesList" placeholder="اختر أو اكتب">
+            <datalist id="governoratesList">
+              <option value="القاهرة"></option>
+              <option value="الجيزة"></option>
+              <option value="الإسكندرية"></option>
+              <option value="الدقهلية"></option>
+              <option value="الشرقية"></option>
+              <option value="القليوبية"></option>
+              <option value="المنوفية"></option>
+              <option value="الغربية"></option>
+              <option value="البحيرة"></option>
+              <option value="كفر الشيخ"></option>
+              <option value="دمياط"></option>
+              <option value="بورسعيد"></option>
+              <option value="الإسماعيلية"></option>
+              <option value="السويس"></option>
+              <option value="شمال سيناء"></option>
+              <option value="جنوب سيناء"></option>
+              <option value="الفيوم"></option>
+              <option value="بني سويف"></option>
+              <option value="المنيا"></option>
+              <option value="أسيوط"></option>
+              <option value="سوهاج"></option>
+              <option value="قنا"></option>
+              <option value="الأقصر"></option>
+              <option value="أسوان"></option>
+              <option value="البحر الأحمر"></option>
+              <option value="الوادي الجديد"></option>
+              <option value="مطروح"></option>
+            </datalist>
+          </div>
+        </div>
+
+        <!-- Tab: Settings -->
+        <div class="tab-panel" data-panel="settings">
+          <div class="form-group">
+            <label class="form-label">الحالة</label>
+            <select class="form-select" id="edit_isActive">
+              <option value="نشط">نشط</option>
+              <option value="غير نشط">غير نشط</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">نسبة الخصم (%)</label>
+            <input type="number" class="form-control" id="edit_discountPercent" min="0" max="100" dir="ltr">
+            <div class="form-hint">النسبة التي يحصل عليها العميل عند استخدام كود المسوق</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">طريقة الإشعارات</label>
+            <select class="form-select" id="edit_notificationMethod">
+              <option value="email">البريد الإلكتروني</option>
+              <option value="telegram">تليجرام</option>
+            </select>
+          </div>
+
+          <div class="telegram-status" id="telegramStatusBox">
+            <i class="fab fa-telegram"></i>
+            <div class="tg-info">
+              <strong id="tgStatusTitle">جاري التحميل...</strong>
+              <small id="tgStatusChat">—</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Stats -->
+        <div class="tab-panel" data-panel="stats">
+          <div class="marketer-stats-grid" id="statsGrid">
+            <div class="loading-state" style="grid-column:1/-1;">
+              <i class="fas fa-spinner fa-spin"></i>
+              <p>جاري التحميل...</p>
+            </div>
+          </div>
+
+          <h4 style="margin-top:20px; margin-bottom:12px; font-size:0.9rem;">آخر العملاء</h4>
+          <ul class="clients-list" id="clientsList">
+            <li style="justify-content:center; color:var(--text-muted);">جاري التحميل...</li>
+          </ul>
+        </div>
+
+        <!-- Tab: Security -->
+        <div class="tab-panel" data-panel="security">
+          <div class="form-group">
+            <label class="form-label">تاريخ التسجيل</label>
+            <div class="locked-field"><input type="text" class="form-control" id="edit_createdAt" readonly></div>
+          </div>
+
+          <button class="btn btn-warning btn-block" id="resetPasswordBtn">
+            <i class="fas fa-key"></i> إعادة تعيين كلمة السر
+          </button>
+          <div class="form-hint" style="margin-top:8px;">
+            سيتم توليد كلمة مرور مؤقتة. انسخها وأبلغها للمسوق.
+          </div>
+
+          <div class="danger-zone">
+            <div class="danger-zone-title">
+              <i class="fas fa-exclamation-triangle"></i>
+              منطقة الخطر
+            </div>
+            <p class="danger-zone-desc">
+              <strong>حذف نهائي:</strong> سيتم حذف المسوق من قاعدة البيانات، وفصل أي أطفال مسجلين بكوده (يبقون في النظام لكن دون مسوق). هذه العملية <strong>لا يمكن التراجع عنها</strong>.
+            </p>
+            <button class="btn btn-danger btn-block" id="hardDeleteMarketerBtn">
+              <i class="fas fa-trash-alt"></i> حذف نهائي (HARD)
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cancelEditBtn">إلغاء</button>
+        <button class="btn btn-primary" id="saveChangesBtn">
+          <i class="fas fa-save"></i> حفظ التغييرات
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="/admin/js/utils.js"></script>
+  <script src="/js/config.js"></script>
+  <script src="/js/error-reporter.js" defer></script>
+  <script src="/admin/js/ui.js"></script>
+  <script src="/admin/js/core.js"></script>
+  <script src="/admin/js/freeze.js"></script>
+  <script src="/admin/js/navbar.js"></script>
+  <script src="/admin/js/marketers.js"></script>
+
+  <script>
+    window.onSessionFrozen = function(info) {
+      if (window.FreezeOverlay) window.FreezeOverlay.show(info);
+    };
+    window.onFreezeUpdate = function(info) {
+      if (window.FreezeOverlay) window.FreezeOverlay.update(info);
+    };
+    window.onSessionUnfrozen = function() {
+      if (window.FreezeOverlay) window.FreezeOverlay.hide();
+      if (window.UI) window.UI.toast.success('تم رفع التجميد.');
+    };
+    window.onAccountDisabled = function() {
+      if (window.FreezeOverlay) window.FreezeOverlay.hide();
+      if (window.UI) {
+        window.UI.toast.error('الحساب معطَّل. تواصل مع superAdmin.', { duration: 0, title: 'معطَّل' });
+      }
+    };
+
+    (async function() {
+      const ok = await window.Core.guard();
+      if (!ok) return;
+
+      await window.Navbar.load('navbarPlaceholder');
+
+      const themeBtn = document.getElementById('themeToggleBtn');
+      if (themeBtn) {
+        themeBtn.addEventListener('click', async function() {
+          await window.Core.toggleTheme();
+        });
+      }
+
+      const reloadBtn = document.getElementById('reloadListBtn');
+      if (reloadBtn) {
+        reloadBtn.addEventListener('click', function() {
+          if (window.MarketersPage) window.MarketersPage.reload();
+        });
+      }
+
+      if (window.MarketersPage) window.MarketersPage.init();
+    })();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,153 @@
+/* ================================================================
+   admin/css/emergency-unlock.css
+   ================================================================ */
+
+body:has(.eu-container) {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+  background: var(--bg-page, #f4f6f9);
+  color: var(--text-primary, #1a1a2e);
+}
+
+.eu-container { width: 100%; max-width: 440px; }
+
+.eu-card {
+  background: var(--bg-card, #ffffff);
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 16px;
+  padding: 36px 28px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.eu-logo {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+  color: #fff;
+  font-size: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+  box-shadow: 0 6px 20px rgba(220, 38, 38, 0.3);
+}
+
+.eu-title {
+  font-size: 1.5rem; font-weight: 700;
+  margin: 0 0 6px;
+  color: var(--text-primary, #1a1a2e);
+}
+
+.eu-desc {
+  font-size: 0.9rem;
+  color: var(--text-secondary, #6b7280);
+  margin: 0 0 24px;
+}
+
+.eu-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  text-align: right;
+}
+
+.eu-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary, #1a1a2e);
+}
+
+.eu-input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid var(--border-color, #e5e7eb);
+  border-radius: 10px;
+  font-size: 1rem;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 1.5px;
+  background: var(--bg-input, #f9fafb);
+  color: var(--text-primary, #1a1a2e);
+  text-align: center;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.eu-input:focus {
+  outline: none;
+  border-color: #dc2626;
+}
+
+.eu-btn {
+  padding: 14px 24px;
+  background: #dc2626;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.eu-btn:hover:not(:disabled) {
+  background: #b91c1c;
+  transform: translateY(-1px);
+}
+
+.eu-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.eu-error {
+  color: #dc2626;
+  font-size: 0.9rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin: 4px 0 0;
+  text-align: center;
+}
+
+.eu-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 0;
+  color: var(--text-secondary, #6b7280);
+}
+
+.eu-status i { font-size: 20px; color: #dc2626; }
+
+.eu-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 22px;
+  padding: 12px 14px;
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  color: #92400e;
+  text-align: right;
+  line-height: 1.5;
+}
+
+.eu-warning i { flex-shrink: 0; margin-top: 3px; }
+
+[data-theme="dark"] .eu-card { box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+[data-theme="dark"] .eu-error { background: rgba(220,38,38,0.15); }
+[data-theme="dark"] .eu-warning { background: rgba(245,158,11,0.15); color: #fcd34d; }

@@ -1,0 +1,63 @@
+/* ============================================================
+   THEME: LIGHT (الوضع النهاري — الافتراضي)
+   ============================================================ */
+
+:root,
+[data-theme="light"] {
+
+    /* ===== الخطوط ===== */
+    --font-main: 'IBM Plex Sans Arabic', 'Cairo', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+
+    /* ===== الألوان الأساسية ===== */
+    --accent: #6366F1;
+    --accent-dark: #4F46E5;
+    --accent-light: #818CF8;
+
+    --success: #10B981;
+    --success-dark: #059669;
+    --warning: #F59E0B;
+    --warning-dark: #D97706;
+    --danger: #EF4444;
+    --danger-dark: #DC2626;
+    --info: #0EA5E9;
+
+    /* ===== الخلفيات ===== */
+    --bg-app: #F1F5F9;
+    --bg-card: #FFFFFF;
+    --bg-hover: #F1F5F9;
+    --bg-active: #E2E8F0;
+    --bg-input: #FFFFFF;
+
+    /* ===== السايدبار ===== */
+    --sidebar-bg: #0F172A;
+    --sidebar-hover: #1E293B;
+    --sidebar-text: #CBD5E1;
+    --sidebar-text-dim: #64748B;
+    --sidebar-border: #1E293B;
+
+    /* ===== النصوص ===== */
+    --text-primary: #0F172A;
+    --text-secondary: #475569;
+    --text-muted: #94A3B8;
+    --text-inverse: #FFFFFF;
+
+    /* ===== الحدود ===== */
+    --border: #E2E8F0;
+    --border-strong: #CBD5E1;
+
+    /* ===== الظلال ===== */
+    --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+    --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+    --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.12);
+
+    /* ===== الأبعاد ===== */
+    --sidebar-width: 260px;
+    --topbar-height: 64px;
+
+    /* ===== الزوايا ===== */
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --radius-xl: 20px;
+}

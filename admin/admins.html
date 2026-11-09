@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>المسؤولون — لوحة الأدمن</title>
+
+  <script>
+    (function() {
+      try {
+        var theme = localStorage.getItem('admin_theme') || 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {}
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/all.min.css">
+
+  <link rel="stylesheet" href="/admin/css/admin.css">
+  <link rel="stylesheet" href="/admin/css/theme-light.css">
+  <link rel="stylesheet" href="/admin/css/theme-dark.css">
+  <link rel="stylesheet" href="/admin/css/components.css">
+  <link rel="stylesheet" href="/admin/css/admins.css">
+</head>
+<body>
+
+  <div class="admin-layout">
+    <div id="navbarPlaceholder"></div>
+
+    <main class="admin-main">
+      <header class="admin-topbar">
+        <button class="topbar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+        <h1 class="topbar-title">المسؤولون</h1>
+        <div class="topbar-actions">
+          <button class="topbar-btn" id="reloadBtn" title="تحديث">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+          <button class="topbar-btn" id="themeToggleBtn" title="تبديل الثيم">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+      </header>
+
+      <div class="admin-content">
+
+        <div class="page-header">
+          <div class="page-header-text">
+            <h1><i class="fas fa-user-shield"></i> إدارة المسؤولين</h1>
+            <p>إنشاء وتعديل حسابات المسؤولين وصلاحياتهم</p>
+          </div>
+          <div class="page-header-actions">
+            <button class="btn btn-primary" id="createAdminBtn">
+              <i class="fas fa-user-plus"></i> مسؤول جديد
+            </button>
+          </div>
+        </div>
+
+        <div class="admins-list" id="adminsList">
+          <div class="admins-loading">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>جاري التحميل...</p>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ============================================================
+       Create Admin Modal
+       ============================================================ -->
+  <div class="modal-overlay" id="createAdminModal" data-static="true">
+    <div class="modal modal-lg">
+
+      <div class="modal-header">
+        <h3 class="modal-title" id="createModalTitle">مسؤول جديد</h3>
+        <button class="modal-close" id="closeCreateModalBtn"><i class="fas fa-times"></i></button>
+      </div>
+
+      <div class="modal-body" id="createModalBody">
+
+        <div class="form-group">
+          <label class="form-label required">الاسم الكامل</label>
+          <input type="text" class="form-control" id="create_fullName" placeholder="مثال: محمد أحمد">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label required">اسم المستخدم</label>
+          <input type="text" class="form-control" id="create_username" dir="ltr" placeholder="مثال: mohamed_admin">
+          <div class="form-hint">3-30 حرفًا إنجليزيًا صغيرًا، أرقام، أو _. لا يمكن تغييره لاحقًا.</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">البريد الإلكتروني</label>
+          <input type="email" class="form-control" id="create_email" dir="ltr" placeholder="user@example.com">
+          <div class="form-hint">سيُرسَل إليه اسم المستخدم وكلمة السر المؤقتة. يمكن تركه فارغًا لكن يُنصح بإضافته.</div>
+        </div>
+
+          <!-- 🆕 إرسال كود الربط بتليجرام -->
+        <div class="form-group" id="createTelegramGroup">
+          <label class="perm-checkbox" style="display:inline-flex; align-items:center; gap:8px; padding:10px 14px; background:rgba(0,136,204,0.06); border-radius:10px; border:1px dashed rgba(0,136,204,0.4); width:100%;">
+            <input type="checkbox" id="create_sendTelegramLink">
+            <span style="font-weight:700;">
+              <i class="fab fa-telegram" style="color:#0088CC;"></i>
+              إرسال كود الربط بتليجرام تلقائياً
+            </span>
+          </label>
+          <div class="form-hint">
+            سيصل رابط للمسؤول على بريده لربط حسابه ببوت تليجرام. يتطلب وجود بريد إلكتروني.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">الصلاحيات</label>
+          <div class="perm-toggle-all">
+            <button type="button" id="createGrantAll">منح الكل</button>
+            <button type="button" id="createRevokeAll">سحب الكل</button>
+          </div>
+          <div class="permissions-grid" id="create_permissionsGrid"></div>
+        </div>
+
+        <div class="admin-temp-result" id="createResultBox" style="display:none;">
+          <h4><i class="fas fa-key"></i> تم إنشاء المسؤول بنجاح</h4>
+          <div class="temp-field">
+            <span class="label">اسم المستخدم:</span>
+            <span class="value" id="createResultUsername">—</span>
+            <button class="copy-btn" data-copy-target="createResultUsername" title="نسخ">
+              <i class="fas fa-copy"></i>
+            </button>
+          </div>
+          <div class="temp-field">
+            <span class="label">كلمة السر المؤقتة:</span>
+            <span class="value" id="createResultPassword">—</span>
+            <button class="copy-btn" data-copy-target="createResultPassword" title="نسخ">
+              <i class="fas fa-copy"></i>
+            </button>
+          </div>
+          <p style="margin:8px 0 0; font-size:0.78rem; color:#78350F; line-height:1.6;">
+            ⚠️ يرجى نسخ كلمة السر الآن وإرسالها للمسؤول — لن تظهر مرة أخرى.
+            المسؤول سيُجبَر على تغييرها عند أول دخول.
+          </p>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cancelCreateBtn">إغلاق</button>
+        <button class="btn btn-primary" id="createBtn">
+          <i class="fas fa-user-plus"></i> إنشاء
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================
+       Edit Admin Modal
+       ============================================================ -->
+  <div class="modal-overlay" id="editAdminModal" data-static="true">
+    <div class="modal modal-lg">
+
+      <div class="modal-header">
+        <h3 class="modal-title" id="editModalTitle">تعديل بيانات المسؤول</h3>
+        <button class="modal-close" id="closeEditModalBtn"><i class="fas fa-times"></i></button>
+      </div>
+
+      <div class="modal-body" id="editModalBody">
+
+        <div class="form-group">
+          <label class="form-label">اسم المستخدم</label>
+          <div class="locked-field">
+            <input type="text" class="form-control" id="edit_username" readonly dir="ltr">
+          </div>
+          <div class="form-hint">لا يمكن تغيير اسم المستخدم.</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label required">الاسم الكامل</label>
+          <input type="text" class="form-control" id="edit_fullName">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">البريد الإلكتروني</label>
+          <input type="email" class="form-control" id="edit_email" dir="ltr">
+        </div>
+
+        <div class="form-group" id="editPermissionsGroup">
+          <label class="form-label">الصلاحيات</label>
+          <div class="perm-toggle-all">
+            <button type="button" id="editGrantAll">منح الكل</button>
+            <button type="button" id="editRevokeAll">سحب الكل</button>
+          </div>
+          <div class="permissions-grid" id="edit_permissionsGrid"></div>
+        </div>
+
+           <!-- 🆕 قسم ربط تليجرام -->
+        <div class="form-group" id="editTelegramGroup">
+          <label class="form-label">
+            <i class="fab fa-telegram" style="color:#0088CC;"></i>
+            ربط تليجرام
+          </label>
+          <div id="editTelegramStatus"></div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cancelEditBtn">إلغاء</button>
+        <button class="btn btn-primary" id="saveEditBtn">
+          <i class="fas fa-save"></i> حفظ التغييرات
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================
+       Reset Password Modal
+       ============================================================ -->
+  <div class="modal-overlay" id="resetPwdModal" data-static="true">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3 class="modal-title">كلمة السر المؤقتة الجديدة</h3>
+        <button class="modal-close" id="closeResetPwdBtn"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:14px; line-height:1.7;">
+          يرجى نسخ كلمة السر الجديدة وإرسالها للمسؤول. سيُجبَر على تغييرها عند أول دخول، وتم إنهاء كل جلساته الحالية.
+        </p>
+        <div class="pwd-display" id="resetPwdValue">—</div>
+        <button class="btn btn-primary btn-block" id="copyResetPwdBtn" style="margin-top:14px;">
+          <i class="fas fa-copy"></i> نسخ كلمة السر
+        </button>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="closeResetPwdBtn2">إغلاق</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/admin/js/utils.js"></script>
+  <script src="/js/config.js"></script>
+  <script src="/js/error-reporter.js" defer></script>
+  <script src="/admin/js/ui.js"></script>
+  <script src="/admin/js/core.js"></script>
+  <script src="/admin/js/freeze.js"></script>
+  <script src="/admin/js/navbar.js"></script>
+  <script src="/admin/js/admins.js"></script>
+
+  <script>
+    window.onSessionFrozen = function(info) {
+      if (window.FreezeOverlay) window.FreezeOverlay.show(info);
+    };
+    window.onFreezeUpdate = function(info) {
+      if (window.FreezeOverlay) window.FreezeOverlay.update(info);
+    };
+    window.onSessionUnfrozen = function() {
+      if (window.FreezeOverlay) window.FreezeOverlay.hide();
+      if (window.UI) window.UI.toast.success('تم رفع التجميد.');
+    };
+    window.onAccountDisabled = function() {
+      if (window.FreezeOverlay) window.FreezeOverlay.hide();
+      if (window.UI) {
+        window.UI.toast.error('الحساب معطَّل. تواصل مع superAdmin.', { duration: 0, title: 'معطَّل' });
+      }
+    };
+
+    (async function() {
+      const ok = await window.Core.guard();
+      if (!ok) return;
+
+      await window.Navbar.load('navbarPlaceholder');
+
+      const themeBtn = document.getElementById('themeToggleBtn');
+      if (themeBtn) {
+        themeBtn.addEventListener('click', async function() {
+          await window.Core.toggleTheme();
+        });
+      }
+
+      const reloadBtn = document.getElementById('reloadBtn');
+      if (reloadBtn) {
+        reloadBtn.addEventListener('click', function() {
+          if (window.AdminsPage) window.AdminsPage.reload();
+        });
+      }
+
+      if (window.AdminsPage) window.AdminsPage.init();
+    })();
+  </script>
+
+</body>
+</html>

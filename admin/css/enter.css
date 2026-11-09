@@ -1,0 +1,121 @@
+/* ================================================================
+   admin/css/enter.css — صفحة استقبال رابط الدخول
+   ================================================================ */
+
+.enter-container {
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+body:has(.enter-container) {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+  background: var(--bg-page, var(--bg-primary, #f4f6f9));
+  color: var(--text-primary, #1a1a2e);
+  margin: 0;
+}
+
+.enter-card {
+  background: var(--bg-card, var(--bg-secondary, #ffffff));
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 16px;
+  padding: 40px 28px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.enter-logo {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  color: #ffffff;
+  font-size: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  box-shadow: 0 6px 20px rgba(79, 70, 229, 0.3);
+}
+
+.enter-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 24px;
+  color: var(--text-primary, #1a1a2e);
+}
+
+.enter-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0;
+}
+
+.enter-spinner {
+  font-size: 36px;
+  color: #4f46e5;
+}
+
+.enter-status-text {
+  font-size: 1rem;
+  color: var(--text-secondary, #6b7280);
+  margin: 0;
+}
+
+.enter-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 0;
+}
+
+.enter-error > i {
+  font-size: 40px;
+  color: #ef4444;
+}
+
+.enter-error p {
+  font-size: 1rem;
+  color: var(--text-primary, #1a1a2e);
+  line-height: 1.6;
+  text-align: center;
+  margin: 0;
+}
+
+.enter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: #229ED9;
+  color: #ffffff;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: background 0.2s ease, transform 0.15s ease;
+  margin-top: 8px;
+}
+
+.enter-btn:hover {
+  background: #1a7fae;
+  transform: translateY(-1px);
+}
+
+/* الوضع الليلي */
+[data-theme="dark"] .enter-card {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .enter-title,
+[data-theme="dark"] .enter-error p {
+  color: var(--text-primary, #f1f5f9);
+}
