@@ -1986,6 +1986,26 @@ document.addEventListener('DOMContentLoaded', function() {
     applyRefCode();
 
     // ============================================================
+    //  🎯 اختيار الخطة تلقائياً من الـ URL (لو المستخدم جاي من الصفحة الرئيسية)
+    // ============================================================
+    const urlParams = new URLSearchParams(window.location.search);
+    const planParam = urlParams.get('plan');
+    
+    if (planParam) {
+        const planSelect = document.getElementById('planSelect');
+        if (planSelect) {
+            // التأكد إن الخطة دي موجودة فعلاً في القائمة
+            const optionExists = Array.from(planSelect.options).some(opt => opt.value === planParam);
+            if (optionExists) {
+                planSelect.value = planParam;
+                // إطلاق حدث التغيير عشان السعر يظهر والإشعارات تشتغل
+                planSelect.dispatchEvent(new Event('change'));
+                console.log(`🎯 تم اختيار الخطة تلقائياً: ${planParam}`);
+            }
+        }
+    }
+
+    // ============================================================
     //  🪗 Accordion Logic (فتح كارت واحد وإغلاق الباقي)
     // ============================================================
     const cards = document.querySelectorAll('.neo-card');
