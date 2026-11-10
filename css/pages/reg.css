@@ -480,7 +480,7 @@
 }
 
 /* ============================================================
-   🏷️ بادج "موصى به بشدة" لاختيار تليجرام
+   🏷️ بادج "موصى به بشدة" لاختيار تليجرام (أزرق سماوي - على اليمين)
    ============================================================ */
 .neo-notif .notification-option-content {
     position: relative; /* ضروري عشان البادج يتركز فوق الكارت */
@@ -489,15 +489,15 @@
 .badge-recommended {
     position: absolute;
     top: -12px;
-    right: 50%;
-    transform: translateX(50%);
-    background: linear-gradient(135deg, #F59E0B, #D97706);
+    right: 15px; /* 👈 رحنا البادج على اليمين */
+    /* تم إزالة transform: translateX عشان ميبقاش في النص */
+    background: linear-gradient(135deg, #0ea5e9, #0284c7); /* 👈 تدرج أزرق سماوي (Sky Blue) */
     color: #ffffff;
     font-size: 0.7rem;
     font-weight: 900;
     padding: 4px 12px;
     border-radius: 20px;
-    box-shadow: 0 4px 10px rgba(245, 158, 11, 0.4);
+    box-shadow: 0 4px 10px rgba(14, 165, 233, 0.4); /* ظل أزرق */
     white-space: nowrap;
     z-index: 10;
     pointer-events: none; /* عشان ميعطلش الضغط على الكارت */
@@ -505,9 +505,9 @@
 }
 
 @keyframes pulseBadge {
-    0% { transform: translateX(50%) scale(1); }
-    50% { transform: translateX(50%) scale(1.05); box-shadow: 0 6px 15px rgba(245, 158, 11, 0.6); }
-    100% { transform: translateX(50%) scale(1); }
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); box-shadow: 0 6px 15px rgba(14, 165, 233, 0.6); }
+    100% { transform: scale(1); }
 }
 
 /* ============================================================
