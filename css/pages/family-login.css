@@ -197,7 +197,8 @@
     border: none !important;
     box-shadow: none !important;
     padding: 14px 18px;
-    padding-left: 50px;
+    padding-right: 50px; /* 👈 مساحة لزر العين على اليمين */
+    padding-left: 18px; /* 👈 مساحة طبيعية للنص على الشمال */
     background: transparent;
     font-size: 1rem;
 }
@@ -209,7 +210,7 @@
 
 .password-field-wrapper .toggle-password {
     position: absolute;
-    left: 8px;
+    right: 8px; /* 👈 الزر اتنقل على اليمين */
     top: 50%;
     transform: translateY(-50%);
     background: transparent;
