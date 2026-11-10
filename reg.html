@@ -180,10 +180,6 @@
                         <input type="tel" id="motherPhone" dir="ltr" inputmode="numeric" pattern="[0-9]*" placeholder="01234567890" maxlength="11" autocomplete="tel">
                         <div class="error-message" id="motherPhoneError">رقم غير صحيح</div>
                     </div>
-                    <div class="form-group">
-                        <label>كود المسوّق (اختياري)</label>
-                        <input type="text" id="marketerIdInput" dir="ltr" placeholder="أدخل الكود إن وجد">
-                    </div>
                     <div class="form-group span-2">
                         <label>ملاحظات خاصة بالطفل</label>
                         <div class="notes-container neo-notes">
@@ -233,6 +229,8 @@
                         <label class="notification-option">
                             <input type="radio" name="notificationMethod" value="telegram" checked>
                             <div class="notification-option-content">
+                                <!-- 👈 إضافة البادج هنا -->
+                                <div class="badge-recommended">🔥 موصى به بشدة</div>
                                 <i class="fab fa-telegram notification-option-icon telegram-icon"></i>
                                 <strong>تليجرام</strong>
                                 <small>إشعارات فورية</small>
@@ -250,7 +248,8 @@
                 </div>
 
                 <div class="neo-grid-3 mt-4">
-                    <div class="form-group span-3">
+                    <!-- 👈 الخطة تاخد مساحة عمودين (span-2) -->
+                    <div class="form-group span-2">
                         <label class="required">اختر الخطة</label>
                         <select id="planSelect" class="neo-select">
                             <option value="">-- اختر الخطة --</option>
@@ -262,6 +261,12 @@
                         <div class="free-notice" id="freeNotice">🎉 عرض مجاني لمدة شهر!</div>
                         <div class="price-display" id="priceDisplay"></div>
                         <div class="error-message" id="planError">يرجى اختيار خطة الاشتراك</div>
+                    </div>
+                    
+                    <!-- 👈 كود المسوق ياخد مساحة عمود واحد (span-1) -->
+                    <div class="form-group span-1">
+                        <label>كود المسوّق (اختياري)</label>
+                        <input type="text" id="marketerIdInput" dir="ltr" placeholder="أدخل الكود إن وجد">
                     </div>
                 </div>
 

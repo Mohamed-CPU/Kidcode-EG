@@ -478,3 +478,43 @@
     .neo-notes .btn-add { padding: 10px; }
     .hero-brand { font-size: 1.8rem; }
 }
+
+/* ============================================================
+   🏷️ بادج "موصى به بشدة" لاختيار تليجرام
+   ============================================================ */
+.neo-notif .notification-option-content {
+    position: relative; /* ضروري عشان البادج يتركز فوق الكارت */
+}
+
+.badge-recommended {
+    position: absolute;
+    top: -12px;
+    right: 50%;
+    transform: translateX(50%);
+    background: linear-gradient(135deg, #F59E0B, #D97706);
+    color: #ffffff;
+    font-size: 0.7rem;
+    font-weight: 900;
+    padding: 4px 12px;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(245, 158, 11, 0.4);
+    white-space: nowrap;
+    z-index: 10;
+    pointer-events: none; /* عشان ميعطلش الضغط على الكارت */
+    animation: pulseBadge 2s infinite;
+}
+
+@keyframes pulseBadge {
+    0% { transform: translateX(50%) scale(1); }
+    50% { transform: translateX(50%) scale(1.05); box-shadow: 0 6px 15px rgba(245, 158, 11, 0.6); }
+    100% { transform: translateX(50%) scale(1); }
+}
+
+/* ============================================================
+   📱 تجاوب حقول الخطة والمسوق مع الموبايل
+   ============================================================ */
+@media (max-width: 768px) {
+    .span-2, .span-1 {
+        grid-column: span 1 !important; /* على الموبايل ياخدوا عرض الشاشة كامل */
+    }
+}
