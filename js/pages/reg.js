@@ -775,7 +775,9 @@ function bindFormValidation() {
                 priceDiv.style.color = 'var(--text-secondary)';
                 const code = marketerField.value.trim().toUpperCase();
                 if (code && code.length >= 2) {
-                    validateMarketerCode(code);
+                offerNotice.classList.remove('show');
+                freeNotice.classList.remove('show');
+                priceDiv.style.display = 'none';
                 }
             } else {
                 priceDiv.style.display = 'none';
