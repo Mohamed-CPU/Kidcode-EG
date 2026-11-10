@@ -1,10 +1,54 @@
 // ================================================================
-//  index.js - الصفحة الرئيسية (نشرة المتطوعين)
+//  index.js - الصفحة الرئيسية (نشرة المتطوعين + العروض)
 // ================================================================
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('📌 index.js تم تحميله');
 
+    // ============================================================
+    //  🎁 التحقق من نفاذ عروض الإطلاق وإخفاء الكارت
+    // ============================================================
+    async function checkLaunchOfferAvailability() {
+        try {
+            const response = await fetch('/api?action=config', { cache: 'no-store' });
+            const config = await response.json();
+
+            // لو العروض المتبقية صفر أو أقل
+            if (config.success && config.remainingOffers <= 0) {
+                console.log('⚠️ عروض الإطلاق نفذت، جاري إخفاء الكارت والعمود...');
+
+                // 1. إخفاء الكارت من قسم الأسعار
+                const launchCard = document.querySelector('.product-launch');
+                if (launchCard) launchCard.style.display = 'none';
+
+                // 2. إخفاء عمود "الإطلاق" من جدول المقارنة
+                const launchHeaders = document.querySelectorAll('.launch-col');
+                launchHeaders.forEach(th => th.style.display = 'none');
+
+                // إخفاء خلايا العمود الثاني في كل صفوف الجدول (ما عدا صفوف العناوين)
+                const tableRows = document.querySelectorAll('.comparison-table tbody tr:not(.category-row)');
+                tableRows.forEach(row => {
+                    const launchCell = row.querySelector('td:nth-child(2)');
+                    if (launchCell) launchCell.style.display = 'none';
+                });
+
+                // 3. تعديل شكل الشبكة (Grid) عشان تبقى كارتين بس في النص
+                const productsGrid = document.querySelector('.products-grid');
+                if (productsGrid) {
+                    productsGrid.classList.add('grid-2-cols');
+                }
+            }
+        } catch (error) {
+            console.warn('⚠️ فشل التحقق من حالة العروض:', error);
+        }
+    }
+
+    // تشغيل الدالة فور تحميل الصفحة
+    checkLaunchOfferAvailability();
+
+    // ============================================================
+    //  باقي الكود الخاص بنشرة المتطوعين (زي ما هو)
+    // ============================================================
     const form = document.getElementById('newsletterForm');
     const nameInput = document.getElementById('volunteerName');
     const emailInput = document.getElementById('volunteerEmail');
