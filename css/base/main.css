@@ -496,7 +496,7 @@ input[type="tel"],
 textarea,
 select {
     direction: rtl;
-    text-align: left;
+    text-align: right;
 }
 
 /* 2. الحقول الإنجليزية والأرقام وكلمات السر (LTR) */
