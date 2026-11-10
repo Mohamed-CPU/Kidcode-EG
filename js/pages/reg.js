@@ -328,10 +328,8 @@ function validateField(fieldId) {
             }
             break;
         case 'birthDate':
-            const bDateVal = document.getElementById('birthDate').value;
-            const isDateValid = /^\d{2}\/\d{2}\/\d{4}$/.test(bDateVal);
-            if (!isDateValid) {
-                Utils.showFieldError('date', '📅 يرجى إدخال التاريخ بشكل صحيح (DD/MM/YYYY)');
+            if (!document.getElementById('birthDate').value) {
+                Utils.showFieldError('date', '📅 يرجى اختيار تاريخ الميلاد');
                 valid = false;
             } else {
                 Utils.hideFieldError('date');
@@ -425,8 +423,7 @@ function validateForm() {
         const imageFile = document.getElementById('childImage').files[0];
         const imageValid = imageFile && imageFile.size <= 5 * 1024 * 1024;
         const nameValid = Utils.validateFullName(document.getElementById('childName').value);
-        const bDate = document.getElementById('birthDate').value;
-        const birthValid = /^\d{2}\/\d{2}\/\d{4}$/.test(bDate);
+        const birthValid = !!document.getElementById('birthDate').value;
         const mapsUrl = document.getElementById('googleMapsAddress').value.trim();
         const mapsValid = mapsUrl === '' || Utils.validateGoogleMaps(mapsUrl);
         const detailedValid = !!document.getElementById('detailedAddress').value.trim();
@@ -726,25 +723,8 @@ function bindFormValidation() {
         document.getElementById('childName').addEventListener('blur', () => { validateField('childName'); });
         document.getElementById('childName').addEventListener('input', updateSubmitState);
 
-        // 👈 إضافة قناع إدخال تاريخ الميلاد (DD/MM/YYYY)
-        const birthDateInput = document.getElementById('birthDate');
-        if (birthDateInput) {
-            birthDateInput.addEventListener('input', function(e) {
-                let value = e.target.value.replace(/\D/g, ''); // مسح أي حاجة مش رقم
-                if (value.length > 8) value = value.slice(0, 8); // أقصى عدد 8 أرقام
-
-                let formatted = '';
-                if (value.length > 0) formatted += value.substring(0, 2);
-                if (value.length > 2) formatted += '/' + value.substring(2, 4);
-                if (value.length > 4) formatted += '/' + value.substring(4, 8);
-
-                e.target.value = formatted;
-            });
-        }
-
-        // ربط أحداث التحقق
+        document.getElementById('birthDate').addEventListener('change', () => { validateField('birthDate'); updateSubmitState(); });
         document.getElementById('birthDate').addEventListener('blur', () => { validateField('birthDate'); });
-        document.getElementById('birthDate').addEventListener('input', updateSubmitState);
 
         document.getElementById('googleMapsAddress').addEventListener('blur', () => { validateField('googleMapsAddress'); });
         document.getElementById('googleMapsAddress').addEventListener('input', updateSubmitState);
@@ -1754,16 +1734,7 @@ async function submitData(e) {
         const params = new URLSearchParams();
         params.append('action', 'register');
         params.append('childName', Utils.processAbdName(document.getElementById('childName').value).join(' '));
-        // 👈 تحويل التاريخ من DD/MM/YYYY إلى YYYY-MM-DD للمخدم
-        const birthDateRaw = document.getElementById('birthDate').value;
-        let birthDateFormatted = '';
-        if (birthDateRaw) {
-            const parts = birthDateRaw.split('/');
-            if (parts.length === 3) {
-                birthDateFormatted = `${parts[2]}-${parts[1]}-${parts[0]}`;
-            }
-        }
-        params.append('birthDate', birthDateFormatted);
+        params.append('birthDate', document.getElementById('birthDate').value);
         params.append('googleMapsAddress', document.getElementById('googleMapsAddress').value);
         params.append('detailedAddress', document.getElementById('detailedAddress').value);
         params.append('fatherPhone', fatherPhoneObj ? fatherPhoneObj.international : '');
