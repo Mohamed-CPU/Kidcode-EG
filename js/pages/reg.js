@@ -2006,7 +2006,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ============================================================
-    //  🪗 Accordion Logic (فتح كارت واحد وإغلاق الباقي)
+    //  🪗 Accordion Logic (فتح كارت واحد وإغلاق الباقي + السماح بقفل الكل)
     // ============================================================
     const cards = document.querySelectorAll('.neo-card');
     
@@ -2019,15 +2019,16 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.neo-card-header').forEach(header => {
         header.addEventListener('click', function() {
             const card = this.closest('.neo-card');
-            
-            // لو الكارت مفتوح أصلاً، مفيش داعي نعمله حاجة
-            if (card.classList.contains('active')) return;
+            const isActive = card.classList.contains('active');
 
-            // نقفل كل الكروت (هتتقفل بنعومة بسبب الـ CSS)
+            // 1. نقفل كل الكروت الأول (بما فيهم الكارت اللي اتضغط عليه لو كان مفتوح)
             cards.forEach(c => c.classList.remove('active'));
             
-            // نفتح الكارت اللي اتضغط عليه (هيفتح بنعومة)
-            card.classList.add('active');
+            // 2. لو الكارت اللي اتضغط عليه كان مقفول، نفتحه
+            // (لو كان مفتوح، الكود فوق قفله وهيفضل مقفول)
+            if (!isActive) {
+                card.classList.add('active');
+            }
         });
     });
 });

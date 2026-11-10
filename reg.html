@@ -28,7 +28,7 @@
     <div class="container neo-container">
         
         <!-- عنوان الصفحة -->
-        <h1 class="page-title">سجّل طفلك</h1>
+        <h1 class="page-title">سجّل بيانات طفلك</h1>
 
         <!-- Card 1: الصور -->
         <div class="neo-card active">
@@ -41,6 +41,7 @@
             </div>
             
             <div class="neo-card-body">
+            <div class="neo-card-body-inner"> <!-- 👈 ضيف السطر ده -->
                 <div class="neo-image-grid">
                     <!-- صورة الطفل -->
                     <div class="form-group">
@@ -111,6 +112,7 @@
                     </div>
                 </div>
             </div>
+            </div>
         </div>
 
         <!-- Card 2: البيانات الأساسية -->
@@ -124,6 +126,7 @@
             </div>
             
             <div class="neo-card-body">
+            <div class="neo-card-body-inner"> <!-- 👈 ضيف السطر ده -->
                 <div class="neo-grid-3">
                     <div class="form-group">
                         <label class="required">اسم الطفل رباعي</label>
@@ -151,6 +154,7 @@
                     </div>
                 </div>
             </div>
+            </div>
         </div>
 
         <!-- Card 3: التواصل والأمان -->
@@ -164,6 +168,7 @@
             </div>
             
             <div class="neo-card-body">
+            <div class="neo-card-body-inner"> <!-- 👈 ضيف السطر ده -->
                 <div class="neo-grid-3">
                     <div class="form-group">
                         <label>رقم هاتف الأب (واتساب)</label>
@@ -207,6 +212,7 @@
                     </div>
                 </div>
             </div>
+            </div>
         </div>
 
         <!-- Card 4: الاشتراك -->
@@ -220,6 +226,7 @@
             </div>
             
             <div class="neo-card-body">
+            <div class="neo-card-body-inner"> <!-- 👈 ضيف السطر ده -->
                 <div class="form-group">
                     <label class="required">طريقة استلام الإشعارات</label>
                     <div class="notification-methods neo-notif">
@@ -273,7 +280,7 @@
                     </div>
                 </div>
 
-                <button class="submit-btn neo-submit" id="submitBtn">تسجيل البيانات والاشتراك</button>
+                <button class="submit-btn neo-submit" id="submitBtn" disabled>تسجيل البيانات والاشتراك</button>
                 <div class="loading" id="loading">⏳ جاري حفظ البيانات...</div>
 
                 <div class="result-box" id="resultBox">
@@ -281,8 +288,8 @@
                     <div id="resultMessage"></div>
                 </div>
             </div>
+            </div>
         </div>
-
     </div>
 </main>
 
