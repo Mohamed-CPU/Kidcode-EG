@@ -1509,9 +1509,11 @@
 .comparison-table .cell-text.priority {
     color: #8B5CF6;
     font-weight: 800;
-    display: inline-flex;
+    display: flex; /* 👈 غيرناها من inline-flex لـ flex */
+    justify-content: center; /* 👈 عشان نوسّط المحتوى بالظبط */
     align-items: center;
     gap: 4px;
+    width: 100%; /* 👈 تاخد عرض الخلية بالكامل عشان التوسيط يظبط */
 }
 
 .comparison-table .cell-text.priority i {
