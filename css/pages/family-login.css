@@ -164,6 +164,12 @@
     font-size: 1rem;
 }
 
+/* 👈 إجبار حقل الكود على اتجاه LTR */
+.login-card .id-input-field {
+    direction: ltr !important;
+    text-align: left !important;
+}
+
 .id-field-wrapper.readonly {
     background: #f3f4f6;
     opacity: 0.85;
