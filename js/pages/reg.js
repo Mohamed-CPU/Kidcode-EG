@@ -775,11 +775,12 @@ function bindFormValidation() {
                 priceDiv.style.color = 'var(--text-secondary)';
                 const code = marketerField.value.trim().toUpperCase();
                 if (code && code.length >= 2) {
-                offerNotice.classList.remove('show');
-                freeNotice.classList.remove('show');
-                priceDiv.style.display = 'none';
+                    validateMarketerCode(code);
                 }
             } else {
+                // 👈 التعديل هنا: إخفاء إشعارات العرض المجاني والسعر
+                offerNotice.classList.remove('show');
+                freeNotice.classList.remove('show');
                 priceDiv.style.display = 'none';
             }
             // ✅ حدّث الـ badge حسب الخطة
