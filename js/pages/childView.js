@@ -210,6 +210,12 @@ async function fetchTokenAndData() {
                 tokenExpiryTime = (window.Utils && typeof window.Utils.parseToDate === 'function')
                     ? window.Utils.parseToDate(data.expiresAt)
                     : new Date(data.expiresAt);
+
+                // 🔧 حماية: لو الناتج غير صالح → fallback 5 دقائق
+                if (!tokenExpiryTime || isNaN(tokenExpiryTime.getTime())) {
+                    console.warn('⚠️ [Timer] expiresAt غير صالح، fallback 5 دقائق:', data.expiresAt);
+                    tokenExpiryTime = new Date(Date.now() + 5 * 60 * 1000);
+                }
             } else {
                 // Fallback لو الخادم ما بعتش (نسخة قديمة)
                 tokenExpiryTime = new Date(Date.now() + 5 * 60 * 1000);
@@ -546,7 +552,11 @@ function showError(message) {
 }
 
 function startTokenTimer() {
-    if (!tokenExpiryTime) return;
+    // 🔧 حماية: لو tokenExpiryTime غير صالح → fallback 5 دقائق
+    if (!tokenExpiryTime || isNaN(tokenExpiryTime.getTime())) {
+        console.warn('⚠️ [Timer] tokenExpiryTime غير صالح — fallback 5 دقائق');
+        tokenExpiryTime = new Date(Date.now() + 5 * 60 * 1000);
+    }
 
     // ✅ مسح أي interval قديم قبل بدء واحد جديد
     if (window.__tokenTimerInterval) {
@@ -554,7 +564,7 @@ function startTokenTimer() {
         window.__tokenTimerInterval = null;
     }
 
-    // ✅ اربط visibility check (مرة واحدة)
+    // ✅ اربط visibility check + pageshow (مرة واحدة)
     bindVisibilityCheckForToken();
 
     window.__tokenTimerInterval = setInterval(function() {
@@ -590,41 +600,103 @@ function startTokenTimer() {
 }
 
 // ============================================================
-//  👁️ فحص فوري عند رجوع التاب (للموبايل)
-//  - لما المستخدم يرجع للتاب، نتحقق إذا كان الوقت انتهى
+//  👁️ فحص فوري عند رجوع التاب (للموبايل + bfcache + سيرفر)
+//  - فحص محلي فوري (tokenExpiryTime)
+//  - + فحص سيرفر (الحكم النهائي — يحمي من ساعة الجهاز الغلط)
+//  - + pageshow لمعالجة استرجاع bfcache
 // ============================================================
 function bindVisibilityCheckForToken() {
     if (window.__tokenVisibilityBound) return;
     window.__tokenVisibilityBound = true;
 
-    function checkNow() {
+    function showExpiredOnce() {
+        if (window.__timeoutModalShown) return;
+        window.__timeoutModalShown = true;
+
+        if (window.__tokenTimerInterval) {
+            clearInterval(window.__tokenTimerInterval);
+            window.__tokenTimerInterval = null;
+        }
+        if (window.__locationTrackingInterval) {
+            clearTimeout(window.__locationTrackingInterval);
+            window.__locationTrackingInterval = null;
+        }
+        try {
+            const tokenToStore = childInfo.demoToken || childInfo.token || 'demo';
+            sessionStorage.setItem('kc_session_expired_token', tokenToStore);
+            sessionStorage.setItem('kc_session_expired_at', new Date().toISOString());
+        } catch (e) {}
+        showTimeoutModal();
+    }
+
+    function checkLocalNow() {
         if (!tokenExpiryTime) return;
         const remaining = tokenExpiryTime.getTime() - Date.now();
         if (remaining <= 0) {
             console.log('⏰ [Visibility] الوقت انتهى — عرض المودال');
-            if (window.__tokenTimerInterval) {
-                clearInterval(window.__tokenTimerInterval);
-                window.__tokenTimerInterval = null;
-            }
-            if (window.__locationTrackingInterval) {
-                clearTimeout(window.__locationTrackingInterval);
-                window.__locationTrackingInterval = null;
-            }
-            try {
-                const tokenToStore = childInfo.demoToken || childInfo.token || 'demo';
-                sessionStorage.setItem('kc_session_expired_token', tokenToStore);
-                sessionStorage.setItem('kc_session_expired_at', new Date().toISOString());
-            } catch (e) {}
-            showTimeoutModal();
+            showExpiredOnce();
         }
+    }
+
+    // 🔧 NEW: فحص سيرفر — المرجع النهائي مهما كانت ساعة الجهاز
+    function checkServerNow() {
+        if (!childInfo.id || !childInfo.token) return;
+
+        let url = '/api?action=child&id=' + encodeURIComponent(childInfo.id) +
+                  '&tempToken=' + encodeURIComponent(childInfo.token) +
+                  '&_t=' + Date.now();
+        if (childInfo.demoToken) {
+            url += '&demo=' + encodeURIComponent(childInfo.demoToken);
+        }
+
+        fetch(url, { cache: 'no-store' })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (data && data.success === false) {
+                    const code = data.code || data.error || '';
+                    if (code === 'invalid_token' ||
+                        code === 'invalid_or_expired_token' ||
+                        code === 'demo_session_expired') {
+                        console.log('🚫 [Visibility] السيرفر أكد انتهاء التوكن — عرض المودال');
+                        showExpiredOnce();
+                    }
+                } else if (data && data.success === true && data.expiresAt) {
+                    // تحديث tokenExpiryTime لو السيرفر رجّع قيمة جديدة
+                    const newExpiry = (window.Utils && typeof window.Utils.parseToDate === 'function')
+                        ? window.Utils.parseToDate(data.expiresAt)
+                        : new Date(data.expiresAt);
+                    if (newExpiry && !isNaN(newExpiry.getTime())) {
+                        tokenExpiryTime = newExpiry;
+                    }
+                }
+            })
+            .catch(function() { /* فشل صامت */ });
     }
 
     document.addEventListener('visibilitychange', function() {
         if (document.hidden) return;
-        checkNow();
+        checkLocalNow();
+        checkServerNow();
     });
 
-    window.addEventListener('focus', checkNow);
+    window.addEventListener('focus', function() {
+        checkLocalNow();
+        checkServerNow();
+    });
+
+    // 🔧 NEW: معالجة استرجاع bfcache (زر الرجوع / الرجوع للتاب)
+    window.addEventListener('pageshow', function(event) {
+        if (!event.persisted) return;
+        console.log('🔄 [Timer] استرجاع من bfcache — إعادة فحص');
+        checkLocalNow();
+        checkServerNow();
+
+        // لو المؤقت مات (بسبب beforeunload) نعيد تشغيله
+        if (!window.__tokenTimerInterval && tokenExpiryTime &&
+            tokenExpiryTime.getTime() > Date.now()) {
+            startTokenTimer();
+        }
+    });
 }
 
 // ============================================================
