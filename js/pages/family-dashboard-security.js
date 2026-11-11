@@ -132,7 +132,11 @@
                 }
                 if (els.faceDataStatusDetail) {
                     els.faceDataStatusDetail.innerHTML =
-                        '📅 آخر تحديث: ' + (Utils.formatDateOnly(result.updatedAt) || '--');
+                        '📅 آخر تحديث: ' + (
+                            (window.Utils && typeof Utils.formatCairoDateTime === 'function')
+                                ? (Utils.formatCairoDateTime(result.updatedAt) || '--')
+                                : (Utils.formatDateTime(result.updatedAt) || '--')
+                        );
                 }
                 if (els.deleteFaceBtn) els.deleteFaceBtn.style.display = 'flex';
                 if (els.uploadFaceBtn) {

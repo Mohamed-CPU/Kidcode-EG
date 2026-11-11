@@ -323,12 +323,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function formatShortDate(dateStr) {
     if (!dateStr) return '--';
+
+    // ✅ صيغة عربية موحدة: "الأربعاء، 11 نوفمبر 2026"
+    if (window.Utils && typeof Utils.formatCairoDate === 'function') {
+        try {
+            const formatted = Utils.formatCairoDate(dateStr);
+            if (formatted && formatted !== String(dateStr)) return formatted;
+        } catch (e) {}
+    }
+
+    // Fallback: صيغة مختصرة (بدون يوم الأسبوع)
     try {
-        // ✅ تحويل من UTC لتوقيت القاهرة
         const parts = Utils.getCairoTimeParts(dateStr);
         if (!parts) return String(dateStr);
 
-        const months = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+        // ✅ نفس قائمة Utils (بدون همزات)
+        const months = ['يناير', 'فبراير', 'مارس', 'ابريل', 'مايو', 'يونيو',
+                        'يوليو', 'اغسطس', 'سبتمبر', 'اكتوبر', 'نوفمبر', 'ديسمبر'];
         const d = parseInt(parts.day, 10);
         const m = parseInt(parts.month, 10) - 1;
         const y = parts.year;

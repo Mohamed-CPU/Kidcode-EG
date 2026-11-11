@@ -200,13 +200,6 @@
         }
     }
 
-    // ✅ Helper: أخفي الـ initial loader بأمان
-    function hideInitialLoaderIfExists() {
-        if (getFD() && typeof getFD().hideInitialLoader === 'function') {
-            getFD().hideInitialLoader();
-        }
-    }
-
     // ============================================================
     //  🧹 Helper: امسح Cache بيانات الطفل
     //  - يُستخدم بعد Disable / Enable / Update
@@ -499,10 +492,21 @@
     }
 
     // ============================================================
-    //  Helper: تنسيق تاريخ قصير (YYYY-MM-DD)
+    //  Helper: تنسيق تاريخ قصير بتوقيت القاهرة
+    //  ✅ يستخدم Utils.formatCairoDate للعرض العربي الموحد
     // ============================================================
     function formatShortDate(value) {
         if (!value) return '—';
+
+        // ✅ الأولوية للعرض العربي الموحد (زي باقي الصفحات)
+        if (window.Utils && typeof Utils.formatCairoDate === 'function') {
+            try {
+                const result = Utils.formatCairoDate(value);
+                if (result && result !== String(value)) return result;
+            } catch (e) {}
+        }
+
+        // Fallback: النسخة القديمة
         try {
             const d = new Date(value);
             if (isNaN(d.getTime())) return String(value).split(' ')[0];

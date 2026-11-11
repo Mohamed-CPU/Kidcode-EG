@@ -150,7 +150,12 @@
             notLinked.style.display = 'none';
             linked.style.display = 'flex';
             chatDetail.textContent = 'Chat ID: ' + (data.chatId || '---');
-            sinceDetail.textContent = 'منذ: ' + (Utils.formatDateOnly(data.linkedAt) || '---');
+            // ✅ الصيغة العربية الكاملة: "منذ: الأربعاء، 11 نوفمبر 2026"
+            sinceDetail.textContent = 'منذ: ' + (
+                (window.Utils && typeof Utils.formatCairoDate === 'function')
+                    ? (Utils.formatCairoDate(data.linkedAt) || '---')
+                    : (Utils.formatDateOnly(data.linkedAt) || '---')
+            );
         } else {
             statusBadge.className = 'fd-parent-badge not-linked';
             statusBadge.innerHTML = '⏳ غير مربوط';

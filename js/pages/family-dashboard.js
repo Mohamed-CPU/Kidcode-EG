@@ -823,19 +823,7 @@ function broadcastSessionTerminated() {
         let sessionExpiryTimerId = null;
 
         // ✅ اقرأ expiry من sessionStorage أو localStorage
-        function getSessionExpiry() {
-            try {
-                const stored = sessionStorage.getItem('family_session_expiry')
-                             || localStorage.getItem('family_session_expiry');
-                if (!stored) return null;
-                const t = new Date(stored).getTime();
-                return isNaN(t) ? null : t;
-            } catch (e) {
-                return null;
-            }
-        }
-
-        // ✅ اقرأ expiry من sessionStorage أو localStorage
+        //    القيمة لازم تكون ISO UTC (من family-login.js)
         function getSessionExpiry() {
             try {
                 const stored = sessionStorage.getItem('family_session_expiry')

@@ -1,6 +1,7 @@
 // ================================================================
 //  utils.js - الدوال المساعدة المشتركة بين كل الصفحات
-//  تم توحيد جميع الدوال المكررة في ملف واحد (DRY)
+//  - النسخة الموحّدة بعد Migration: كل التواريخ UTC في DB
+//  - دوال العرض الجديدة: Cairo display بالعربي
 // ================================================================
 
 // ============================================================
@@ -291,7 +292,7 @@ function formatLocal(digits) {
 }
 
 // ============================================================
-//  8. دوال التاريخ (للـ dashboard)
+//  8. دوال حساب العمر والمدة
 // ============================================================
 
 /**
@@ -344,14 +345,7 @@ function calculateAgeFromBirthDate(birthDateStr) {
 }
 
 /**
- * تنسيق المدة المتبقية بالأيام
- */
-/**
- * صياغة عدد مع وحدة زمنية وفق قواعد العدد في اللغة العربية:
- * - المفرد: "شهر"
- * - المثنى: "شهران"
- * - الجمع (3-10): "3 شهور"
- * - 11 فأكثر: "11 شهر" (المعدود مفرد)
+ * صياغة عدد مع وحدة زمنية وفق قواعد العدد في اللغة العربية
  */
 function formatArabicCount(count, forms) {
     if (count === 1) return forms.singular;
@@ -360,6 +354,9 @@ function formatArabicCount(count, forms) {
     return count + ' ' + forms.singular;
 }
 
+/**
+ * تنسيق المدة المتبقية بالأيام
+ */
 function formatDuration(days) {
     if (days === null || days === undefined || days === '') return 'غير متاح';
     if (typeof days === 'string') days = parseInt(days, 10);
@@ -419,7 +416,6 @@ function getSafeErrorMessage(err) {
     if (err.message && typeof err.message === 'string') {
         return err.message;
     }
-    // ✅ ES5-safe: منع Optional Chaining لدعم المتصفحات القديمة (Dolphin)
     var ctorName = (err.constructor && err.constructor.name) ? err.constructor.name : '';
     if (err.type || err.target || ctorName === 'ProgressEvent') {
         return '⚠️ حدث خطأ في الاتصال بالشبكة. يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى.';
@@ -485,7 +481,7 @@ function updateMarketerName() {
 }
 
 // ============================================================
-//  12. دوال العلامات المميزة (للـ childView)
+//  12. دوال تسجيل الموقع
 // ============================================================
 
 /**
@@ -524,105 +520,93 @@ function sendLocationToServer(childInfo, lat, lng, source, clientIP, apiUrl) {
     });
 }
 
-// تصدير الدوال للاستخدام في باقي الملفات
-if (typeof window !== 'undefined') {
-    window.Utils = {
-        normalizeEgyptPhone,
-        internationalToLocal,
-        formatPhoneLocal,
-        formatPhoneInternational,
-        processAbdName,
-        normalizeAbdName,
-        validateFullName,
-        preventNonArabic,
-        preventSpaceAfterAbd,
-        autoMergeAbd,
-        isArabicOnly,
-        fileToBase64,
-        compressImage,
-        validateGoogleMaps,
-        showFieldError,
-        hideFieldError,
-        restrictMarketerId,
-        restrictMarketerInput,
-        formatInternational,
-        formatLocal,
-        calculateAgeFromBirthDate,
-        formatDuration,
-        formatArabicCount,
-        getSafeErrorMessage,
-        handleFilePreview,
-        checkMarketerSession,
-        updateMarketerName,
-        sendLocationToServer,
-        parseToDate,
-        getCairoTimeParts,
-        formatDateTime,
-        formatDateOnly
-    };
-
-    console.log('✅ utils.js: بدء تعريف window.Utils');
-    // ... تعريف window.Utils ...
-    console.log('✅ utils.js: تم تعريف window.Utils بنجاح');
-}
-
 // ============================================================
-//  13. دوال التواريخ (التوقيت الموحد - توقيت القاهرة)
-//  ⚠️ أي timestamp من Supabase هو UTC → نحوّله للقاهرة
+//  13. دوال التواريخ (التوقيت الموحد - Cairo display)
+//  ⚠️ بعد Migration: Supabase بيرجع ISO UTC (مع Z)
+//  → parseToDate بتفهمها مباشرة، ثم Intl يعرض Cairo
 // ============================================================
+
+// ─────────────────────────────────────────────────────────────
+//  القوائم المرجعية (شهور وأيام بالعربي بدون همزات)
+// ─────────────────────────────────────────────────────────────
+var CAIRO_MONTHS_AR = [
+    'يناير', 'فبراير', 'مارس', 'ابريل', 'مايو', 'يونيو',
+    'يوليو', 'اغسطس', 'سبتمبر', 'اكتوبر', 'نوفمبر', 'ديسمبر'
+];
+
+var CAIRO_DAYS_AR = [
+    'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'
+];
 
 /**
- * parseToDate — تحويل أي قيمة إلى Date مع افتراض UTC
+ * parseToDate — تحويل أي قيمة إلى Date
+ * بعد Migration، Supabase بيرجع ISO UTC (مع Z)
+ * → new Date() كافي. مُبقاة للتوافق مع القيم القديمة.
  */
 function parseToDate(value) {
     if (!value) return null;
-    if (value instanceof Date) return value;
-    if (typeof value === 'number') return new Date(value);
-
-    const str = String(value).trim();
-    if (!str) return null;
-
-    // ISO كامل (فيه T و Z أو offset)
-    if (str.includes('T') && (str.endsWith('Z') || /[+-]\d{2}:?\d{2}$/.test(str))) {
-        return new Date(str);
+    if (value instanceof Date) return isNaN(value.getTime()) ? null : value;
+    if (typeof value === 'number') {
+        var dn = new Date(value);
+        return isNaN(dn.getTime()) ? null : dn;
     }
 
-    // "YYYY-MM-DD HH:MM:SS[.ms]" — نعتبرها UTC
+    var str = String(value).trim();
+    if (!str) return null;
+
+    // ISO كامل (مع Z أو offset) — الحالة الطبيعية بعد Migration
+    if (/[Zz]$/.test(str) || /[+-]\d{2}:?\d{2}$/.test(str)) {
+        var d = new Date(str);
+        return isNaN(d.getTime()) ? null : d;
+    }
+
+    // "YYYY-MM-DD HH:MM:SS[.ms]" — backward compat للقيم القديمة
     if (/^\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}(:\d{2})?(\.\d+)?$/.test(str)) {
-        return new Date(str.replace(' ', 'T') + 'Z');
+        var d2 = new Date(str.replace(' ', 'T') + 'Z');
+        return isNaN(d2.getTime()) ? null : d2;
     }
 
     // "YYYY-MM-DD" — بداية اليوم UTC
     if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
-        return new Date(str + 'T00:00:00Z');
+        var d3 = new Date(str + 'T00:00:00Z');
+        return isNaN(d3.getTime()) ? null : d3;
     }
 
     // Fallback
-    return new Date(str);
+    var d4 = new Date(str);
+    return isNaN(d4.getTime()) ? null : d4;
 }
 
 /**
  * getCairoTimeParts — استخراج أجزاء الوقت (Cairo) من قيمة
- * يُرجِع { year, month, day, hour, minute, second } كلها strings
+ * يُرجِع { year, month, day, hour, minute, second, dayOfWeek }
+ * ملاحظة: month/day/hour/minute/second كلها strings ("01" لـ "12")
+ * dayOfWeek رقم (0 = الأحد، 6 = السبت)
  */
 function getCairoTimeParts(value) {
-    const d = parseToDate(value);
-    if (!d || isNaN(d.getTime())) return null;
+    var d = parseToDate(value);
+    if (!d) return null;
 
-    const parts = new Intl.DateTimeFormat('en-GB', {
+    var parts = new Intl.DateTimeFormat('en-US', {
         timeZone: 'Africa/Cairo',
         year: 'numeric', month: '2-digit', day: '2-digit',
         hour: '2-digit', minute: '2-digit', second: '2-digit',
+        weekday: 'short',
         hour12: false
     }).formatToParts(d);
 
-    const get = function(type) {
-        const p = parts.find(function(x) { return x.type === type; });
+    var get = function(type) {
+        var p = parts.find(function(x) { return x.type === type; });
         return p ? p.value : '';
     };
 
-    let hh = get('hour');
+    var hh = get('hour');
     if (hh === '24') hh = '00';
+
+    var weekdayShort = get('weekday');
+    var DOW_MAP = { 'Sun': 0, 'Mon': 1, 'Tue': 2, 'Wed': 3, 'Thu': 4, 'Fri': 5, 'Sat': 6 };
+    var dow = DOW_MAP[weekdayShort];
+    if (dow === undefined) dow = 0;
 
     return {
         year: get('year'),
@@ -630,16 +614,156 @@ function getCairoTimeParts(value) {
         day: get('day'),
         hour: hh,
         minute: get('minute'),
-        second: get('second')
+        second: get('second'),
+        dayOfWeek: dow
     };
 }
 
 /**
+ * formatTime12Arabic — تحويل الساعة والدقيقة لصيغة 12 ساعة عربية
+ * - 00:00 → "12:00 منتصف الليل"
+ * - 12:00 → "12:00 ظهراً"
+ * - 00:01–11:59 → "HH:MM صباحاً"
+ * - 12:01–23:59 → "HH:MM مساءً"
+ */
+function formatTime12Arabic(hour24, minute) {
+    var h = parseInt(hour24, 10);
+    var m = String(minute).padStart(2, '0');
+
+    // الحالة الخاصة: منتصف الليل (00:00)
+    if (h === 0 && m === '00') {
+        return '12:00 منتصف الليل';
+    }
+    // الحالة الخاصة: ظهراً (12:00)
+    if (h === 12 && m === '00') {
+        return '12:00 ظهراً';
+    }
+
+    var hour12;
+    var period;
+
+    if (h === 0) {
+        hour12 = 12;
+        period = 'صباحاً';
+    } else if (h < 12) {
+        hour12 = h;
+        period = 'صباحاً';
+    } else if (h === 12) {
+        hour12 = 12;
+        period = 'مساءً';
+    } else {
+        hour12 = h - 12;
+        period = 'مساءً';
+    }
+
+    var hh = String(hour12).padStart(2, '0');
+    return hh + ':' + m + ' ' + period;
+}
+
+/**
+ * formatCairoTime — "02:00 مساءً" (بدون ثواني)
+ * @example formatCairoTime('2026-11-12T14:00:00Z') → "04:00 مساءً"
+ * @example formatCairoTime('2026-11-12T00:00:00Z') → "02:00 صباحاً" (لأنها Cairo 02:00)
+ */
+function formatCairoTime(value) {
+    if (!value) return '';
+    var parts = getCairoTimeParts(value);
+    if (!parts) return String(value);
+    return formatTime12Arabic(parts.hour, parts.minute);
+}
+
+/**
+ * formatCairoTimeLong — "02:00:35 مساءً" (مع ثواني)
+ */
+function formatCairoTimeLong(value) {
+    if (!value) return '';
+    var parts = getCairoTimeParts(value);
+    if (!parts) return String(value);
+
+    var h = parseInt(parts.hour, 10);
+    var m = parts.minute;
+    var s = parts.second;
+
+    // نفس الحالات الخاصة (بناءً على الساعة والدقيقة)
+    if (h === 0 && m === '00') {
+        return '12:00:' + s + ' منتصف الليل';
+    }
+    if (h === 12 && m === '00') {
+        return '12:00:' + s + ' ظهراً';
+    }
+
+    var hour12;
+    var period;
+
+    if (h === 0) {
+        hour12 = 12;
+        period = 'صباحاً';
+    } else if (h < 12) {
+        hour12 = h;
+        period = 'صباحاً';
+    } else if (h === 12) {
+        hour12 = 12;
+        period = 'مساءً';
+    } else {
+        hour12 = h - 12;
+        period = 'مساءً';
+    }
+
+    var hh = String(hour12).padStart(2, '0');
+    return hh + ':' + m + ':' + s + ' ' + period;
+}
+
+/**
+ * formatCairoDate — "الأربعاء، 11 نوفمبر 2026"
+ */
+function formatCairoDate(value) {
+    if (!value) return '';
+    var parts = getCairoTimeParts(value);
+    if (!parts) return String(value);
+
+    var dayName = CAIRO_DAYS_AR[parts.dayOfWeek] || 'الأحد';
+    var monthName = CAIRO_MONTHS_AR[parseInt(parts.month, 10) - 1] || 'يناير';
+    var dayNum = parseInt(parts.day, 10);
+
+    return dayName + '، ' + dayNum + ' ' + monthName + ' ' + parts.year;
+}
+
+/**
+ * formatCairoDateTime — "الأربعاء، 11 نوفمبر 2026 - 02:00 مساءً"
+ * (بدون ثواني — للعرض العادي)
+ */
+function formatCairoDateTime(value) {
+    if (!value) return '';
+    var dateStr = formatCairoDate(value);
+    var timeStr = formatCairoTime(value);
+    if (!dateStr) return String(value);
+    return dateStr + ' - ' + timeStr;
+}
+
+/**
+ * formatCairoDateTimeLong — "الأربعاء، 11 نوفمبر 2026 - 02:00:35 مساءً"
+ * (مع ثواني — للأدمن وaudit log)
+ */
+function formatCairoDateTimeLong(value) {
+    if (!value) return '';
+    var dateStr = formatCairoDate(value);
+    var timeStr = formatCairoTimeLong(value);
+    if (!dateStr) return String(value);
+    return dateStr + ' - ' + timeStr;
+}
+
+// ─────────────────────────────────────────────────────────────
+//  Backward Compatibility — الدوال القديمة (نفس السلوك)
+//  تُستخدم في بعض الصفحات القديمة — نبقيها لتفادي breaking
+// ─────────────────────────────────────────────────────────────
+
+/**
  * formatDateTime — "YYYY-MM-DD HH:mm:ss" بتوقيت القاهرة (24 ساعة)
+ * @deprecated استخدم formatCairoDateTime بدلاً من هذه الدالة
  */
 function formatDateTime(value) {
     if (!value) return '';
-    const parts = getCairoTimeParts(value);
+    var parts = getCairoTimeParts(value);
     if (!parts) return String(value);
     return parts.year + '-' + parts.month + '-' + parts.day +
            ' ' + parts.hour + ':' + parts.minute + ':' + parts.second;
@@ -647,10 +771,88 @@ function formatDateTime(value) {
 
 /**
  * formatDateOnly — "YYYY-MM-DD" بتوقيت القاهرة
+ * @deprecated استخدم formatCairoDate بدلاً من هذه الدالة
  */
 function formatDateOnly(value) {
     if (!value) return '';
-    const parts = getCairoTimeParts(value);
+    var parts = getCairoTimeParts(value);
     if (!parts) return String(value);
     return parts.year + '-' + parts.month + '-' + parts.day;
+}
+
+// ============================================================
+//  14. تصدير الدوال للاستخدام في باقي الملفات
+// ============================================================
+if (typeof window !== 'undefined') {
+    window.Utils = {
+        // أرقام
+        normalizeEgyptPhone,
+        internationalToLocal,
+        formatPhoneLocal,
+        formatPhoneInternational,
+        formatInternational,
+        formatLocal,
+
+        // أسماء
+        processAbdName,
+        normalizeAbdName,
+        validateFullName,
+        preventNonArabic,
+        preventSpaceAfterAbd,
+        autoMergeAbd,
+        isArabicOnly,
+
+        // صور
+        fileToBase64,
+        compressImage,
+
+        // روابط
+        validateGoogleMaps,
+
+        // UI
+        showFieldError,
+        hideFieldError,
+        handleFilePreview,
+
+        // كود المسوق
+        restrictMarketerId,
+        restrictMarketerInput,
+
+        // حساب العمر والمدة
+        calculateAgeFromBirthDate,
+        formatDuration,
+        formatArabicCount,
+
+        // أخطاء
+        getSafeErrorMessage,
+
+        // جلسة مسوق
+        checkMarketerSession,
+        updateMarketerName,
+        sendLocationToServer,
+
+        // ═══════════════════════════════════════════════════════
+        //  دوال التواريخ (Cairo display)
+        // ═══════════════════════════════════════════════════════
+        parseToDate,
+        getCairoTimeParts,
+        formatTime12Arabic,
+
+        // ✅ دوال Cairo display الجديدة (اللي بنستخدمها في كل الصفحات)
+        formatCairoTime,
+        formatCairoTimeLong,
+        formatCairoDate,
+        formatCairoDateTime,
+        formatCairoDateTimeLong,
+
+        // ⚠️ backward compat (قديمة — للصفحات اللي لسه ما اتحدثتش)
+        formatDateTime,
+        formatDateOnly,
+
+        // قوائم مرجعية (لو محتاجينها)
+        CAIRO_MONTHS_AR,
+        CAIRO_DAYS_AR
+    };
+
+    console.log('✅ utils.js: window.Utils تم تعريفها بنجاح');
 }

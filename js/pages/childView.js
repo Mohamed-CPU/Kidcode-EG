@@ -204,20 +204,40 @@ async function fetchTokenAndData() {
             renderChildData(data.child);
             renderAlertBar(data.child);
 
-            // ✅ استخدام expiresAt من الخادم بدل حساب محلي
+            // ✅ expiresAt جاي من السيرفر كـ ISO UTC صريح (مع Z)
+            //    بعد Migration → parseToDate المبسّطة بتفهمه صح مباشرة
             if (data.expiresAt) {
-                // ✅ تفسير آمن للتاريخ (يفترض UTC لو مفيش إشارة)
                 tokenExpiryTime = (window.Utils && typeof window.Utils.parseToDate === 'function')
                     ? window.Utils.parseToDate(data.expiresAt)
                     : new Date(data.expiresAt);
 
-                // 🔧 حماية: لو الناتج غير صالح → fallback 5 دقائق
+                // 🔧 حماية defensive: لو الناتج غير صالح → fallback 5 دقائق
                 if (!tokenExpiryTime || isNaN(tokenExpiryTime.getTime())) {
-                    console.warn('⚠️ [Timer] expiresAt غير صالح، fallback 5 دقائق:', data.expiresAt);
+                    console.warn('⚠️ [Timer] expiresAt غير صالح:', data.expiresAt, '— fallback 5 دقائق');
                     tokenExpiryTime = new Date(Date.now() + 5 * 60 * 1000);
+                } else {
+                    // 🔧 فحص أمان: التوكن المفروض 5 دقائق — لو أكتر من 6 دقائق، فيه مشكلة
+                    //    (6 دقائق = هامش أمان 1 دقيقة فوق الـ 5 المتوقعة)
+                    const MAX_ALLOWED_MS = 6 * 60 * 1000;
+                    const remainingMs = tokenExpiryTime.getTime() - Date.now();
+
+                    if (remainingMs > MAX_ALLOWED_MS) {
+                        console.warn('⚠️ [Timer] expiresAt غير منطقي (المتبقي ' +
+                                    (remainingMs / 60000).toFixed(1) + ' دقيقة) — fallback 5 دقائق');
+                        console.warn('   📌 القيمة الخام:', data.expiresAt);
+                        console.warn('   📌 بعد parseToDate:', tokenExpiryTime.toISOString());
+                        tokenExpiryTime = new Date(Date.now() + 5 * 60 * 1000);
+                    } else if (remainingMs < -60 * 1000) {
+                        // التوكن منتهي من وقت طويل (> دقيقة) — fallback
+                        console.warn('⚠️ [Timer] expiresAt منتهي منذ ' +
+                                    Math.abs(remainingMs / 60000).toFixed(1) + ' دقيقة — fallback');
+                        tokenExpiryTime = new Date(Date.now() + 5 * 60 * 1000);
+                    }
+                    // لو remainingMs بين -60 ثانية و 6 دقائق → القيمة سليمة، نستخدمها
                 }
             } else {
-                // Fallback لو الخادم ما بعتش (نسخة قديمة)
+                // Fallback لو الخادم ما بعتش (نسخة قديمة — نادراً ما يحصل)
+                console.warn('⚠️ [Timer] expiresAt مفقود من السيرفر — fallback 5 دقائق');
                 tokenExpiryTime = new Date(Date.now() + 5 * 60 * 1000);
             }
 

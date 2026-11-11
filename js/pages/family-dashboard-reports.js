@@ -101,7 +101,16 @@
 
     function formatDateForDisplay(dateStr) {
         if (!dateStr) return '--';
-        // yyyy-MM-dd → dd/mm/yyyy
+
+        // ✅ صيغة عربية كاملة: "الأربعاء، 11 نوفمبر 2026"
+        if (window.Utils && typeof Utils.formatCairoDate === 'function') {
+            try {
+                const formatted = Utils.formatCairoDate(dateStr);
+                if (formatted && formatted !== String(dateStr)) return formatted;
+            } catch (e) {}
+        }
+
+        // Fallback: dd/mm/yyyy
         const parts = String(dateStr).split('-');
         if (parts.length === 3) {
             return parts[2] + '/' + parts[1] + '/' + parts[0];
@@ -118,31 +127,25 @@
         return dateStr;
     }
 
-    // ✅ formatTime — الوقت بصيغة 12 ساعة بتوقيت القاهرة
+    // ✅ formatTime — الوقت بالصيغة العربية الكاملة: "02:35:00 مساءً"
     function formatTime(timestamp) {
-        // yyyy-MM-dd HH:mm:ss (UTC) → "h:mm:ss AM/PM" (Cairo)
         if (!timestamp) return '--';
 
-        // ✅ لو فيه AM/PM أصلاً → نعتبره Cairo time جاهز (توافق قديم)
+        // ✅ صيغة عربية كاملة (مع ثواني): "02:35:00 مساءً"
+        if (window.Utils && typeof Utils.formatCairoTimeLong === 'function') {
+            try {
+                const formatted = Utils.formatCairoTimeLong(timestamp);
+                if (formatted) return formatted;
+            } catch (e) {}
+        }
+
+        // Fallback: القديم
         const str = String(timestamp).trim();
         const ampmMatch = str.match(/(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)/i);
         if (ampmMatch) {
-            const h = parseInt(ampmMatch[1], 10);
-            const m = ampmMatch[2];
-            const s = ampmMatch[3] || '00';
-            const ampm = ampmMatch[4].toUpperCase();
-            return h + ':' + m + ':' + s + ' ' + ampm;
+            return ampmMatch[1] + ':' + ampmMatch[2] + ':' + (ampmMatch[3] || '00') + ' ' + ampmMatch[4].toUpperCase();
         }
-
-        // ✅ نستخدم Utils.getCairoTimeParts — يحوّل من UTC للقاهرة
-        const parts = Utils.getCairoTimeParts(timestamp);
-        if (!parts) return str;
-
-        let hours = parseInt(parts.hour, 10);
-        const minutes = parts.minute;
-        const seconds = parts.second;
-
-        return formatAMPM(hours, minutes, seconds);
+        return str;
     }
 
     // ============================================================
@@ -413,10 +416,24 @@
         els.statStatus.textContent = statusMap[summary.status] || summary.status || '--';
     }
 
+    // ✅ الصيغة العربية الكاملة: "الأربعاء، 11 نوفمبر 2026 - 02:00 مساءً"
     function formatShortDateTime(dt) {
         if (!dt) return '--';
-        // ✅ استخدام Utils الموحدة — تعرض التاريخ+الوقت بتوقيت القاهرة
-        return Utils.formatDateTime(dt) || String(dt);
+
+        // ✅ صيغة عربية كاملة (بدون ثواني)
+        if (window.Utils && typeof Utils.formatCairoDateTime === 'function') {
+            try {
+                const formatted = Utils.formatCairoDateTime(dt);
+                if (formatted) return formatted;
+            } catch (e) {}
+        }
+
+        // Fallback
+        try {
+            return Utils.formatDateTime(dt) || String(dt);
+        } catch (e) {
+            return String(dt);
+        }
     }
 
     // ============================================================
@@ -457,10 +474,10 @@
                 '<div class="chart-bars">' +
                     '<div class="chart-bar scans" ' +
                         'style="height: ' + scansHeight + 'px;" ' +
-                        'title="' + formatShortDate(day.date) + ' - مسحات: ' + scans + '"></div>' +
+                        'title="' + formatDateForDisplay(day.date) + ' - مسحات: ' + scans + '"></div>' +
                     '<div class="chart-bar locations" ' +
                         'style="height: ' + locationsHeight + 'px;" ' +
-                        'title="' + formatShortDate(day.date) + ' - مواقع: ' + locations + '"></div>' +
+                        'title="' + formatDateForDisplay(day.date) + ' - مواقع: ' + locations + '"></div>' +
                 '</div>' +
                 '<div class="chart-day-label">' + formatShortDate(day.date) + '</div>';
 
@@ -531,7 +548,10 @@
 
             tr.innerHTML =
                 '<td class="cell-num">' + (index + 1) + '</td>' +
-                '<td class="cell-time">' + escapeHtml(Utils.formatDateTime(log.timestamp) || '--') + '</td>' +
+                '<td class="cell-time">' +
+                    '<div style="font-weight:600;">' + escapeHtml(Utils.formatCairoDate(log.timestamp) || '--') + '</div>' +
+                    '<div style="font-size:0.85em; color:#64748b; margin-top:2px;">' + escapeHtml(Utils.formatCairoTime(log.timestamp) || '--') + '</div>' +
+                '</td>' +
                 '<td class="cell-address">' + addressText + '</td>' +
                 '<td>' + mapsLink + '</td>';
 
