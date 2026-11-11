@@ -212,6 +212,8 @@
       sessions.forEach(function(s) {
         const device = parseUserAgent(s.user_agent);
         const iconClass = device.isMobile ? 'fa-mobile-alt' : 'fa-desktop';
+        // ✅ آخر نشاط بصيغة عربية (كان ISO خام)
+        const lastActivityStr = formatDateTimeFull(s.last_activity_at);
 
         html += '<div class="session-item' + (s.isCurrent ? ' current' : '') + '">' +
           '<div class="session-icon"><i class="fas ' + iconClass + '"></i></div>' +
@@ -224,7 +226,7 @@
             '</div>' +
             '<div class="session-meta">' +
               'IP: ' + window.UI.escapeHtml(s.ip_address) +
-              ' · آخر نشاط: ' + window.UI.escapeHtml(s.last_activity_at || '—') +
+              ' · آخر نشاط: ' + window.UI.escapeHtml(lastActivityStr) +
             '</div>' +
           '</div>' +
           (s.isCurrent ? '' :
@@ -307,11 +309,14 @@
       let html = '';
       logs.forEach(function(log) {
         const icon = getActionIcon(log.action);
+        // ✅ تاريخ العملية بصيغة عربية (كان ISO خام)
+        const createdStr = formatDateTimeFull(log.created_at);
+
         html += '<div class="audit-item">' +
           '<div class="audit-icon"><i class="fas ' + icon + '"></i></div>' +
           '<div class="audit-info">' +
             '<div class="audit-action">' + window.UI.escapeHtml(getActionLabel(log.action)) + '</div>' +
-            '<div class="audit-time">' + window.UI.escapeHtml(log.created_at || '—') + ' · ' + window.UI.escapeHtml(log.ip_address || '—') + '</div>' +
+            '<div class="audit-time">' + window.UI.escapeHtml(createdStr) + ' · ' + window.UI.escapeHtml(log.ip_address || '—') + '</div>' +
           '</div>' +
         '</div>';
       });
@@ -326,6 +331,20 @@
   // ============================================================
   //  🛠️ Helpers
   // ============================================================
+
+  // ✅ الصيغة العربية الكاملة: "الأربعاء، 11 نوفمبر 2026 - 02:00 مساءً"
+  function formatDateTimeFull(value) {
+    if (!value) return '—';
+    try {
+      if (window.AdminUtils && typeof window.AdminUtils.formatDateTime === 'function') {
+        return window.AdminUtils.formatDateTime(value) || '—';
+      }
+      return '—';
+    } catch (e) {
+      return '—';
+    }
+  }
+
   function parseUserAgent(ua) {
     if (!ua) return { browser: '', os: '', isMobile: false };
     ua = String(ua);

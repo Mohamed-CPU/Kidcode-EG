@@ -309,7 +309,8 @@
       const isSelected = state.selectedIDs.has(child.childID);
       const statusInfo = getStatusInfo(child.status);
       const phone = child.fatherPhone || child.motherPhone || '—';
-      const lastScan = formatDate(child.lastScan) || '—';
+      // ✅ آخر مسح بصيغة سطرين عربي
+      const lastScanCell = buildTwoLineDateCell(child.lastScan);
 
       html += '<tr class="child-row" data-child-id="' + escapeAttr(child.childID) + '">' +
         '<td class="cell-checkbox" onclick="event.stopPropagation();">' +
@@ -321,7 +322,7 @@
         '<td><span class="badge ' + statusInfo.cls + '">' + statusInfo.label + '</span></td>' +
         '<td class="col-plan">' + window.UI.escapeHtml(child.plan || '—') + '</td>' +
         '<td class="cell-phone col-phone">' + window.UI.escapeHtml(phone) + '</td>' +
-        '<td class="cell-date col-lastscan">' + window.UI.escapeHtml(lastScan) + '</td>' +
+        '<td class="cell-date col-lastscan">' + lastScanCell + '</td>' +
         '<td class="cell-actions" onclick="event.stopPropagation();">' +
           '<button class="btn btn-sm btn-secondary edit-row-btn" data-child-id="' + escapeAttr(child.childID) + '" title="تعديل">' +
             '<i class="fas fa-edit"></i>' +
@@ -528,8 +529,9 @@
     setSelectValue('edit_plan', child.plan || '');
     setValue('edit_planPrice', child.plan_price || 0);
     setSelectValue('edit_paymentStatus', child.payment_status || 'pending');
-    setValue('edit_registrationDate', formatDate(child.registration_date) || '—');
-    setValue('edit_expiryDate', formatDate(child.expiry_date) || '—');
+    // ✅ التواريخ بصيغة عربية كاملة (في حقل modal - مساحة كافية)
+    setValue('edit_registrationDate', formatDateTimeFull(child.registration_date) || '—');
+    setValue('edit_expiryDate', formatDateTimeFull(child.expiry_date) || '—');
     setValue('edit_marketerID', child.marketer_id || '');
 
     // Notifications
@@ -865,7 +867,8 @@
         const detail = await window.Core.api('getChildDetails', { childID: childID }, 'GET');
         if (detail.success) {
           state.currentChild = detail.child;
-          setValue('edit_expiryDate', formatDate(detail.child.expiry_date) || '—');
+          // ✅ تاريخ الانتهاء بصيغة عربية كاملة
+          setValue('edit_expiryDate', formatDateTimeFull(detail.child.expiry_date) || '—');
           setSelectValue('edit_status', detail.child.status || 'active');
         }
         loadList();
@@ -1020,8 +1023,42 @@
     return map[s] || { label: status || '—', cls: 'badge-muted' };
   }
 
+  // ✅ الصيغة النهارية (للتفاصيل): "الأربعاء، 11 نوفمبر 2026"
   function formatDate(value) {
     return window.AdminUtils.formatDate(value);
+  }
+
+  // ✅ الصيغة الكاملة (لحقول modal): "الأربعاء، 11 نوفمبر 2026 - 02:00 مساءً"
+  function formatDateTimeFull(value) {
+    if (!value) return '';
+    try {
+      if (window.AdminUtils && typeof window.AdminUtils.formatDateTime === 'function') {
+        return window.AdminUtils.formatDateTime(value) || '';
+      }
+      return formatDate(value);
+    } catch (e) {
+      return formatDate(value) || '';
+    }
+  }
+
+  // ✅ Helper: خلية تاريخ بصيغة سطرين (date عربي + time تحت)
+  function buildTwoLineDateCell(value) {
+    if (!value) return '—';
+    try {
+      const dateStr = window.AdminUtils.formatDate(value) || '—';
+      const timeStr = window.AdminUtils.formatCairoTime(value) || '';
+      if (!timeStr || dateStr === '—') {
+        return window.UI.escapeHtml(dateStr);
+      }
+      return '<div style="font-size:0.82rem; font-weight:600; color:var(--text-primary);">' +
+               window.UI.escapeHtml(dateStr) +
+             '</div>' +
+             '<div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">' +
+               window.UI.escapeHtml(timeStr) +
+             '</div>';
+    } catch (e) {
+      return '—';
+    }
   }
 
   // ============================================================
@@ -1310,7 +1347,8 @@
       const statusInfo = getPaymentStatusInfo(p.status);
       const typeLabel = p.type === 'renewal' ? 'تجديد' : 'أولية';
       const paidDate = p.paid_at || p.created_at;
-      const dateStr = formatDate(paidDate) || '—';
+      // ✅ تاريخ الدفع بصيغة سطرين عربي
+      const dateCell = buildTwoLineDateCell(paidDate);
       const amountStr = (p.amount_egp || 0) + ' ' + (p.currency || 'EGP');
 
       let eligibilityBadge;
@@ -1343,7 +1381,7 @@
       }
 
       html += '<tr>' +
-        '<td class="cell-date">' + window.UI.escapeHtml(dateStr) + '</td>' +
+        '<td class="cell-date">' + dateCell + '</td>' +
         '<td class="cell-amount">' + window.UI.escapeHtml(amountStr) + '</td>' +
         '<td>' + window.UI.escapeHtml(p.plan || '—') + '</td>' +
         '<td>' + window.UI.escapeHtml(typeLabel) + '</td>' +
@@ -1419,7 +1457,8 @@
     document.getElementById('refund_childID').textContent = childID;
     document.getElementById('refund_amount').textContent = (payment.amount_egp || 0) + ' ' + (payment.currency || 'EGP');
     document.getElementById('refund_plan').textContent = payment.plan || '—';
-    document.getElementById('refund_paidAt').textContent = formatDate(payment.paid_at || payment.created_at) || '—';
+    // ✅ تاريخ الدفع بصيغة عربية كاملة (تفاصيل modal - مساحة كافية)
+    document.getElementById('refund_paidAt').textContent = formatDateTimeFull(payment.paid_at || payment.created_at) || '—';
     document.getElementById('refund_days').textContent = (payment.daysSincePaid !== null && payment.daysSincePaid !== undefined)
       ? payment.daysSincePaid + ' يوم'
       : '—';
@@ -1462,7 +1501,8 @@
     document.getElementById('refund_childID').textContent = childID;
     document.getElementById('refund_amount').textContent = (payment.amount_egp || 0) + ' ' + (payment.currency || 'EGP');
     document.getElementById('refund_plan').textContent = payment.plan || '—';
-    document.getElementById('refund_paidAt').textContent = formatDate(payment.paid_at || payment.created_at) || '—';
+    // ✅ تاريخ الدفع بصيغة عربية كاملة
+    document.getElementById('refund_paidAt').textContent = formatDateTimeFull(payment.paid_at || payment.created_at) || '—';
     document.getElementById('refund_days').textContent = (payment.daysSincePaid !== null && payment.daysSincePaid !== undefined)
       ? payment.daysSincePaid + ' يوم'
       : '—';

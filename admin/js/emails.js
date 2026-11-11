@@ -899,6 +899,8 @@
         const statusCls = c.status === 'sent' ? 'badge-success'
                         : c.status === 'partially_sent' ? 'badge-warning'
                         : c.status === 'cancelled' ? 'badge-muted' : 'badge-info';
+        // ✅ تاريخ الحملة بصيغة سطرين عربي (compact للجدول)
+        const createdCell = buildTwoLineDateCell(c.created_at);
 
         html += '<tr>' +
           '<td class="cell-num">' + (i + 1) + '</td>' +
@@ -908,7 +910,7 @@
           '<td class="cell-num">' + (c.immediate_count || 0) + '</td>' +
           '<td class="cell-num">' + (c.queued_count || 0) + '</td>' +
           '<td><span class="badge ' + statusCls + '">' + statusLabel + '</span></td>' +
-          '<td class="cell-date">' + formatDateTime(c.created_at) + '</td>' +
+          '<td class="cell-date">' + createdCell + '</td>' +
           '</tr>';
       });
       html += '</tbody></table></div>';
@@ -937,7 +939,8 @@
 
       const nextEl = document.getElementById('queue_next');
       if (result.nextScheduled) {
-        nextEl.textContent = 'القادم: ' + formatDateTime(result.nextScheduled);
+        // ✅ نص كامل بصيغة عربية (مساحة كافية للسطر)
+        nextEl.textContent = 'القادم: ' + formatDateTimeFull(result.nextScheduled);
       } else {
         nextEl.textContent = '';
       }
@@ -965,20 +968,38 @@
     return n.toLocaleString('ar-EG');
   }
 
-  function formatDateTime(value) {
+  // ✅ الصيغة الكاملة (نصوص): "الأربعاء، 11 نوفمبر 2026 - 02:00 مساءً"
+  function formatDateTimeFull(value) {
     if (!value) return '—';
     try {
-      const d = new Date(value);
-      if (isNaN(d.getTime())) return String(value);
-      const yyyy = d.getFullYear();
-      const mm = String(d.getMonth() + 1).padStart(2, '0');
-      const dd = String(d.getDate()).padStart(2, '0');
-      let h = d.getHours();
-      const mi = String(d.getMinutes()).padStart(2, '0');
-      const ampm = h >= 12 ? 'PM' : 'AM';
-      h = h % 12 || 12;
-      return yyyy + '-' + mm + '-' + dd + ' ' + h + ':' + mi + ' ' + ampm;
-    } catch (e) { return String(value); }
+      return window.AdminUtils.formatDateTime(value) || '—';
+    } catch (e) {
+      return '—';
+    }
+  }
+
+  // ✅ Helper: خلية تاريخ بصيغة سطرين (للجداول)
+  //  @param withSeconds — true = مع ثواني (نادراً ما نحتاجه هنا)
+  function buildTwoLineDateCell(value, withSeconds) {
+    if (!value) return '—';
+    try {
+      const dateStr = window.AdminUtils.formatDate(value) || '—';
+      const timeStr = withSeconds
+        ? (window.AdminUtils.formatCairoTimeLong(value) || '')
+        : (window.AdminUtils.formatCairoTime(value) || '');
+
+      if (!timeStr || dateStr === '—') {
+        return window.UI.escapeHtml(dateStr);
+      }
+      return '<div style="font-size:0.82rem; font-weight:600; color:var(--text-primary); white-space:nowrap;">' +
+               window.UI.escapeHtml(dateStr) +
+             '</div>' +
+             '<div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px; white-space:nowrap;">' +
+               window.UI.escapeHtml(timeStr) +
+             '</div>';
+    } catch (e) {
+      return '—';
+    }
   }
 
   function escapeHtml(str) {

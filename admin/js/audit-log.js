@@ -305,10 +305,12 @@
       const target = row.targetTable && row.targetID
         ? row.targetTable + ':' + row.targetID
         : (row.targetTable || row.targetID || '—');
+      // ✅ الوقت بصيغة سطرين (عربي كامل) — for audit trail، ثواني مهمة
+      const timeCell = buildTwoLineDateCell(row.createdAt, true);
 
       html += '<tr class="audit-row" data-id="' + row.id + '">' +
         '<td class="cell-num">' + (startIndex + i + 1) + '</td>' +
-        '<td class="cell-time">' + window.UI.escapeHtml(formatDateTime(row.createdAt)) + '</td>' +
+        '<td class="cell-time">' + timeCell + '</td>' +
         '<td class="cell-user">' + window.UI.escapeHtml(row.username || '—') + '</td>' +
         '<td class="cell-action">' +
           '<span class="action-badge ' + info.cat + '">' +
@@ -429,7 +431,8 @@
     html += '<div class="audit-details">';
 
     html += detailRow('المعرف', '#' + row.id);
-    html += detailRow('التاريخ والوقت', formatDateTime(row.createdAt));
+    // ✅ الصيغة العربية الكاملة (في modal تفاصيل — مساحة كافية)
+    html += detailRow('التاريخ والوقت', formatDateTimeFull(row.createdAt));
     html += detailRow('المستخدم', row.username || '—');
     html += detailRow('الإجراء', info.label + ' (' + row.action + ')');
     if (row.targetTable) html += detailRow('الجدول', row.targetTable);
@@ -540,7 +543,8 @@
       result.rows.forEach(function(r) {
         const row = [
           r.id,
-          r.created_at,
+          // ✅ الصيغة العربية الكاملة (في CSV — مساحة كافية للمستخدم)
+          formatDateTimeFull(r.created_at),
           r.username,
           r.action,
           r.target_table,
@@ -557,7 +561,9 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'audit-log-' + new Date().toISOString().split('T')[0] + '.csv';
+      // ✅ اسم الملف بتوقيت القاهرة (كان UTC — ممكن يبقى يوم غلط للمصري)
+      const cairoDate = window.AdminUtils.formatDateNumeric(new Date().toISOString()) || '';
+      a.download = 'audit-log-' + cairoDate + '.csv';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -615,10 +621,38 @@
     return n.toLocaleString('ar-EG');
   }
 
-  // ✅ استخدام الدوال الموحدة من AdminUtils
-  function formatDateTime(value) {
+  // ✅ الصيغة الكاملة (للتفاصيل و CSV): "الأربعاء، 11 نوفمبر 2026 - 02:00:35 مساءً"
+  function formatDateTimeFull(value) {
     if (!value) return '—';
-    return window.AdminUtils.formatDateTime(value) || '—';
+    try {
+      return window.AdminUtils.formatDateTime(value) || '—';
+    } catch (e) {
+      return '—';
+    }
+  }
+
+  // ✅ Helper: خلية وقت بصيغة سطرين (للجدول — compact)
+  //  @param withSeconds — true = مع ثواني (audit events دقيقة مهمة)
+  function buildTwoLineDateCell(value, withSeconds) {
+    if (!value) return '—';
+    try {
+      const dateStr = window.AdminUtils.formatDate(value) || '—';
+      const timeStr = withSeconds
+        ? (window.AdminUtils.formatCairoTimeLong(value) || '')
+        : (window.AdminUtils.formatCairoTime(value) || '');
+
+      if (!timeStr || dateStr === '—') {
+        return window.UI.escapeHtml(dateStr);
+      }
+      return '<div style="font-size:0.82rem; font-weight:600; color:var(--text-primary); white-space:nowrap;">' +
+               window.UI.escapeHtml(dateStr) +
+             '</div>' +
+             '<div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px; white-space:nowrap;">' +
+               window.UI.escapeHtml(timeStr) +
+             '</div>';
+    } catch (e) {
+      return '—';
+    }
   }
 
   function escapeHtml(str) {

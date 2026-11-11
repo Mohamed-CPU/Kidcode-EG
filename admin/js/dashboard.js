@@ -243,12 +243,14 @@
     list.forEach(function(r) {
       const s = String(r.status || '').toLowerCase();
       const info = statusMap[s] || { label: r.status || '—', cls: 'badge-muted' };
+      // ✅ تاريخ التسجيل بصيغة سطرين (عربي كامل)
+      const dateCell = buildTwoLineDateCell(r.registrationDate);
       html += '<tr>' +
         '<td class="cell-id">' + window.UI.escapeHtml(r.childID || '—') + '</td>' +
         '<td>' + window.UI.escapeHtml(r.childName || '—') + '</td>' +
         '<td><span class="badge ' + info.cls + '">' + window.UI.escapeHtml(info.label) + '</span></td>' +
         '<td>' + window.UI.escapeHtml(r.plan || '—') + '</td>' +
-        '<td style="font-size:0.78rem; color:var(--text-muted);">' + window.UI.escapeHtml(formatDateShort(r.registrationDate)) + '</td>' +
+        '<td>' + dateCell + '</td>' +
       '</tr>';
     });
 
@@ -269,11 +271,13 @@
 
     let html = '';
     list.forEach(function(a) {
+      // ✅ التاريخ بصيغة عربية (كان ISO خام)
+      const dateStr = window.AdminUtils.formatDateTime(a.created_at) || '—';
       html += '<div class="activity-item">' +
         '<div class="activity-icon"><i class="fas ' + getActionIcon(a.action) + '"></i></div>' +
         '<div class="activity-info">' +
           '<div class="activity-action">' + window.UI.escapeHtml(getActionLabel(a.action)) + '</div>' +
-          '<div class="activity-meta">' + window.UI.escapeHtml(a.username || '—') + ' · ' + window.UI.escapeHtml(a.created_at || '—') + '</div>' +
+          '<div class="activity-meta">' + window.UI.escapeHtml(a.username || '—') + ' · ' + window.UI.escapeHtml(dateStr) + '</div>' +
         '</div>' +
       '</div>';
     });
@@ -289,9 +293,24 @@
     return n.toLocaleString('ar-EG');
   }
 
-  function formatDateShort(value) {
+  // ✅ Helper: بناء خلية تاريخ بصيغة سطرين (date عربي + time صغير)
+  function buildTwoLineDateCell(value) {
     if (!value) return '—';
-    return window.AdminUtils.formatDate(value);
+    try {
+      const dateStr = window.AdminUtils.formatDate(value) || '—';
+      const timeStr = window.AdminUtils.formatCairoTime(value) || '';
+      if (!timeStr || dateStr === '—') {
+        return window.UI.escapeHtml(dateStr);
+      }
+      return '<div style="font-size:0.82rem; font-weight:600; color:var(--text-primary);">' +
+               window.UI.escapeHtml(dateStr) +
+             '</div>' +
+             '<div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">' +
+               window.UI.escapeHtml(timeStr) +
+             '</div>';
+    } catch (e) {
+      return '—';
+    }
   }
 
   function getActionIcon(action) {

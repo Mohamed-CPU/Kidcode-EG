@@ -161,13 +161,15 @@
     let html = '';
     state.list.forEach(function(r) {
       const statusInfo = getStatusInfo(r.isResolved);
+      // ✅ وقت البلاغ بصيغة سطرين (compact للجدول)
+      const timeCell = buildTwoLineDateCell(r.reportTime);
 
       html += '<tr class="report-row" data-report-id="' + escapeAttr(r.reportID) + '">' +
         '<td class="cell-report-id">' + window.UI.escapeHtml(r.reportID || '—') + '</td>' +
         '<td class="cell-child-id">' + window.UI.escapeHtml(r.childID || '—') + '</td>' +
         '<td>' + window.UI.escapeHtml(r.childName || '—') + '</td>' +
         '<td><span class="badge ' + statusInfo.cls + '">' + statusInfo.label + '</span></td>' +
-        '<td class="cell-date">' + window.UI.escapeHtml(formatDateTime(r.reportTime) || '—') + '</td>' +
+        '<td class="cell-date">' + timeCell + '</td>' +
         '<td class="col-governorate">' + window.UI.escapeHtml(r.governorate || '—') + '</td>' +
         '<td class="cell-district col-district" title="' + escapeAttr(r.district) + '">' + window.UI.escapeHtml(r.district || '—') + '</td>' +
         '<td class="col-volunteer">' + window.UI.escapeHtml(r.volunteerName || '—') + '</td>' +
@@ -312,7 +314,13 @@
     // --- كارت الطفل ---
     html += '<div class="report-child-card">';
     if (child && child.imageUrl) {
-      html += '<img src="https://drive.google.com/thumbnail?id=' + escapeAttr(child.imageUrl) + '&sz=s400" alt="' + escapeAttr(child.childName) + '">';
+      // ✅ دعم Cloudinary + Drive (backward compat)
+      const childImgSrc = buildImageSrc(child.imageUrl, 'small');
+      if (childImgSrc) {
+        html += '<img src="' + escapeAttr(childImgSrc) + '" alt="' + escapeAttr(child.childName) + '">';
+      } else {
+        html += '<div class="no-img"><i class="fas fa-child"></i></div>';
+      }
     } else {
       html += '<div class="no-img"><i class="fas fa-child"></i></div>';
     }
@@ -332,15 +340,16 @@
     // --- Meta ---
     html += '<div class="report-meta">' +
       '<div class="meta-row"><span class="meta-label">رقم البلاغ:</span><span class="meta-value" style="font-family:var(--font-mono);">' + window.UI.escapeHtml(r.report_id || '—') + '</span></div>' +
-      '<div class="meta-row"><span class="meta-label">وقت البلاغ:</span><span class="meta-value" style="font-family:var(--font-mono);">' + window.UI.escapeHtml(formatDateTime(r.report_time) || '—') + '</span></div>';
+      // ✅ الصيغة العربية الكاملة (في modal تفاصيل)
+      '<div class="meta-row"><span class="meta-label">وقت البلاغ:</span><span class="meta-value">' + window.UI.escapeHtml(formatDateTimeFull(r.report_time) || '—') + '</span></div>';
     if (r.resolved_time) {
-      html += '<div class="meta-row"><span class="meta-label">وقت الإغلاق:</span><span class="meta-value" style="font-family:var(--font-mono);">' + window.UI.escapeHtml(formatDateTime(r.resolved_time)) + '</span></div>';
+      html += '<div class="meta-row"><span class="meta-label">وقت الإغلاق:</span><span class="meta-value">' + window.UI.escapeHtml(formatDateTimeFull(r.resolved_time)) + '</span></div>';
     }
     if (r.resolved_by) {
       html += '<div class="meta-row"><span class="meta-label">أغلقه:</span><span class="meta-value">' + window.UI.escapeHtml(r.resolved_by) + '</span></div>';
     }
     if (r.found_confirmed_at) {
-      html += '<div class="meta-row"><span class="meta-label">تأكيد العثور:</span><span class="meta-value" style="font-family:var(--font-mono);">' + window.UI.escapeHtml(formatDateTime(r.found_confirmed_at)) + '</span></div>';
+      html += '<div class="meta-row"><span class="meta-label">تأكيد العثور:</span><span class="meta-value">' + window.UI.escapeHtml(formatDateTimeFull(r.found_confirmed_at)) + '</span></div>';
     }
     html += '</div>';
 
@@ -368,18 +377,25 @@
     if (r.front_id_file || r.back_id_file) {
       html += '<div class="volunteer-id-grid">';
       if (r.front_id_file) {
-        html += '<div class="volunteer-id-item">' +
-          '<img src="https://drive.google.com/thumbnail?id=' + escapeAttr(r.front_id_file) + '&sz=s800" ' +
-          'data-full="' + escapeAttr(r.front_id_file) + '" ' +
-          'class="volunteer-id-img" alt="وجه البطاقة">' +
-          '<div class="id-label">وجه البطاقة (اضغط للتكبير)</div></div>';
+        // ✅ دعم Cloudinary + Drive (backward compat)
+        const frontSrc = buildImageSrc(r.front_id_file, 'medium');
+        if (frontSrc) {
+          html += '<div class="volunteer-id-item">' +
+            '<img src="' + escapeAttr(frontSrc) + '" ' +
+            'data-full="' + escapeAttr(r.front_id_file) + '" ' +
+            'class="volunteer-id-img" alt="وجه البطاقة">' +
+            '<div class="id-label">وجه البطاقة (اضغط للتكبير)</div></div>';
+        }
       }
       if (r.back_id_file) {
-        html += '<div class="volunteer-id-item">' +
-          '<img src="https://drive.google.com/thumbnail?id=' + escapeAttr(r.back_id_file) + '&sz=s800" ' +
-          'data-full="' + escapeAttr(r.back_id_file) + '" ' +
-          'class="volunteer-id-img" alt="ظهر البطاقة">' +
-          '<div class="id-label">ظهر البطاقة (اضغط للتكبير)</div></div>';
+        const backSrc = buildImageSrc(r.back_id_file, 'medium');
+        if (backSrc) {
+          html += '<div class="volunteer-id-item">' +
+            '<img src="' + escapeAttr(backSrc) + '" ' +
+            'data-full="' + escapeAttr(r.back_id_file) + '" ' +
+            'class="volunteer-id-img" alt="ظهر البطاقة">' +
+            '<div class="id-label">ظهر البطاقة (اضغط للتكبير)</div></div>';
+        }
       }
       html += '</div>';
     }
@@ -425,7 +441,12 @@
     document.querySelectorAll('.volunteer-id-img').forEach(function(img) {
       img.addEventListener('click', function() {
         const fileId = this.getAttribute('data-full');
-        const url = 'https://drive.google.com/thumbnail?id=' + fileId + '&sz=s1600';
+        // ✅ دعم Cloudinary + Drive (نفس منطق buildImageSrc مع حجم large)
+        const url = buildImageSrc(fileId, 'large');
+        if (!url) {
+          window.UI.toast.error('تعذر تحميل الصورة');
+          return;
+        }
         document.getElementById('imageViewerImg').src = url;
         window.UI.modal.open('imageViewerModal');
       });
@@ -559,8 +580,57 @@
     return n.toLocaleString('ar-EG');
   }
 
-  function formatDateTime(value) {
-    return window.AdminUtils.formatDateTime(value);
+  // ✅ الصيغة الكاملة (للتفاصيل): "الأربعاء، 11 نوفمبر 2026 - 02:00 مساءً"
+  function formatDateTimeFull(value) {
+    if (!value) return '—';
+    try {
+      return window.AdminUtils.formatDateTime(value) || '—';
+    } catch (e) {
+      return '—';
+    }
+  }
+
+  // ✅ Helper: خلية تاريخ بصيغة سطرين (للجدول)
+  function buildTwoLineDateCell(value) {
+    if (!value) return '—';
+    try {
+      const dateStr = window.AdminUtils.formatDate(value) || '—';
+      const timeStr = window.AdminUtils.formatCairoTime(value) || '';
+      if (!timeStr || dateStr === '—') {
+        return window.UI.escapeHtml(dateStr);
+      }
+      return '<div style="font-size:0.82rem; font-weight:600; color:var(--text-primary); white-space:nowrap;">' +
+               window.UI.escapeHtml(dateStr) +
+             '</div>' +
+             '<div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px; white-space:nowrap;">' +
+               window.UI.escapeHtml(timeStr) +
+             '</div>';
+    } catch (e) {
+      return '—';
+    }
+  }
+
+  // ============================================================
+  //  🖼️ buildImageSrc — تحويل قيمة الحقل إلى URL قابل للعرض
+  //  يدعم:
+  //    - Cloudinary URL كامل (يبدأ بـ https://) → يُستخدم كما هو
+  //    - Drive File ID (legacy) → يبني رابط Drive thumbnail
+  //  @param value — القيمة الخام من DB
+  //  @param size — 'small' | 'medium' | 'large'
+  // ============================================================
+  function buildImageSrc(value, size) {
+    const raw = String(value || '').trim();
+    if (!raw) return '';
+
+    // ✅ Cloudinary (أو أي URL كامل) → استخدمه مباشرة
+    if (raw.startsWith('http://') || raw.startsWith('https://')) {
+      return raw;
+    }
+
+    // ⚠️ Legacy: Drive File ID → ابنِ رابط Drive thumbnail
+    const sizeMap = { small: 's400', medium: 's800', large: 's1600' };
+    const sz = sizeMap[size] || 's800';
+    return 'https://drive.google.com/thumbnail?id=' + encodeURIComponent(raw) + '&sz=' + sz;
   }
 
   function escapeAttr(str) {

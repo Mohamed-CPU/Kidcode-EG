@@ -177,6 +177,8 @@
     state.list.forEach(function(m) {
       const isSelected = state.selectedCodes.has(m.code);
       const statusCls = m.isActive === 'نشط' ? 'badge-success' : 'badge-muted';
+      // ✅ تاريخ الإنشاء بصيغة سطرين عربي
+      const createdCell = buildTwoLineDateCell(m.createdAt);
 
       html += '<tr class="marketer-row" data-code="' + escapeAttr(m.code) + '">' +
         '<td class="cell-checkbox" onclick="event.stopPropagation();">' +
@@ -189,7 +191,7 @@
         '<td class="col-governorate">' + window.UI.escapeHtml(m.governorate || '—') + '</td>' +
         '<td class="cell-discount">' + (m.discountPercent || 10) + '%</td>' +
         '<td><span class="badge ' + statusCls + '">' + window.UI.escapeHtml(m.isActive || '—') + '</span></td>' +
-        '<td class="col-created" style="font-size:0.78rem; color:var(--text-muted);">' + window.UI.escapeHtml(formatDate(m.createdAt) || '—') + '</td>' +
+        '<td class="col-created">' + createdCell + '</td>' +
         '<td class="cell-actions" onclick="event.stopPropagation();">' +
           '<button class="btn btn-sm btn-secondary edit-row-btn" data-code="' + escapeAttr(m.code) + '" title="تعديل">' +
             '<i class="fas fa-edit"></i>' +
@@ -374,7 +376,8 @@
     setSelectValue('edit_isActive', m.is_active || 'نشط');
     setValue('edit_discountPercent', parseInt(m.discount_percent || 10));
     setSelectValue('edit_notificationMethod', m.notification_method || 'email');
-    setValue('edit_createdAt', formatDate(m.created_at) || '—');
+    // ✅ تاريخ الإنشاء بصيغة عربية كاملة (تفاصيل modal)
+    setValue('edit_createdAt', formatDateTimeFull(m.created_at) || '—');
 
     // Telegram status
     const tgLinked = !!String(m.telegram_chat_id || '').trim();
@@ -387,7 +390,10 @@
       if (tgLinked) {
         const chat = String(m.telegram_chat_id);
         const masked = chat.length > 4 ? '****' + chat.slice(-4) : '****';
-        tgChat.textContent = 'Chat ID: ' + masked + (m.telegram_linked_at ? ' · ' + m.telegram_linked_at : '');
+        // ✅ تاريخ الربط بصيغة عربية (كان ISO خام!)
+        const linkedAtStr = formatDateTimeFull(m.telegram_linked_at);
+        const datePart = linkedAtStr ? ' · ' + linkedAtStr : '';
+        tgChat.textContent = 'Chat ID: ' + masked + datePart;
       } else {
         tgChat.textContent = 'لم يتم الربط بعد';
       }
@@ -697,8 +703,43 @@
   // ============================================================
   //  🛠️ Helpers
   // ============================================================
+
+  // ✅ الصيغة النهارية
   function formatDate(value) {
     return window.AdminUtils.formatDate(value);
+  }
+
+  // ✅ الصيغة الكاملة (لحقول modal): "الأربعاء، 11 نوفمبر 2026 - 02:00 مساءً"
+  function formatDateTimeFull(value) {
+    if (!value) return '';
+    try {
+      if (window.AdminUtils && typeof window.AdminUtils.formatDateTime === 'function') {
+        return window.AdminUtils.formatDateTime(value) || '';
+      }
+      return formatDate(value);
+    } catch (e) {
+      return formatDate(value) || '';
+    }
+  }
+
+  // ✅ Helper: خلية تاريخ بصيغة سطرين (date عربي + time تحت)
+  function buildTwoLineDateCell(value) {
+    if (!value) return '—';
+    try {
+      const dateStr = window.AdminUtils.formatDate(value) || '—';
+      const timeStr = window.AdminUtils.formatCairoTime(value) || '';
+      if (!timeStr || dateStr === '—') {
+        return window.UI.escapeHtml(dateStr);
+      }
+      return '<div style="font-size:0.82rem; font-weight:600; color:var(--text-primary);">' +
+               window.UI.escapeHtml(dateStr) +
+             '</div>' +
+             '<div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">' +
+               window.UI.escapeHtml(timeStr) +
+             '</div>';
+    } catch (e) {
+      return '—';
+    }
   }
 
   function escapeAttr(str) {

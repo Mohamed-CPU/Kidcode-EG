@@ -262,20 +262,32 @@
     return '';
   }
 
+  // ✅ الصيغة العربية الكاملة بتوقيت القاهرة:
+  //    "الأربعاء، 11 نوفمبر 2026 - 04:00 مساءً"
+  //    (كان: local TZ + 4:00 PM بدون zero-pad)
   function formatDateTime(value) {
     if (!value) return '—';
     try {
+      if (window.AdminUtils && typeof window.AdminUtils.formatDateTime === 'function') {
+        return window.AdminUtils.formatDateTime(value) || '—';
+      }
+      // Fallback: Cairo numeric (لو AdminUtils مش محمّل)
       const d = new Date(value);
       if (isNaN(d.getTime())) return String(value);
-      const yyyy = d.getFullYear();
-      const mm = String(d.getMonth() + 1).padStart(2, '0');
-      const dd = String(d.getDate()).padStart(2, '0');
-      let h = d.getHours();
-      const mi = String(d.getMinutes()).padStart(2, '0');
-      const ampm = h >= 12 ? 'PM' : 'AM';
-      h = h % 12 || 12;
-      return yyyy + '-' + mm + '-' + dd + ' ' + h + ':' + mi + ' ' + ampm;
-    } catch (e) { return String(value); }
+      const parts = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Africa/Cairo',
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', hour12: false
+      }).formatToParts(d);
+      const g = function(t) {
+        const p = parts.find(function(x) { return x.type === t; });
+        return p ? p.value : '';
+      };
+      let hh = g('hour'); if (hh === '24') hh = '00';
+      return g('year') + '-' + g('month') + '-' + g('day') + ' ' + hh + ':' + g('minute');
+    } catch (e) {
+      return '—';
+    }
   }
 
   // ============================================================

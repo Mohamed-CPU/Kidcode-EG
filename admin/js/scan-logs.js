@@ -188,10 +188,12 @@
       const mapsBtn = log.hasCoords
         ? '<a href="' + escapeAttr(log.mapsLink) + '" target="_blank" rel="noopener" class="btn btn-sm btn-secondary" title="فتح الخريطة"><i class="fas fa-map"></i></a>'
         : '<span style="color:var(--text-muted); font-size:0.7rem;">—</span>';
+      // ✅ الوقت بصيغة سطرين (عربي كامل + compact للجدول)
+      const timeCell = buildTwoLineDateCell(log.timestamp, true);  // true = مع ثواني
 
       html += '<tr>' +
         '<td class="cell-num">' + (startIndex + i + 1) + '</td>' +
-        '<td class="cell-time">' + window.UI.escapeHtml(formatDateTime(log.timestamp)) + '</td>' +
+        '<td class="cell-time">' + timeCell + '</td>' +
         '<td class="cell-id">' + window.UI.escapeHtml(log.childID || '—') + '</td>' +
         '<td class="cell-name col-name">' + window.UI.escapeHtml(log.childName || '—') + '</td>' +
         '<td class="col-source"><span class="cell-source ' + sourceCls + '">' + window.UI.escapeHtml(sourceLabel) + '</span></td>' +
@@ -375,6 +377,34 @@
     return map[s] || s || '—';
   }
 
+  // ✅ Helper: خلية وقت بصيغة سطرين
+  //  - date عربي (كبير، غامق)
+  //  - time عربي (صغير، تحت)
+  //  @param withSeconds — لو true، يعرض الساعة:دقيقة:ثانية (للـ scan logs مهم)
+  function buildTwoLineDateCell(value, withSeconds) {
+    if (!value) return '—';
+    try {
+      const dateStr = window.AdminUtils.formatDate(value) || '—';
+      const timeStr = withSeconds
+        ? (window.AdminUtils.formatCairoTimeLong(value) || '')
+        : (window.AdminUtils.formatCairoTime(value) || '');
+
+      if (!timeStr || dateStr === '—') {
+        return window.UI.escapeHtml(dateStr);
+      }
+      return '<div style="font-size:0.82rem; font-weight:600; color:var(--text-primary); white-space:nowrap;">' +
+               window.UI.escapeHtml(dateStr) +
+             '</div>' +
+             '<div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px; white-space:nowrap;">' +
+               window.UI.escapeHtml(timeStr) +
+             '</div>';
+    } catch (e) {
+      return '—';
+    }
+  }
+
+  // ⚠️ للاستخدام في السياقات اللي محتاجة سطر واحد (مش مستخدم حالياً)
+  //    لو احتجت في المستقبل — بيستخدم الصيغة العربية الكاملة
   function formatDateTime(value) {
     return window.AdminUtils.formatDateTime(value);
   }

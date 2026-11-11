@@ -197,31 +197,48 @@
       .replace(/'/g, '&#039;');
   }
 
+    // ============================================================
+  //  📅 formatDate — يُغلّف AdminUtils.formatDate (الصيغة العربية)
+  //  لو AdminUtils غير محمّل → fallback (عشان متكسرش)
+  // ============================================================
   function formatDate(value) {
     if (!value) return '—';
     try {
-      const d = new Date(value);
+      if (window.AdminUtils && typeof window.AdminUtils.formatDate === 'function') {
+        return window.AdminUtils.formatDate(value) || '—';
+      }
+      // Fallback: numeric Cairo date
+      var d = new Date(value);
       if (isNaN(d.getTime())) return String(value);
-      const yyyy = d.getFullYear();
-      const mm = String(d.getMonth() + 1).padStart(2, '0');
-      const dd = String(d.getDate()).padStart(2, '0');
-      return yyyy + '-' + mm + '-' + dd;
+      var parts = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Africa/Cairo', year: 'numeric', month: '2-digit', day: '2-digit'
+      }).formatToParts(d);
+      var g = function(t) { var p = parts.find(function(x) { return x.type === t; }); return p ? p.value : ''; };
+      return g('year') + '-' + g('month') + '-' + g('day');
     } catch (e) { return String(value); }
   }
 
+  // ============================================================
+  //  📅 formatDateTime — يُغلّف AdminUtils.formatDateTime (الصيغة العربية)
+  //  "الأربعاء، 11 نوفمبر 2026 - 02:00:35 مساءً"
+  // ============================================================
   function formatDateTime(value) {
     if (!value) return '—';
     try {
-      const d = new Date(value);
+      if (window.AdminUtils && typeof window.AdminUtils.formatDateTime === 'function') {
+        return window.AdminUtils.formatDateTime(value) || '—';
+      }
+      // Fallback: numeric Cairo datetime
+      var d = new Date(value);
       if (isNaN(d.getTime())) return String(value);
-      const yyyy = d.getFullYear();
-      const mm = String(d.getMonth() + 1).padStart(2, '0');
-      const dd = String(d.getDate()).padStart(2, '0');
-      let h = d.getHours();
-      const mi = String(d.getMinutes()).padStart(2, '0');
-      const ampm = h >= 12 ? 'PM' : 'AM';
-      h = h % 12 || 12;
-      return yyyy + '-' + mm + '-' + dd + ' ' + h + ':' + mi + ' ' + ampm;
+      var parts = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Africa/Cairo',
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+      }).formatToParts(d);
+      var g = function(t) { var p = parts.find(function(x) { return x.type === t; }); return p ? p.value : ''; };
+      var hh = g('hour'); if (hh === '24') hh = '00';
+      return g('year') + '-' + g('month') + '-' + g('day') + ' ' + hh + ':' + g('minute') + ':' + g('second');
     } catch (e) { return String(value); }
   }
 
