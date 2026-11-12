@@ -611,69 +611,129 @@
 }
 
 /* ============================================================
-   🆕 TABS BAR
+   🆕 LAYOUT: SIDEBAR + MAIN
    ============================================================ */
 body.marketer-dashboard-page.no-header {
     padding-top: 0 !important;
     background: var(--bg-body);
 }
 
-.md-tabbar {
+.md-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    min-height: 100vh;
+    align-items: flex-start;
+}
+
+/* ============================================================
+   🆕 SIDEBAR
+   ============================================================ */
+.md-sidebar {
     position: sticky;
     top: 0;
+    align-self: start;
+    height: 100vh;
+    background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
+    border-left: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    padding: 20px 16px;
+    overflow-y: auto;
     z-index: 500;
-    background: #FFFFFF;
-    box-shadow: 0 2px 12px rgba(34, 85, 159, 0.08);
-    border-bottom: 2px solid var(--border-color);
 }
 
-.md-tabbar-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-    display: flex;
-    align-items: stretch;
-    gap: 4px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
+.md-sidebar-header {
+    padding-bottom: 18px;
+    border-bottom: 2px solid var(--border-color);
+    margin-bottom: 18px;
 }
-.md-tabbar-inner::-webkit-scrollbar { display: none; }
+
+.md-sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 8px;
+}
+
+.md-sidebar-brand i {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    background: linear-gradient(135deg, #EFF6FF, #DBEAFE);
+    padding: 10px;
+    border-radius: 12px;
+}
+
+.md-sidebar-brand h2 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 900;
+    color: var(--primary-color);
+}
+
+.md-sidebar-brand p {
+    margin: 2px 0 0;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-weight: 700;
+}
+
+.md-sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
 
 .md-tab-btn {
-    flex-shrink: 0;
-    padding: 16px 20px;
+    padding: 13px 14px;
     background: transparent;
-    border: none;
-    border-bottom: 3px solid transparent;
+    border: 2px solid transparent;
+    border-radius: var(--radius-sm);
     font-family: inherit;
-    font-size: 0.95rem;
+    font-size: 0.92rem;
     font-weight: 800;
     color: var(--text-secondary);
     cursor: pointer;
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 8px;
-    white-space: nowrap;
+    gap: 12px;
+    text-align: right;
     transition: all 0.2s ease;
-    position: relative;
+    min-height: 46px;
 }
-.md-tab-btn i { font-size: 1rem; }
+
+.md-tab-btn i {
+    font-size: 1rem;
+    width: 20px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.md-tab-btn span {
+    flex: 1;
+}
+
 .md-tab-btn:hover {
     color: var(--primary-color);
     background: rgba(34, 85, 159, 0.04);
 }
+
 .md-tab-btn.active {
     color: var(--primary-color);
-    border-bottom-color: var(--primary-color);
-    background: rgba(34, 85, 159, 0.06);
+    background: linear-gradient(135deg, #EFF6FF, #DBEAFE);
+    border-color: rgba(34, 85, 159, 0.15);
+    box-shadow: 0 2px 8px rgba(34, 85, 159, 0.08);
 }
 
-.md-logout-btn {
-    margin-inline-start: auto;
-    align-self: center;
-    flex-shrink: 0;
-    padding: 10px 20px;
+.md-sidebar-footer {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 2px solid var(--border-color);
+}
+
+.md-sidebar-logout {
+    width: 100%;
+    padding: 12px 16px;
     background: transparent;
     color: var(--danger-color);
     border: 2px solid var(--danger-color);
@@ -682,20 +742,127 @@ body.marketer-dashboard-page.no-header {
     font-size: 0.9rem;
     font-weight: 800;
     cursor: pointer;
-    display: inline-flex;
+    display: flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
-    min-height: 42px;
+    min-height: 44px;
     transition: all 0.25s ease;
-    white-space: nowrap;
 }
-.md-logout-btn:hover {
+
+.md-sidebar-logout:hover {
     background: var(--danger-color);
     color: #FFFFFF;
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(230, 57, 70, 0.25);
 }
-.md-logout-btn:active { transform: translateY(0); }
+
+/* ============================================================
+   🆕 MAIN CONTENT AREA
+   ============================================================ */
+.md-main {
+    min-width: 0;
+    padding: 24px 28px 40px;
+}
+
+.md-mobile-header {
+    display: none;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.md-hamburger {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: white;
+    border: 2px solid var(--border-color);
+    color: var(--primary-color);
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.md-hamburger:hover {
+    border-color: var(--primary-color);
+    background: var(--bg-body);
+}
+
+.md-mobile-title {
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: var(--primary-color);
+    margin: 0;
+}
+
+.md-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 400;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.md-overlay.show {
+    display: block;
+    opacity: 1;
+}
+
+/* ============================================================
+   🆕 HEADER ACTIONS + RELOAD BUTTON
+   ============================================================ */
+.md-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.md-reload-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 2px solid var(--border-color);
+    background: white;
+    color: var(--primary-color);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    padding: 0;
+}
+
+.md-reload-btn:hover {
+    border-color: var(--primary-color);
+    background: var(--bg-body);
+}
+
+.md-reload-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.md-reload-btn.loading i,
+.md-reload-btn:disabled i {
+    animation: mdReloadSpin 0.9s linear infinite;
+}
+
+@keyframes mdReloadSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
 
 /* ============================================================
    🆕 TAB PANELS
@@ -1086,37 +1253,82 @@ body.marketer-dashboard-page.no-header {
 }
 
 /* ============================================================
-   📱 Responsive
+   📱 RESPONSIVE
    ============================================================ */
-@media (max-width: 768px) {
-    .md-tabbar-inner {
-        padding: 0 12px;
-        gap: 2px;
+
+/* Tablet: Sidebar أضيق */
+@media (max-width: 1024px) and (min-width: 769px) {
+    .md-layout {
+        grid-template-columns: 220px 1fr;
+    }
+    .md-main {
+        padding: 20px 18px 32px;
+    }
+    .md-sidebar {
+        padding: 16px 12px;
     }
     .md-tab-btn {
-        padding: 14px 12px;
-        font-size: 0.85rem;
+        padding: 11px 12px;
+        font-size: 0.86rem;
     }
-    .md-tab-btn span { display: none; }
-    .md-tab-btn i { font-size: 1.15rem; }
-    .md-logout-btn {
-        padding: 10px 14px;
-        font-size: 0.85rem;
+    .md-tab-btn i {
+        font-size: 0.95rem;
     }
-    .md-logout-btn span { display: none; }
+}
+
+/* Mobile: Drawer + Hamburger */
+@media (max-width: 768px) {
+    .md-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .md-sidebar {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 280px;
+        max-width: 85vw;
+        height: 100vh;
+        border-left: none;
+        border-right: 1px solid var(--border-color);
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        z-index: 450;
+        box-shadow: -4px 0 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .md-sidebar.open {
+        transform: translateX(0);
+    }
+
+    .md-overlay.show {
+        display: block;
+    }
+
+    .md-mobile-header {
+        display: flex;
+    }
+
+    .md-main {
+        padding: 16px 14px 32px;
+    }
 
     .dashboard-wrapper {
-        margin: 16px auto 32px;
-        padding: 0 12px;
+        margin: 0;
+        padding: 0;
     }
+
     .md-withdraw-card,
     .md-settings-card,
     .md-danger-card {
         padding: 18px 16px;
     }
+
     .md-payment-methods {
         grid-template-columns: 1fr;
     }
+
     .md-balance-info {
         flex-direction: column;
         align-items: flex-start;
@@ -1124,11 +1336,8 @@ body.marketer-dashboard-page.no-header {
 }
 
 @media (max-width: 480px) {
-    .md-tab-btn {
-        padding: 12px 10px;
-    }
-    .md-logout-btn {
-        padding: 8px 12px;
+    .md-main {
+        padding: 12px 10px 28px;
     }
     .md-balance-value {
         font-size: 1.25rem;
@@ -1137,6 +1346,95 @@ body.marketer-dashboard-page.no-header {
         font-size: 1.05rem;
     }
     .md-form-group input {
-        font-size: 16px; /* prevent iOS zoom */
+        font-size: 16px;
     }
+    .md-hamburger {
+        width: 40px;
+        height: 40px;
+    }
+    .md-mobile-title {
+        font-size: 1rem;
+    }
+}
+
+/* ============================================================
+   🆕 WALLET ICONS (4 محافظ مصرية)
+   ============================================================ */
+.md-wallet-icons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    margin-top: 10px;
+    width: 100%;
+    max-width: 200px;
+    margin-inline: auto;
+}
+
+.md-wallet-icons img {
+    width: 100%;
+    height: 22px;
+    object-fit: contain;
+    border-radius: 4px;
+    background: #FFFFFF;
+    padding: 2px;
+    border: 1px solid #E2E8F0;
+    transition: transform 0.2s ease;
+}
+
+.md-wallet-icons img:hover {
+    transform: scale(1.15);
+    border-color: var(--primary-color);
+}
+
+/* Dark mode */
+[data-theme="dark"] .md-wallet-icons img {
+    background: rgba(30, 41, 59, 0.6);
+    border-color: rgba(148, 163, 184, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .md-wallet-icons {
+        max-width: 180px;
+        gap: 4px;
+    }
+    .md-wallet-icons img {
+        height: 20px;
+    }
+}
+
+/* ============================================================
+   🆕 SECTION HEADER (updated with reload button)
+   ============================================================ */
+.md-section-header {
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.md-section-header > div {
+    flex: 1;
+    min-width: 0;
+}
+
+.md-section-header h2 {
+    margin: 0 0 6px;
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.md-section-desc {
+    margin: 0;
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
 }

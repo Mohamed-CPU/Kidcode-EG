@@ -651,6 +651,12 @@ function formatShortDate(dateStr) {
     loadDashboard();
     loadMarketerTelegramStatus();
 
+    // 🆕 Expose functions for reload buttons (IIFE #2)
+    window.MD = {
+        loadDashboard: loadDashboard,
+        loadMarketerTelegramStatus: loadMarketerTelegramStatus
+    };
+
     // ============================================================
     //  7. Deep Link: ?open=notifications
     // ============================================================
@@ -845,25 +851,56 @@ function formatShortDate(dateStr) {
     }
 
     // ============================================================
-    //  1. Tabs
+    //  1. Tabs + Sidebar
     // ============================================================
     const VALID_TABS = ['children', 'notifications', 'referral', 'withdraw', 'settings'];
+
+    function openSidebar() {
+        const sidebar = document.getElementById('mdSidebar');
+        const overlay = document.getElementById('mdOverlay');
+        if (sidebar) sidebar.classList.add('open');
+        if (overlay) overlay.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeSidebar() {
+        const sidebar = document.getElementById('mdSidebar');
+        const overlay = document.getElementById('mdOverlay');
+        if (sidebar) sidebar.classList.remove('open');
+        if (overlay) overlay.classList.remove('show');
+        document.body.style.overflow = '';
+    }
 
     function switchTab(tabName, updateHash) {
         if (VALID_TABS.indexOf(tabName) === -1) tabName = 'children';
 
+        // Nav buttons
         document.querySelectorAll('.md-tab-btn').forEach(function(btn) {
             btn.classList.toggle('active', btn.getAttribute('data-tab') === tabName);
         });
+
+        // Panels
         document.querySelectorAll('.md-tab-panel').forEach(function(panel) {
             panel.classList.toggle('active', panel.getAttribute('data-tab') === tabName);
         });
 
+        // Mobile title
+        const currentBtn = document.querySelector('.md-tab-btn[data-tab="' + tabName + '"]');
+        const mobileTitle = document.getElementById('mdMobileTitle');
+        if (mobileTitle && currentBtn) {
+            const span = currentBtn.querySelector('span');
+            if (span) mobileTitle.textContent = span.textContent;
+        }
+
+        // Hash
         if (updateHash !== false) {
             try { history.replaceState(null, '', '#' + tabName); } catch (e) {}
         }
 
-        // Hooks per tab
+        // Close sidebar (mobile)
+        closeSidebar();
+
+        // Per-tab hooks
         if (tabName === 'withdraw') {
             setTimeout(refreshWithdrawData, 50);
         } else if (tabName === 'settings') {
@@ -879,18 +916,92 @@ function formatShortDate(dateStr) {
             });
         });
 
-        // Initial tab from hash
         const initialTab = (window.location.hash || '').replace('#', '');
         if (initialTab && VALID_TABS.indexOf(initialTab) !== -1) {
             switchTab(initialTab, false);
         }
 
-        // Hash change (deep link)
         window.addEventListener('hashchange', function() {
             const hashTab = (window.location.hash || '').replace('#', '');
             if (hashTab && VALID_TABS.indexOf(hashTab) !== -1) {
                 switchTab(hashTab, false);
             }
+        });
+    }
+
+    function initSidebarToggle() {
+        const hamburger = document.getElementById('mdHamburgerBtn');
+        const overlay = document.getElementById('mdOverlay');
+
+        if (hamburger) {
+            hamburger.addEventListener('click', function() {
+                const sidebar = document.getElementById('mdSidebar');
+                if (sidebar && sidebar.classList.contains('open')) {
+                    closeSidebar();
+                } else {
+                    openSidebar();
+                }
+            });
+        }
+
+        if (overlay) {
+            overlay.addEventListener('click', closeSidebar);
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeSidebar();
+        });
+
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) closeSidebar();
+        });
+    }
+
+    function initReloadButtons() {
+        const handlers = {
+            reloadChildrenBtn: async function() {
+                if (window.MD && window.MD.loadDashboard) {
+                    await window.MD.loadDashboard();
+                }
+            },
+            reloadNotificationsBtn: async function() {
+                if (window.MD && window.MD.loadMarketerTelegramStatus) {
+                    await window.MD.loadMarketerTelegramStatus();
+                }
+            },
+            reloadReferralBtn: async function() {
+                const refInput = document.getElementById('marketerRefLink');
+                const code = getMarketerCode();
+                if (refInput && code) {
+                    refInput.value = window.location.origin + '/reg.html?ref=' + encodeURIComponent(code);
+                }
+            },
+            reloadWithdrawBtn: async function() {
+                refreshWithdrawData();
+            },
+            reloadSettingsBtn: async function() {
+                await refreshChannelInfo();
+            }
+        };
+
+        Object.keys(handlers).forEach(function(id) {
+            const btn = document.getElementById(id);
+            if (!btn) return;
+            btn.addEventListener('click', async function() {
+                if (btn.disabled) return;
+                btn.disabled = true;
+                btn.classList.add('loading');
+                try {
+                    await handlers[id]();
+                } catch (e) {
+                    console.warn('⚠️ Reload error:', e);
+                } finally {
+                    setTimeout(function() {
+                        btn.disabled = false;
+                        btn.classList.remove('loading');
+                    }, 400);
+                }
+            });
         });
     }
 
@@ -925,7 +1036,6 @@ function formatShortDate(dateStr) {
         const form = document.getElementById('withdrawForm');
         if (!form) return;
 
-        // Watch statsGrid visibility to refresh withdraw data when loaded
         const statsGrid = document.getElementById('statsGrid');
         if (statsGrid && typeof MutationObserver !== 'undefined') {
             const obs = new MutationObserver(function() {
@@ -937,86 +1047,139 @@ function formatShortDate(dateStr) {
         }
 
         const amountInput = document.getElementById('withdrawAmount');
+        const transferInput = document.getElementById('withdrawTransferNumber');
+        const transferHint = document.getElementById('withdrawTransferNumberHint');
         const amountError = document.getElementById('withdrawAmountError');
+        const transferError = document.getElementById('withdrawTransferNumberError');
+        const methodError = document.getElementById('withdrawMethodError');
+        const messageEl = document.getElementById('withdrawMessage');
+
+        function clearError(el) {
+            if (el) el.classList.remove('show');
+        }
+
+        function showError(el, text) {
+            if (!el) return;
+            el.textContent = text;
+            el.classList.add('show');
+        }
+
         if (amountInput) {
             amountInput.addEventListener('input', function() {
-                if (amountError) amountError.classList.remove('show');
+                clearError(amountError);
+            });
+        }
+
+        if (transferInput) {
+            transferInput.addEventListener('input', function(e) {
+                e.target.value = e.target.value.replace(/[^\d]/g, '').slice(0, 11);
+                clearError(transferError);
             });
         }
 
         form.querySelectorAll('input[name="withdrawMethod"]').forEach(function(radio) {
             radio.addEventListener('change', function() {
-                const methodError = document.getElementById('withdrawMethodError');
-                if (methodError) methodError.classList.remove('show');
+                clearError(methodError);
+                if (transferHint) {
+                    transferHint.textContent = radio.value === 'instapay'
+                        ? 'رقم الهاتف المسجل على حساب انستاباي'
+                        : 'رقم الهاتف المسجل على المحفظة الإلكترونية';
+                }
             });
         });
 
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', async function(e) {
             e.preventDefault();
 
             const code = getMarketerCode();
-            const name = getMarketerName();
             const max = readNumberFromEl('earnedCommission');
             const amount = parseInt(amountInput ? amountInput.value : '0', 10);
             const methodRadio = form.querySelector('input[name="withdrawMethod"]:checked');
             const method = methodRadio ? methodRadio.value : '';
-            const messageEl = document.getElementById('withdrawMessage');
-            const methodError = document.getElementById('withdrawMethodError');
+            const transferNumber = (transferInput ? transferInput.value : '').trim();
 
-            // Validate
+            hideMessage(messageEl);
+            clearError(amountError);
+            clearError(methodError);
+            clearError(transferError);
+
+            // 1. Validate amount
             if (!amount || amount < 1) {
-                if (amountError) {
-                    amountError.textContent = 'أدخل مبلغاً صحيحاً (رقم أكبر من 0)';
-                    amountError.classList.add('show');
-                }
+                showError(amountError, 'أدخل مبلغاً صحيحاً (رقم أكبر من 0)');
                 return;
             }
             if (amount > max) {
-                if (amountError) {
-                    amountError.textContent = 'المبلغ يتجاوز الرصيد المتاح (' + max + ' ج.م)';
-                    amountError.classList.add('show');
-                }
+                showError(amountError, 'المبلغ يتجاوز الرصيد المتاح (' + max + ' ج.م)');
                 return;
             }
+
+            // 2. Validate method
             if (!method) {
-                if (methodError) {
-                    methodError.textContent = 'اختر طريقة الاستلام';
-                    methodError.classList.add('show');
-                }
+                showError(methodError, 'اختر طريقة الاستلام');
                 return;
             }
 
-            // Build mailto
-            const methodName = method === 'instapay' ? 'انستاباي' : 'محفظة إلكترونية';
-            const subject = 'طلب سحب أرباح - كود ' + code;
+            // 3. Validate transfer number (Egyptian mobile)
+            if (!transferNumber) {
+                showError(transferError, 'رقم التحويل مطلوب');
+                return;
+            }
+            if (!/^01[0125]\d{8}$/.test(transferNumber)) {
+                showError(transferError, 'رقم هاتف غير صحيح (11 رقم يبدأ بـ 010/011/012/015)');
+                return;
+            }
 
-            const body =
-                'كود المسوق: ' + code + '\n' +
-                'اسم المسوق: ' + name + '\n' +
-                'المبلغ المطلوب: ' + amount + ' ج.م\n' +
-                'طريقة الاستلام: ' + methodName + '\n' +
-                'الرصيد المتاح وقت الطلب: ' + max + ' ج.م\n' +
-                '\n' +
-                '---\n' +
-                'تم إرسال هذا الطلب من لوحة تحكم المسوق\n' +
-                'التاريخ: ' + new Date().toLocaleString('ar-EG') + '\n';
+            // 4. Submit
+            const btn = document.getElementById('submitWithdrawBtn');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
+            }
 
-            const mailtoUrl = 'mailto:sales@kidcode-eg.com'
-                + '?subject=' + encodeURIComponent(subject)
-                + '&body=' + encodeURIComponent(body);
-
-            // Open mail client
             try {
-                window.location.href = mailtoUrl;
-                showMessage(messageEl, 'success',
-                    '✅ تم فتح تطبيق البريد. يرجى الضغط على "إرسال" لإكمال الطلب.');
+                const res = await fetch('/api?action=marketer', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        innerAction: 'submitWithdrawRequest',
+                        marketerCode: code,
+                        amount: amount,
+                        method: method,
+                        transferNumber: transferNumber
+                    })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    showMessage(messageEl, 'success',
+                        '✅ تم إرسال طلبك بنجاح. رقم الطلب: ' + (data.requestId || '—') +
+                        ' — سيتم التواصل معك خلال 48 ساعة عبر البريد أو الهاتف.');
+
+                    // Reset form fields (except readonly)
+                    if (amountInput) amountInput.value = '';
+                    if (transferInput) transferInput.value = '';
+                    form.querySelectorAll('input[name="withdrawMethod"]').forEach(function(r) {
+                        r.checked = false;
+                    });
+                    if (transferHint) {
+                        transferHint.textContent = 'رقم الهاتف المسجل على وسيلة الاستلام';
+                    }
+                    refreshWithdrawData();
+                } else {
+                    const errMsg = data.message || data.error || 'فشل إرسال الطلب';
+                    showMessage(messageEl, 'error', '❌ ' + errMsg);
+                }
             } catch (err) {
-                showMessage(messageEl, 'error',
-                    '⚠️ تعذر فتح تطبيق البريد. يمكنك مراسلة sales@kidcode-eg.com يدوياً.');
+                console.error('withdraw submit error:', err);
+                showMessage(messageEl, 'error', '⚠️ تعذر الاتصال بالخادم. حاول مرة أخرى.');
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-paper-plane"></i> إرسال طلب السحب';
+                }
             }
         });
 
-        // First refresh (may be 0 if stats not loaded yet)
         refreshWithdrawData();
     }
 
@@ -1345,13 +1508,14 @@ function formatShortDate(dateStr) {
     //  Init
     // ============================================================
     document.addEventListener('DOMContentLoaded', function() {
-        // Run AFTER the existing DOMContentLoaded handler (order matters)
         setTimeout(function() {
+            initSidebarToggle();
             initTabs();
             initWithdraw();
             initChangePassword();
             initDeleteWarnings();
-            console.log('✅ marketer-dashboard extras loaded (tabs + withdraw + password + warnings)');
+            initReloadButtons();
+            console.log('✅ marketer-dashboard extras loaded (sidebar + tabs + withdraw + password + warnings + reload)');
         }, 0);
     });
 
