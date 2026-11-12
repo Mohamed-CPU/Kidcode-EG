@@ -633,12 +633,14 @@ body.marketer-dashboard-page.no-header {
     top: 0;
     align-self: start;
     height: 100vh;
+    height: 100dvh; /* ✅ Dynamic viewport — يحسب الـ URL bar على الموبايل */
     background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
     border-left: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
     padding: 20px 16px;
-    overflow-y: auto;
+    padding-bottom: max(20px, env(safe-area-inset-bottom, 20px)); /* ✅ Safe area للـ iPhone */
+    overflow: hidden; /* ✅ نمنع scroll على الـ sidebar كله */
     z-index: 500;
 }
 
@@ -682,6 +684,26 @@ body.marketer-dashboard-page.no-header {
     flex-direction: column;
     gap: 4px;
     flex: 1;
+    overflow-y: auto; /* ✅ هنا بس يكون الـ scroll */
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-color) transparent;
+}
+
+.md-sidebar-nav::-webkit-scrollbar {
+    width: 5px;
+}
+.md-sidebar-nav::-webkit-scrollbar-track {
+    background: transparent;
+}
+.md-sidebar-nav::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 3px;
+}
+.md-sidebar-nav::-webkit-scrollbar-thumb:hover {
+    background: var(--text-light);
 }
 
 .md-tab-btn {
@@ -726,9 +748,11 @@ body.marketer-dashboard-page.no-header {
 }
 
 .md-sidebar-footer {
-    margin-top: 16px;
-    padding-top: 16px;
+    margin-top: 12px;
+    padding-top: 14px;
+    padding-bottom: 4px; /* ✅ مساحة صغيرة تحت الزر */
     border-top: 2px solid var(--border-color);
+    flex-shrink: 0; /* ✅ مينضغش لو الـ nav طويل */
 }
 
 .md-sidebar-logout {
@@ -1290,12 +1314,16 @@ body.marketer-dashboard-page.no-header {
         width: 280px;
         max-width: 85vw;
         height: 100vh;
+        height: 100dvh; /* ✅ Dynamic viewport للموبايل */
         border-left: none;
         border-right: 1px solid var(--border-color);
         transform: translateX(100%);
         transition: transform 0.3s ease;
         z-index: 450;
         box-shadow: -4px 0 30px rgba(0, 0, 0, 0.15);
+        /* ✅ Safe area من فوق ومن تحت */
+        padding-top: max(20px, env(safe-area-inset-top, 20px));
+        padding-bottom: max(24px, env(safe-area-inset-bottom, 24px));
     }
 
     .md-sidebar.open {
