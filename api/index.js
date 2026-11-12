@@ -756,7 +756,44 @@ async function handleMarketer(req, res) {
           return res.status(200).json(result);
         }
       } catch (supabaseError) {
-        // نكمل لـ GAS
+        // نكمل
+      }
+    }
+
+    // 🆕 WRITE ACTIONS — تغيير كلمة السر عبر OTP + طلب السحب
+    const SUPABASE_WRITE_ACTIONS = [
+      'requestPasswordChangeOTP',
+      'confirmPasswordChange',
+      'submitWithdrawRequest'
+    ];
+
+    if (SUPABASE_WRITE_ACTIONS.includes(innerAction)) {
+      try {
+        const { handleSupabaseMarketerWrite } = await import('../lib/db/marketer-write.js');
+        const result = await handleSupabaseMarketerWrite(innerAction, params);
+
+        if (result !== null && result !== undefined) {
+          return res.status(200).json(result);
+        }
+
+        // لو وصلنا هنا — action مسجّل لكن مفيش handler
+        console.warn('[handleMarketer] No write handler for:', innerAction);
+        return res.status(500).json({
+          success: false,
+          error: 'handler_not_implemented',
+          message: 'هذا الإجراء غير مُنفَّذ بعد'
+        });
+
+      } catch (supabaseError) {
+        console.error('[handleMarketer] Supabase write error:', {
+          action: innerAction,
+          message: supabaseError.message
+        });
+        return res.status(500).json({
+          success: false,
+          error: 'supabase_error',
+          message: supabaseError.message || 'خطأ في قاعدة البيانات'
+        });
       }
     }
 
