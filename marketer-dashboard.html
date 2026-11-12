@@ -12,6 +12,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="robots" content="noindex, nofollow">
     <title>لوحة تحكم المسوق - كيدكود-ايجي</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/all.min.css">
@@ -19,227 +20,441 @@
     <link rel="stylesheet" href="css/pages/marketer-dashboard.css">
     <link rel="icon" type="image/png" sizes="32x32" href="assets/images/logo2.png">
 </head>
-<body>
+<body class="marketer-dashboard-page no-header">
 
-<div id="headerPlaceholder"></div>
+<!-- ============================================================
+     Tab Bar (يشمل زر تسجيل الخروج)
+     ============================================================ -->
+<nav class="md-tabbar" id="mdTabbar">
+    <div class="md-tabbar-inner">
+        <button class="md-tab-btn active" data-tab="children">
+            <i class="fas fa-child"></i>
+            <span>الأطفال</span>
+        </button>
+        <button class="md-tab-btn" data-tab="notifications">
+            <i class="fas fa-bell"></i>
+            <span>الإشعارات</span>
+        </button>
+        <button class="md-tab-btn" data-tab="referral">
+            <i class="fas fa-link"></i>
+            <span>رابطك التسويقي</span>
+        </button>
+        <button class="md-tab-btn" data-tab="withdraw">
+            <i class="fas fa-wallet"></i>
+            <span>سحب الأرباح</span>
+        </button>
+        <button class="md-tab-btn" data-tab="settings">
+            <i class="fas fa-cog"></i>
+            <span>الإعدادات</span>
+        </button>
+        <button class="md-logout-btn" id="logoutBtn">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>تسجيل الخروج</span>
+        </button>
+    </div>
+</nav>
 
 <main>
     <div class="dashboard-wrapper" id="dashboardContent">
-        <!-- Header -->
-        <div class="dashboard-header">
-            <div>
-                <h1>📊 لوحة تحكم المسوق</h1>
-                <span class="user-info" id="marketerName">مرحباً، ...</span>
-            </div>
-            <div>
-                <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</button>
-            </div>
-        </div>
 
-        <!-- Loading -->
-        <div id="loadingScreen" class="loading-screen">
-            <i class="fas fa-spinner fa-spin"></i>
-            <p>جاري تحميل البيانات...</p>
-        </div>
+        <!-- ============================================================
+             Tab 1: Children (Stats + Orders)
+             ============================================================ -->
+        <section class="md-tab-panel active" data-tab="children">
 
-        <!-- Stats -->
-        <div id="statsGrid" class="stats-grid" style="display: none;">
-            <div class="stat-card">
-                <div class="stat-label">👶 إجمالي الأطفال المسجلين</div>
-                <div class="stat-value children" id="totalChildren">0</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">💰 العمولات المستحقة</div>
-                <div class="stat-value earned" id="earnedCommission">0</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">⏳ العمولات المعلقة</div>
-                <div class="stat-value pending" id="pendingCommission">0</div>
-            </div>
-        </div>
-
-        <!-- ============================================
-             🔔 قسم إشعارات تليجرام
-             ============================================ -->
-        <div class="card telegram-section-marketer" id="telegramSection">
-            <div class="telegram-section-header">
-                <h2>
-                    <i class="fab fa-telegram" style="color: #0088CC;"></i>
-                    إشعارات تليجرام
-                </h2>
-                <span id="marketerTelegramBadge" class="telegram-badge">
-                    <i class="fas fa-spinner fa-spin"></i> جاري التحميل...
-                </span>
+            <div class="dashboard-header">
+                <div>
+                    <h1>📊 لوحة تحكم المسوق</h1>
+                    <span class="user-info" id="marketerName">مرحباً، ...</span>
+                </div>
             </div>
 
-            <p class="telegram-section-desc">
-                اربط حسابك بتليجرام لاستقبال إشعارات فورية عند تسجيل عميل جديد، والتنبيه بالعمولات المستحقة، والتقارير الأسبوعية.
-            </p>
+            <div id="loadingScreen" class="loading-screen">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>جاري تحميل البيانات...</p>
+            </div>
 
-            <!-- حالة: غير مربوط -->
-            <div id="marketerNotLinkedView" class="telegram-state-view">
-                <div class="telegram-benefits-box">
-                    <p class="benefits-title">🎯 مميزات الربط بتليجرام:</p>
-                    <ul>
-                        <li>🎉 <strong>إشعار فوري</strong> عند تسجيل عميل بكودك</li>
-                        <li>💰 <strong>تنبيه بالعمولات</strong> المستحقة فوراً</li>
-                        <li>📊 <strong>تقرير أسبوعي</strong> بأدائك</li>
-                    </ul>
+            <div id="statsGrid" class="stats-grid" style="display: none;">
+                <div class="stat-card">
+                    <div class="stat-label">👶 إجمالي الأطفال المسجلين</div>
+                    <div class="stat-value children" id="totalChildren">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">💰 العمولات المستحقة</div>
+                    <div class="stat-value earned" id="earnedCommission">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">⏳ العمولات المعلقة</div>
+                    <div class="stat-value pending" id="pendingCommission">0</div>
+                </div>
+            </div>
+
+            <div id="ordersSection" class="orders-table-wrapper" style="display: none;">
+                <h2>📋 تفاصيل الطلبات</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>رقم الطفل</th>
+                            <th>الاسم</th>
+                            <th>الخطة</th>
+                            <th>السعر الأصلي</th>
+                            <th>السعر النهائي</th>
+                            <th>عمولة المسوق</th>
+                            <th>تاريخ الدفع</th>
+                            <th>المدة</th>
+                            <th>الحالة</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersBody">
+                        <tr><td colspan="9" class="no-orders">لا توجد طلبات حتى الآن</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </section>
+
+        <!-- ============================================================
+             Tab 2: Notifications (Telegram)
+             ============================================================ -->
+        <section class="md-tab-panel" data-tab="notifications">
+
+            <div class="card telegram-section-marketer" id="telegramSection">
+                <div class="telegram-section-header">
+                    <h2>
+                        <i class="fab fa-telegram" style="color: #0088CC;"></i>
+                        إشعارات تليجرام
+                    </h2>
+                    <span id="marketerTelegramBadge" class="telegram-badge">
+                        <i class="fas fa-spinner fa-spin"></i> جاري التحميل...
+                    </span>
                 </div>
 
-                <button id="marketerStartLinkBtn" class="btn btn-primary btn-block">
-                    <i class="fab fa-telegram"></i> ربط تليجرام الآن
-                </button>
+                <p class="telegram-section-desc">
+                    اربط حسابك بتليجرام لاستقبال إشعارات فورية عند تسجيل عميل جديد، والتنبيه بالعمولات المستحقة، والتقارير الأسبوعية.
+                </p>
 
-                <button id="marketerEmailOnlyBtn" class="btn btn-outline btn-block" style="margin-top: 10px;">
-                    <i class="fas fa-envelope"></i> المتابعة عبر البريد الإلكتروني فقط
-                </button>
-            </div>
+                <div id="marketerNotLinkedView" class="telegram-state-view">
+                    <div class="telegram-benefits-box">
+                        <p class="benefits-title">🎯 مميزات الربط بتليجرام:</p>
+                        <ul>
+                            <li>🎉 <strong>إشعار فوري</strong> عند تسجيل عميل بكودك</li>
+                            <li>💰 <strong>تنبيه بالعمولات</strong> المستحقة فوراً</li>
+                            <li>📊 <strong>تقرير أسبوعي</strong> بأدائك</li>
+                        </ul>
+                    </div>
 
-            <!-- حالة: مربوط -->
-            <div id="marketerLinkedView" class="telegram-state-view" style="display: none;">
-                <div class="telegram-linked-info">
-                    <div class="linked-status-row">
-                        <span class="linked-icon">✅</span>
-                        <div>
-                            <p class="linked-title">حسابك مربوط بتليجرام</p>
-                            <p class="linked-detail" id="marketerChatDetail">Chat ID: *******</p>
-                            <p class="linked-detail" id="marketerSinceDetail">منذ: --</p>
+                    <button id="marketerStartLinkBtn" class="btn btn-primary btn-block">
+                        <i class="fab fa-telegram"></i> ربط تليجرام الآن
+                    </button>
+
+                    <button id="marketerEmailOnlyBtn" class="btn btn-outline btn-block" style="margin-top: 10px;">
+                        <i class="fas fa-envelope"></i> المتابعة عبر البريد الإلكتروني فقط
+                    </button>
+                </div>
+
+                <div id="marketerLinkedView" class="telegram-state-view" style="display: none;">
+                    <div class="telegram-linked-info">
+                        <div class="linked-status-row">
+                            <span class="linked-icon">✅</span>
+                            <div>
+                                <p class="linked-title">حسابك مربوط بتليجرام</p>
+                                <p class="linked-detail" id="marketerChatDetail">Chat ID: *******</p>
+                                <p class="linked-detail" id="marketerSinceDetail">منذ: --</p>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="notification-method-box">
-                    <p class="method-title">🔔 طريقة استقبال الإشعارات:</p>
-                    <div class="method-options">
-                        <label class="radio-option">
-                            <input type="radio" name="marketerNotifMethod" value="telegram" id="marketerMethodTelegram">
-                            <span>
-                                <strong>تليجرام</strong>
-                                <small>الأسرع والموصى به</small>
-                            </span>
-                        </label>
-                        <label class="radio-option">
-                            <input type="radio" name="marketerNotifMethod" value="email" id="marketerMethodEmail">
-                            <span>
-                                <strong>البريد الإلكتروني</strong>
-                                <small>على بريدك المسجل</small>
-                            </span>
-                        </label>
+                    <div class="notification-method-box">
+                        <p class="method-title">🔔 طريقة استقبال الإشعارات:</p>
+                        <div class="method-options">
+                            <label class="radio-option">
+                                <input type="radio" name="marketerNotifMethod" value="telegram" id="marketerMethodTelegram">
+                                <span>
+                                    <strong>تليجرام</strong>
+                                    <small>الأسرع والموصى به</small>
+                                </span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="marketerNotifMethod" value="email" id="marketerMethodEmail">
+                                <span>
+                                    <strong>البريد الإلكتروني</strong>
+                                    <small>على بريدك المسجل</small>
+                                </span>
+                            </label>
+                        </div>
                     </div>
+
+                    <button id="marketerUnlinkBtn" class="btn btn-outline btn-block" style="color: var(--danger-color); border-color: var(--danger-color);">
+                        <i class="fas fa-unlink"></i> فك الربط
+                    </button>
+
+                    <div id="marketerTelegramMessage" class="message" style="margin-top: 12px;"></div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ============================================================
+             Tab 3: Referral Link
+             ============================================================ -->
+        <section class="md-tab-panel" data-tab="referral">
+
+            <div class="card referral-link-section" id="referralLinkSection">
+                <div class="referral-header">
+                    <h2>
+                        <i class="fas fa-link" style="color: var(--secondary-color);"></i>
+                        رابطك التسويقي
+                    </h2>
+                    <span class="referral-badge">🎯 مشاركة سهلة</span>
+                </div>
+                <p class="referral-desc">
+                    شارك هذا الرابط مع عملائك — سيتم تسجيلهم تلقائيًا بكودك ويحصلون على خصمك مباشرة،
+                    بدون الحاجة لكتابة الكود يدويًا.
+                </p>
+
+                <div class="referral-link-box">
+                    <input type="text" id="marketerRefLink" readonly dir="ltr" placeholder="جاري التحميل...">
+                    <button id="copyRefLinkBtn" class="btn-copy-ref" title="نسخ">
+                        <i class="fas fa-copy"></i>
+                    </button>
                 </div>
 
-                <button id="marketerUnlinkBtn" class="btn btn-outline btn-block" style="color: var(--danger-color); border-color: var(--danger-color);">
-                    <i class="fas fa-unlink"></i> فك الربط
-                </button>
+                <div class="referral-actions">
+                    <button id="showRefQrBtn" class="btn btn-outline">
+                        <i class="fas fa-qrcode"></i> عرض QR
+                    </button>
+                    <button id="shareRefLinkBtn" class="btn btn-primary">
+                        <i class="fas fa-share-alt"></i> مشاركة
+                    </button>
+                </div>
 
-                <div id="marketerTelegramMessage" class="message" style="margin-top: 12px;"></div>
-            </div>
-        </div>
-
-        <!-- ============================================
-             🔗 قسم رابطك التسويقي (جديد)
-             ============================================ -->
-        <div class="card referral-link-section" id="referralLinkSection">
-            <div class="referral-header">
-                <h2>
-                    <i class="fas fa-link" style="color: var(--secondary-color);"></i>
-                    رابطك التسويقي
-                </h2>
-                <span class="referral-badge">🎯 مشاركة سهلة</span>
-            </div>
-            <p class="referral-desc">
-                شارك هذا الرابط مع عملائك — سيتم تسجيلهم تلقائيًا بكودك ويحصلون على خصمك مباشرة،
-                بدون الحاجة لكتابة الكود يدويًا.
-            </p>
-
-            <div class="referral-link-box">
-                <input type="text" id="marketerRefLink" readonly dir="ltr" placeholder="جاري التحميل...">
-                <button id="copyRefLinkBtn" class="btn-copy-ref" title="نسخ">
-                    <i class="fas fa-copy"></i>
-                </button>
+                <div class="referral-hint">
+                    <i class="fas fa-lightbulb"></i>
+                    <span>نصيحة: اطبع رمز QR وضعه في كروت العمل أو البروشورات — أسهل طريقة للعميل للتسجيل بكودك.</span>
+                </div>
             </div>
 
-            <div class="referral-actions">
-                <button id="showRefQrBtn" class="btn btn-outline">
-                    <i class="fas fa-qrcode"></i> عرض QR
-                </button>
-                <button id="shareRefLinkBtn" class="btn btn-primary">
-                    <i class="fas fa-share-alt"></i> مشاركة
-                </button>
-            </div>
+        </section>
 
-            <div class="referral-hint">
-                <i class="fas fa-lightbulb"></i>
-                <span>نصيحة: اطبع رمز QR وضعه في كروت العمل أو البروشورات — أسهل طريقة للعميل للتسجيل بكودك.</span>
-            </div>
-        </div>
+        <!-- ============================================================
+             Tab 4: Withdraw Profits
+             ============================================================ -->
+        <section class="md-tab-panel" data-tab="withdraw">
 
-        <!-- Orders -->
-        <div id="ordersSection" class="orders-table-wrapper" style="display: none;">
-            <h2>📋 تفاصيل الطلبات</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>رقم الطفل</th>
-                        <th>الاسم</th>
-                        <th>الخطة</th>
-                        <th>السعر الأصلي</th>
-                        <th>السعر النهائي</th>
-                        <th>عمولة المسوق</th>
-                        <th>تاريخ الدفع</th>
-                        <th>المدة</th>
-                        <th>الحالة</th>
-                    </tr>
-                </thead>
-                <tbody id="ordersBody">
-                    <tr><td colspan="9" class="no-orders">لا توجد طلبات حتى الآن</td></tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Delete Account -->
-        <div style="margin-top: 40px; border-top: 2px solid var(--border-color); padding-top: 30px;">
-            <h3 style="color: var(--danger-color); font-weight: 800; margin-bottom: 10px;">
-                <i class="fas fa-trash-alt"></i> حذف الحساب
-            </h3>
-            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 16px;">
-                حذف حسابك نهائياً سيؤدي إلى فقدان جميع بياناتك وعمولاتك غير المستحقة. هذا الإجراء لا يمكن التراجع عنه.
-            </p>
-            <button id="deleteAccountBtn" class="btn btn-danger" style="width: auto; padding: 12px 32px;">
-                <i class="fas fa-trash-alt"></i> حذف الحساب نهائياً
-            </button>
-
-            <div id="deleteConfirmModal" class="modal-overlay" style="display: none;">
-                <div class="modal-container" style="max-width: 450px;">
-                    <h3 style="color: var(--danger-color); font-weight: 900; text-align: center;">
-                        ⚠️ تأكيد حذف الحساب
-                    </h3>
-                    <p style="text-align: center; color: var(--text-secondary); margin: 16px 0;">
-                        هذا الإجراء نهائي ولا يمكن التراجع عنه. سيتم حذف جميع بياناتك.
+            <div class="card md-withdraw-card">
+                <div class="md-section-header">
+                    <h2><i class="fas fa-wallet"></i> سحب الأرباح</h2>
+                    <p class="md-section-desc">
+                        أرسل طلب سحب للإدارة عبر البريد الإلكتروني، وسيتم التواصل معك خلال 48 ساعة عمل.
                     </p>
-                    <div class="form-group">
-                        <label for="deleteConfirmInput">للتأكيد، اكتب <strong style="color: var(--danger-color);">DELETE</strong> في الحقل أدناه:</label>
-                        <input type="text" id="deleteConfirmInput" placeholder="DELETE" style="text-align: center; font-weight: bold; letter-spacing: 2px; text-transform: uppercase;">
-                    </div>
-                    <div class="modal-actions" style="display: flex; gap: 12px; justify-content: center; margin-top: 20px;">
-                        <button id="confirmDeleteBtn" class="btn btn-danger" style="flex: 2;">
-                            <i class="fas fa-trash-alt"></i> تأكيد الحذف
-                        </button>
-                        <button id="cancelDeleteBtn" class="btn btn-outline" style="flex: 1;">
-                            إلغاء
-                        </button>
-                    </div>
-                    <div id="deleteMessage" class="message-box" style="margin-top: 16px;"></div>
                 </div>
+
+                <div class="md-balance-info">
+                    <span class="md-balance-label">الرصيد المتاح للسحب</span>
+                    <span class="md-balance-value" id="withdrawAvailableBalance">0 ج.م</span>
+                </div>
+
+                <form id="withdrawForm" class="md-withdraw-form" novalidate>
+
+                    <div class="md-form-group">
+                        <label>كود المسوق</label>
+                        <input type="text" id="withdrawCode" readonly disabled dir="ltr">
+                    </div>
+
+                    <div class="md-form-group">
+                        <label>اسم المسوق</label>
+                        <input type="text" id="withdrawName" readonly disabled>
+                    </div>
+
+                    <div class="md-form-group">
+                        <label class="required">المبلغ المطلوب سحبه (ج.م)</label>
+                        <input type="number" id="withdrawAmount" min="1" step="1" placeholder="أدخل المبلغ" dir="ltr">
+                        <div class="md-field-hint" id="withdrawAmountHint">الحد الأقصى: 0 ج.م</div>
+                        <div class="md-field-error" id="withdrawAmountError"></div>
+                    </div>
+
+                    <div class="md-form-group">
+                        <label class="required">طريقة استلام العمولة</label>
+                        <div class="md-payment-methods">
+                            <label class="md-radio-card">
+                                <input type="radio" name="withdrawMethod" value="instapay">
+                                <div class="md-radio-content">
+                                    <i class="fas fa-university"></i>
+                                    <strong>انستاباي</strong>
+                                    <small>تحويل بنكي فوري</small>
+                                </div>
+                            </label>
+                            <label class="md-radio-card">
+                                <input type="radio" name="withdrawMethod" value="wallet">
+                                <div class="md-radio-content">
+                                    <i class="fas fa-mobile-alt"></i>
+                                    <strong>محفظة إلكترونية</strong>
+                                    <small>فودافون / اتصالات كاش</small>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="md-field-error" id="withdrawMethodError"></div>
+                    </div>
+
+                    <div class="md-info-box">
+                        <i class="fas fa-info-circle"></i>
+                        سيتم إرسال طلبك إلى البريد <strong>sales@kidcode-eg.com</strong> — يرجى إرسال الإيميل من تطبيق البريد بعد فتحه.
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block btn-lg" id="submitWithdrawBtn">
+                        <i class="fas fa-paper-plane"></i>
+                        إرسال طلب السحب
+                    </button>
+
+                    <div class="md-message" id="withdrawMessage"></div>
+
+                </form>
             </div>
-        </div>
+
+        </section>
+
+        <!-- ============================================================
+             Tab 5: Settings (Change Password + Delete Account)
+             ============================================================ -->
+        <section class="md-tab-panel" data-tab="settings">
+
+            <!-- Change Password Card -->
+            <div class="card md-settings-card" id="changePasswordCard">
+                <div class="md-section-header">
+                    <h2><i class="fas fa-key"></i> تغيير كلمة السر</h2>
+                    <p class="md-section-desc">
+                        لتأكيد التغيير، سيتم إرسال رمز تحقق عبر قناة الإشعارات المختارة.
+                    </p>
+                </div>
+
+                <div class="md-warning-box" id="channelWarningBox" style="display: none;">
+                    <i class="fas fa-triangle-exclamation"></i>
+                    <div>
+                        <strong>تليجرام غير مربوط</strong>
+                        <p>
+                            اخترت استقبال الإشعارات عبر تليجرام لكن الحساب غير مربوط.
+                            <a href="#" id="goToTelegramLink">اربط تليجرام الآن</a>
+                            أو
+                            <a href="#" id="switchToEmailChannel">تحويل الإرسال للبريد الإلكتروني</a>.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="md-channel-info" id="channelInfoBox">
+                    <span class="md-channel-label">قناة إرسال رمز التحقق:</span>
+                    <span class="md-channel-value" id="currentChannelDisplay">—</span>
+                </div>
+
+                <form id="changePasswordForm" novalidate>
+
+                    <div class="md-form-group">
+                        <label class="required">كلمة السر الحالية</label>
+                        <input type="password" id="mdCurrentPassword" autocomplete="current-password">
+                        <div class="md-field-error" id="mdCurrentPasswordError"></div>
+                    </div>
+
+                    <div class="md-form-group">
+                        <label class="required">كلمة السر الجديدة</label>
+                        <input type="password" id="mdNewPassword" autocomplete="new-password">
+                        <div class="md-field-hint">8 أحرف على الأقل — حرف + رقم + رمز خاص (مثال: @ # $ % !)</div>
+                        <div class="md-field-error" id="mdNewPasswordError"></div>
+                    </div>
+
+                    <div class="md-form-group">
+                        <label class="required">تأكيد كلمة السر الجديدة</label>
+                        <input type="password" id="mdConfirmPassword" autocomplete="new-password">
+                        <div class="md-field-error" id="mdConfirmPasswordError"></div>
+                    </div>
+
+                    <button type="button" class="btn btn-primary btn-block" id="sendOtpBtn">
+                        <i class="fas fa-paper-plane"></i>
+                        إرسال رمز التحقق
+                    </button>
+
+                    <div id="otpSection" class="md-otp-section" style="display: none;">
+                        <div class="md-form-group">
+                            <label class="required">رمز التحقق (6 أرقام)</label>
+                            <input type="text" id="otpInput" maxlength="6" inputmode="numeric"
+                                   autocomplete="one-time-code" placeholder="------"
+                                   style="text-align: center; letter-spacing: 10px; font-size: 1.5rem; font-weight: 900; direction: ltr;">
+                            <div class="md-field-error" id="otpError"></div>
+                        </div>
+
+                        <p class="md-otp-timer">
+                            ⏱️ ينتهي الرمز خلال <span id="otpCountdown">05:00</span>
+                        </p>
+
+                        <button type="button" class="btn btn-success btn-block" id="confirmChangePasswordBtn">
+                            <i class="fas fa-check"></i>
+                            تأكيد تغيير كلمة السر
+                        </button>
+                    </div>
+
+                    <div class="md-message" id="changePasswordMessage"></div>
+
+                </form>
+            </div>
+
+            <!-- Delete Account Card -->
+            <div class="card md-danger-card">
+                <div class="md-section-header">
+                    <h2 style="color: var(--danger-color);"><i class="fas fa-trash-alt"></i> حذف الحساب</h2>
+                </div>
+
+                <p class="md-danger-desc">
+                    حذف حسابك نهائياً سيؤدي إلى فقدان جميع بياناتك وعمولاتك. هذا الإجراء لا يمكن التراجع عنه.
+                </p>
+
+                <button id="deleteAccountBtn" class="btn btn-danger btn-block">
+                    <i class="fas fa-trash-alt"></i> حذف الحساب نهائياً
+                </button>
+            </div>
+
+        </section>
+
     </div>
 </main>
 
-<!-- ============================================
-     🔗 QR Modal (رابط التسويق)
-     ============================================ -->
+<!-- ============================================================
+     Delete Account Modal
+     ============================================================ -->
+<div id="deleteConfirmModal" class="modal-overlay" style="display: none;">
+    <div class="modal-container" style="max-width: 450px;">
+
+        <h3 style="color: var(--danger-color); font-weight: 900; text-align: center;">
+            ⚠️ تأكيد حذف الحساب
+        </h3>
+
+        <!-- Dynamic Warnings Box -->
+        <div id="deleteWarningsBox" class="md-delete-warnings" style="display: none;"></div>
+
+        <p style="text-align: center; color: var(--text-secondary); margin: 16px 0;">
+            هذا الإجراء نهائي ولا يمكن التراجع عنه. سيتم حذف جميع بياناتك.
+        </p>
+
+        <div class="form-group">
+            <label for="deleteConfirmInput">للتأكيد، اكتب <strong style="color: var(--danger-color);">DELETE</strong> في الحقل أدناه:</label>
+            <input type="text" id="deleteConfirmInput" placeholder="DELETE"
+                   style="text-align: center; font-weight: bold; letter-spacing: 2px; text-transform: uppercase;">
+        </div>
+
+        <div class="modal-actions" style="display: flex; gap: 12px; justify-content: center; margin-top: 20px;">
+            <button id="confirmDeleteBtn" class="btn btn-danger" style="flex: 2;">
+                <i class="fas fa-trash-alt"></i> تأكيد الحذف
+            </button>
+            <button id="cancelDeleteBtn" class="btn btn-outline" style="flex: 1;">
+                إلغاء
+            </button>
+        </div>
+
+        <div id="deleteMessage" class="message-box" style="margin-top: 16px;"></div>
+
+    </div>
+</div>
+
+<!-- ============================================================
+     QR Modal (Referral)
+     ============================================================ -->
 <div id="refQrModal" class="modal-overlay" style="display: none;">
     <div class="modal-container" style="max-width: 420px; width: 95%; text-align: center; position: relative;">
         <button id="closeRefQrBtn" class="modal-close-x" aria-label="إغلاق">✕</button>
@@ -263,9 +478,9 @@
     </div>
 </div>
 
-<!-- ============================================
-     🔗 Modal ربط تليجرام (QR + Open Telegram)
-     ============================================ -->
+<!-- ============================================================
+     Telegram Link Modal
+     ============================================================ -->
 <div id="marketerTelegramLinkModal" class="modal-overlay" style="display: none;">
     <div class="modal-container" style="max-width: 480px; width: 95%; text-align: center; position: relative;">
         <button id="marketerCloseLinkModalBtn" class="modal-close-x" aria-label="إغلاق">✕</button>
@@ -277,7 +492,6 @@
             امسح رمز QR بكاميرا تليجرام أو اضغط زر الفتح
         </p>
 
-        <!-- QR -->
         <div id="marketerQrContainer" class="qr-code-box">
             <div id="marketerQrLoading" style="padding: 40px; color: var(--text-secondary);">
                 <i class="fas fa-spinner fa-spin" style="font-size: 2rem;"></i>
@@ -286,12 +500,10 @@
             <img id="marketerQrImage" src="" alt="QR Code" style="display: none; max-width: 220px; width: 100%; border-radius: 12px;">
         </div>
 
-        <!-- Open Telegram -->
         <a id="marketerOpenTelegramLink" href="#" target="_blank" rel="noopener" class="btn btn-primary btn-block" style="margin-top: 16px; display: none;">
             <i class="fab fa-telegram"></i> افتح تليجرام
         </a>
 
-        <!-- Status -->
         <div class="linking-status" style="margin-top: 18px; padding: 14px 16px; background: #f0f9ff; border-radius: var(--radius-md); border-right: 4px solid #0088CC;">
             <p id="marketerLinkingStatusText" style="font-weight: 700; color: var(--primary-color); margin: 0;">
                 <i class="fas fa-spinner fa-spin"></i> في انتظار الربط...
@@ -308,13 +520,6 @@
 <div id="footerPlaceholder"></div>
 
 <script src="js/config.js"></script>
-<script src="js/header.js"></script>
-<script>
-    fetch('/header.html')
-        .then(response => response.text())
-        .then(data => { document.getElementById('headerPlaceholder').innerHTML = data; })
-        .catch(err => console.warn('⚠️ فشل تحميل الهيدر:', err));
-</script>
 <script src="js/utils.js"></script>
 <script src="js/pages/marketer-dashboard.js"></script>
 <script>
@@ -330,7 +535,7 @@
 </script>
 
 <script>
-    // 🔥 Warm-up GAS فور تحميل الصفحة
+    // 🔥 Warm-up
     (function() {
         fetch('/api?action=child&id=WARMUP&_t=' + Date.now(), { cache: 'no-store' })
             .catch(function() {});

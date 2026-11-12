@@ -798,3 +798,561 @@ function formatShortDate(dateStr) {
 
     console.log('✅ marketer-dashboard.js جاهز');
 });
+
+// ================================================================
+//  🆕 TABS + WITHDRAW + CHANGE PASSWORD + DELETE WARNINGS
+//  (يُضاف بعد نهاية كود الملف الحالي — لا يحذف أي شيء)
+// ================================================================
+
+(function() {
+    'use strict';
+
+    // ============================================================
+    //  Helpers
+    // ============================================================
+    function getMarketerCode() {
+        try { return localStorage.getItem('marketerCode') || ''; } catch (e) { return ''; }
+    }
+    function getMarketerName() {
+        try { return localStorage.getItem('marketerName') || ''; } catch (e) { return ''; }
+    }
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+    function readNumberFromEl(id) {
+        const el = document.getElementById(id);
+        if (!el) return 0;
+        const raw = (el.textContent || '').replace(/[^\d.]/g, '');
+        const num = parseFloat(raw);
+        return isNaN(num) ? 0 : num;
+    }
+    function showMessage(el, type, text) {
+        if (!el) return;
+        el.className = 'md-message ' + type;
+        el.textContent = text;
+        el.style.display = 'block';
+    }
+    function hideMessage(el) {
+        if (!el) return;
+        el.style.display = 'none';
+        el.textContent = '';
+    }
+
+    // ============================================================
+    //  1. Tabs
+    // ============================================================
+    const VALID_TABS = ['children', 'notifications', 'referral', 'withdraw', 'settings'];
+
+    function switchTab(tabName, updateHash) {
+        if (VALID_TABS.indexOf(tabName) === -1) tabName = 'children';
+
+        document.querySelectorAll('.md-tab-btn').forEach(function(btn) {
+            btn.classList.toggle('active', btn.getAttribute('data-tab') === tabName);
+        });
+        document.querySelectorAll('.md-tab-panel').forEach(function(panel) {
+            panel.classList.toggle('active', panel.getAttribute('data-tab') === tabName);
+        });
+
+        if (updateHash !== false) {
+            try { history.replaceState(null, '', '#' + tabName); } catch (e) {}
+        }
+
+        // Hooks per tab
+        if (tabName === 'withdraw') {
+            setTimeout(refreshWithdrawData, 50);
+        } else if (tabName === 'settings') {
+            setTimeout(refreshChannelInfo, 50);
+        }
+    }
+
+    function initTabs() {
+        document.querySelectorAll('.md-tab-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                switchTab(btn.getAttribute('data-tab'));
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+
+        // Initial tab from hash
+        const initialTab = (window.location.hash || '').replace('#', '');
+        if (initialTab && VALID_TABS.indexOf(initialTab) !== -1) {
+            switchTab(initialTab, false);
+        }
+
+        // Hash change (deep link)
+        window.addEventListener('hashchange', function() {
+            const hashTab = (window.location.hash || '').replace('#', '');
+            if (hashTab && VALID_TABS.indexOf(hashTab) !== -1) {
+                switchTab(hashTab, false);
+            }
+        });
+    }
+
+    // ============================================================
+    //  2. Withdraw
+    // ============================================================
+    function refreshWithdrawData() {
+        const code = getMarketerCode();
+        const name = getMarketerName();
+
+        const codeInput = document.getElementById('withdrawCode');
+        const nameInput = document.getElementById('withdrawName');
+        if (codeInput) codeInput.value = code;
+        if (nameInput) nameInput.value = name;
+
+        // Max = earned commission (from Children tab)
+        const max = readNumberFromEl('earnedCommission');
+
+        const balanceEl = document.getElementById('withdrawAvailableBalance');
+        if (balanceEl) balanceEl.textContent = max + ' ج.م';
+
+        const hintEl = document.getElementById('withdrawAmountHint');
+        if (hintEl) hintEl.textContent = 'الحد الأقصى: ' + max + ' ج.م';
+
+        const amountInput = document.getElementById('withdrawAmount');
+        if (amountInput && max > 0) {
+            amountInput.max = String(max);
+        }
+    }
+
+    function initWithdraw() {
+        const form = document.getElementById('withdrawForm');
+        if (!form) return;
+
+        // Watch statsGrid visibility to refresh withdraw data when loaded
+        const statsGrid = document.getElementById('statsGrid');
+        if (statsGrid && typeof MutationObserver !== 'undefined') {
+            const obs = new MutationObserver(function() {
+                if (statsGrid.style.display !== 'none') {
+                    refreshWithdrawData();
+                }
+            });
+            obs.observe(statsGrid, { attributes: true, attributeFilter: ['style'] });
+        }
+
+        const amountInput = document.getElementById('withdrawAmount');
+        const amountError = document.getElementById('withdrawAmountError');
+        if (amountInput) {
+            amountInput.addEventListener('input', function() {
+                if (amountError) amountError.classList.remove('show');
+            });
+        }
+
+        form.querySelectorAll('input[name="withdrawMethod"]').forEach(function(radio) {
+            radio.addEventListener('change', function() {
+                const methodError = document.getElementById('withdrawMethodError');
+                if (methodError) methodError.classList.remove('show');
+            });
+        });
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const code = getMarketerCode();
+            const name = getMarketerName();
+            const max = readNumberFromEl('earnedCommission');
+            const amount = parseInt(amountInput ? amountInput.value : '0', 10);
+            const methodRadio = form.querySelector('input[name="withdrawMethod"]:checked');
+            const method = methodRadio ? methodRadio.value : '';
+            const messageEl = document.getElementById('withdrawMessage');
+            const methodError = document.getElementById('withdrawMethodError');
+
+            // Validate
+            if (!amount || amount < 1) {
+                if (amountError) {
+                    amountError.textContent = 'أدخل مبلغاً صحيحاً (رقم أكبر من 0)';
+                    amountError.classList.add('show');
+                }
+                return;
+            }
+            if (amount > max) {
+                if (amountError) {
+                    amountError.textContent = 'المبلغ يتجاوز الرصيد المتاح (' + max + ' ج.م)';
+                    amountError.classList.add('show');
+                }
+                return;
+            }
+            if (!method) {
+                if (methodError) {
+                    methodError.textContent = 'اختر طريقة الاستلام';
+                    methodError.classList.add('show');
+                }
+                return;
+            }
+
+            // Build mailto
+            const methodName = method === 'instapay' ? 'انستاباي' : 'محفظة إلكترونية';
+            const subject = 'طلب سحب أرباح - كود ' + code;
+
+            const body =
+                'كود المسوق: ' + code + '\n' +
+                'اسم المسوق: ' + name + '\n' +
+                'المبلغ المطلوب: ' + amount + ' ج.م\n' +
+                'طريقة الاستلام: ' + methodName + '\n' +
+                'الرصيد المتاح وقت الطلب: ' + max + ' ج.م\n' +
+                '\n' +
+                '---\n' +
+                'تم إرسال هذا الطلب من لوحة تحكم المسوق\n' +
+                'التاريخ: ' + new Date().toLocaleString('ar-EG') + '\n';
+
+            const mailtoUrl = 'mailto:sales@kidcode-eg.com'
+                + '?subject=' + encodeURIComponent(subject)
+                + '&body=' + encodeURIComponent(body);
+
+            // Open mail client
+            try {
+                window.location.href = mailtoUrl;
+                showMessage(messageEl, 'success',
+                    '✅ تم فتح تطبيق البريد. يرجى الضغط على "إرسال" لإكمال الطلب.');
+            } catch (err) {
+                showMessage(messageEl, 'error',
+                    '⚠️ تعذر فتح تطبيق البريد. يمكنك مراسلة sales@kidcode-eg.com يدوياً.');
+            }
+        });
+
+        // First refresh (may be 0 if stats not loaded yet)
+        refreshWithdrawData();
+    }
+
+    // ============================================================
+    //  3. Change Password (OTP flow)
+    // ============================================================
+    let otpCountdownInterval = null;
+    let currentChannelMethod = 'email';
+
+    async function refreshChannelInfo() {
+        const code = getMarketerCode();
+        if (!code) return;
+
+        try {
+            const res = await fetch('/api?action=telegram', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    innerAction: 'getMarketerTelegramStatus',
+                    marketerCode: code
+                })
+            });
+            const data = await res.json();
+
+            const method = data.notificationMethod || 'email';
+            const isLinked = !!data.isLinked;
+            currentChannelMethod = method;
+
+            const warningBox = document.getElementById('channelWarningBox');
+            const infoBox = document.getElementById('channelInfoBox');
+            const channelDisplay = document.getElementById('currentChannelDisplay');
+            const sendBtn = document.getElementById('sendOtpBtn');
+
+            if (method === 'telegram' && !isLinked) {
+                // Warning: Telegram chosen but not linked
+                if (warningBox) warningBox.style.display = 'flex';
+                if (infoBox) infoBox.style.display = 'none';
+                if (sendBtn) sendBtn.disabled = true;
+            } else {
+                if (warningBox) warningBox.style.display = 'none';
+                if (infoBox) infoBox.style.display = 'flex';
+                if (channelDisplay) {
+                    channelDisplay.textContent = (method === 'telegram') ? 'تليجرام' : 'البريد الإلكتروني';
+                }
+                if (sendBtn) sendBtn.disabled = false;
+            }
+        } catch (err) {
+            console.warn('⚠️ refreshChannelInfo:', err);
+        }
+    }
+
+    function validatePassword(pwd) {
+        return pwd.length >= 8
+            && /[A-Za-z]/.test(pwd)
+            && /[0-9]/.test(pwd)
+            && /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(pwd)
+            && !/[\u0600-\u06FF]/.test(pwd);
+    }
+
+    function startOtpCountdown(seconds) {
+        const countdownEl = document.getElementById('otpCountdown');
+        if (!countdownEl) return;
+
+        if (otpCountdownInterval) clearInterval(otpCountdownInterval);
+
+        let remaining = seconds || 300;
+        function tick() {
+            if (remaining <= 0) {
+                countdownEl.textContent = '00:00';
+                clearInterval(otpCountdownInterval);
+                otpCountdownInterval = null;
+                return;
+            }
+            const m = Math.floor(remaining / 60);
+            const s = remaining % 60;
+            countdownEl.textContent = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+            remaining--;
+        }
+        tick();
+        otpCountdownInterval = setInterval(tick, 1000);
+    }
+
+    function initChangePassword() {
+        const sendBtn = document.getElementById('sendOtpBtn');
+        const confirmBtn = document.getElementById('confirmChangePasswordBtn');
+        const otpInput = document.getElementById('otpInput');
+
+        // Link: go to telegram tab
+        const goTelegramLink = document.getElementById('goToTelegramLink');
+        if (goTelegramLink) {
+            goTelegramLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                switchTab('notifications');
+            });
+        }
+
+        // Link: switch to email
+        const switchEmailLink = document.getElementById('switchToEmailChannel');
+        if (switchEmailLink) {
+            switchEmailLink.addEventListener('click', async function(e) {
+                e.preventDefault();
+                const code = getMarketerCode();
+                try {
+                    const res = await fetch('/api?action=telegram', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            innerAction: 'setMarketerNotificationMethod',
+                            marketerCode: code,
+                            method: 'email'
+                        })
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        await refreshChannelInfo();
+                    } else {
+                        alert('❌ ' + (data.error || 'فشل التحويل للبريد'));
+                    }
+                } catch (err) {
+                    alert('⚠️ خطأ في الاتصال');
+                }
+            });
+        }
+
+        if (sendBtn) {
+            sendBtn.addEventListener('click', async function() {
+                const current = (document.getElementById('mdCurrentPassword').value || '').trim();
+                const newPwd = (document.getElementById('mdNewPassword').value || '').trim();
+                const confirm = (document.getElementById('mdConfirmPassword').value || '').trim();
+
+                // Reset errors
+                ['mdCurrentPasswordError', 'mdNewPasswordError', 'mdConfirmPasswordError'].forEach(function(id) {
+                    const el = document.getElementById(id);
+                    if (el) el.classList.remove('show');
+                });
+                hideMessage(document.getElementById('changePasswordMessage'));
+
+                let hasError = false;
+                if (!current) {
+                    const el = document.getElementById('mdCurrentPasswordError');
+                    if (el) { el.textContent = 'كلمة السر الحالية مطلوبة'; el.classList.add('show'); }
+                    hasError = true;
+                }
+                if (!newPwd) {
+                    const el = document.getElementById('mdNewPasswordError');
+                    if (el) { el.textContent = 'كلمة السر الجديدة مطلوبة'; el.classList.add('show'); }
+                    hasError = true;
+                } else if (!validatePassword(newPwd)) {
+                    const el = document.getElementById('mdNewPasswordError');
+                    if (el) { el.textContent = 'كلمة السر لا تحقق الشروط (8+ أحرف، حرف + رقم + رمز)'; el.classList.add('show'); }
+                    hasError = true;
+                } else if (newPwd === current) {
+                    const el = document.getElementById('mdNewPasswordError');
+                    if (el) { el.textContent = 'كلمة السر الجديدة يجب أن تكون مختلفة'; el.classList.add('show'); }
+                    hasError = true;
+                }
+                if (confirm !== newPwd) {
+                    const el = document.getElementById('mdConfirmPasswordError');
+                    if (el) { el.textContent = 'كلمة السر غير متطابقة'; el.classList.add('show'); }
+                    hasError = true;
+                }
+                if (hasError) return;
+
+                const code = getMarketerCode();
+                sendBtn.disabled = true;
+                sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
+
+                try {
+                    const res = await fetch('/api?action=marketer', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            innerAction: 'requestPasswordChangeOTP',
+                            marketerCode: code,
+                            currentPassword: current,
+                            newPassword: newPwd
+                        })
+                    });
+                    const data = await res.json();
+
+                    if (data.success) {
+                        const otpSection = document.getElementById('otpSection');
+                        if (otpSection) otpSection.style.display = 'block';
+                        startOtpCountdown(data.expiresInSeconds || 300);
+                        if (otpInput) { otpInput.value = ''; otpInput.focus(); }
+
+                        showMessage(document.getElementById('changePasswordMessage'),
+                            'success',
+                            '✅ تم إرسال رمز التحقق عبر ' +
+                            (currentChannelMethod === 'telegram' ? 'تليجرام' : 'البريد الإلكتروني'));
+                    } else {
+                        showMessage(document.getElementById('changePasswordMessage'),
+                            'error',
+                            '❌ ' + (data.error || data.message || 'فشل إرسال رمز التحقق'));
+                    }
+                } catch (err) {
+                    showMessage(document.getElementById('changePasswordMessage'),
+                        'error',
+                        '⚠️ تعذر الاتصال بالخادم');
+                } finally {
+                    sendBtn.disabled = false;
+                    sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i> إعادة إرسال رمز التحقق';
+                }
+            });
+        }
+
+        if (otpInput) {
+            otpInput.addEventListener('input', function() {
+                this.value = this.value.replace(/[^\d]/g, '').slice(0, 6);
+                const err = document.getElementById('otpError');
+                if (err) err.classList.remove('show');
+            });
+        }
+
+        if (confirmBtn) {
+            confirmBtn.addEventListener('click', async function() {
+                const code = getMarketerCode();
+                const otp = (otpInput ? otpInput.value : '').trim();
+                const newPwd = (document.getElementById('mdNewPassword').value || '').trim();
+                const errEl = document.getElementById('otpError');
+                const msgEl = document.getElementById('changePasswordMessage');
+
+                if (otp.length !== 6) {
+                    if (errEl) { errEl.textContent = 'أدخل 6 أرقام'; errEl.classList.add('show'); }
+                    return;
+                }
+
+                confirmBtn.disabled = true;
+                confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التأكيد...';
+                hideMessage(msgEl);
+
+                try {
+                    const res = await fetch('/api?action=marketer', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            innerAction: 'confirmPasswordChange',
+                            marketerCode: code,
+                            otp: otp,
+                            newPassword: newPwd
+                        })
+                    });
+                    const data = await res.json();
+
+                    if (data.success) {
+                        showMessage(msgEl, 'success',
+                            '✅ تم تغيير كلمة السر بنجاح. سيتم تسجيل الخروج...');
+                        if (otpCountdownInterval) clearInterval(otpCountdownInterval);
+                        setTimeout(function() {
+                            localStorage.removeItem('marketerCode');
+                            localStorage.removeItem('marketerName');
+                            window.location.href = '/marketer-login';
+                        }, 2000);
+                    } else {
+                        showMessage(msgEl, 'error',
+                            '❌ ' + (data.error || data.message || 'فشل التأكيد'));
+                    }
+                } catch (err) {
+                    showMessage(msgEl, 'error', '⚠️ تعذر الاتصال بالخادم');
+                } finally {
+                    confirmBtn.disabled = false;
+                    confirmBtn.innerHTML = '<i class="fas fa-check"></i> تأكيد تغيير كلمة السر';
+                }
+            });
+        }
+    }
+
+    // ============================================================
+    //  4. Delete Warnings
+    // ============================================================
+    function populateDeleteWarnings() {
+        const box = document.getElementById('deleteWarningsBox');
+        if (!box) return;
+
+        const earned = readNumberFromEl('earnedCommission');
+        const pending = readNumberFromEl('pendingCommission');
+
+        const lines = [];
+        if (earned > 0) {
+            lines.push('لديك <strong>' + earned + ' ج.م</strong> عمولات مستحقة — ستفقدها نهائياً عند الحذف.');
+        }
+        if (pending > 0) {
+            lines.push('لديك <strong>' + pending + ' ج.م</strong> عمولات معلقة — لن تحصل عليها بعد الحذف.');
+        }
+
+        if (lines.length === 0) {
+            box.style.display = 'none';
+            box.innerHTML = '';
+            return;
+        }
+
+        box.innerHTML =
+            '<p class="dw-title"><i class="fas fa-triangle-exclamation"></i> تحذير هام</p>' +
+            '<ul class="dw-list">' +
+                lines.map(function(l) { return '<li>• ' + l + '</li>'; }).join('') +
+            '</ul>';
+        box.style.display = 'block';
+    }
+
+    function initDeleteWarnings() {
+        const deleteBtn = document.getElementById('deleteAccountBtn');
+        if (!deleteBtn) return;
+
+        // Fire AFTER existing handler (which shows the modal)
+        deleteBtn.addEventListener('click', function() {
+            setTimeout(populateDeleteWarnings, 0);
+        });
+
+        // Also update when statsGrid changes
+        const statsGrid = document.getElementById('statsGrid');
+        if (statsGrid && typeof MutationObserver !== 'undefined') {
+            const obs = new MutationObserver(function() {
+                if (statsGrid.style.display !== 'none') {
+                    // If modal is open, refresh
+                    const modal = document.getElementById('deleteConfirmModal');
+                    if (modal && modal.style.display === 'flex') {
+                        populateDeleteWarnings();
+                    }
+                }
+            });
+            obs.observe(statsGrid, { attributes: true, attributeFilter: ['style'] });
+        }
+    }
+
+    // ============================================================
+    //  Init
+    // ============================================================
+    document.addEventListener('DOMContentLoaded', function() {
+        // Run AFTER the existing DOMContentLoaded handler (order matters)
+        setTimeout(function() {
+            initTabs();
+            initWithdraw();
+            initChangePassword();
+            initDeleteWarnings();
+            console.log('✅ marketer-dashboard extras loaded (tabs + withdraw + password + warnings)');
+        }, 0);
+    });
+
+})();

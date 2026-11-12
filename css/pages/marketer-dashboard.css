@@ -609,3 +609,534 @@
     transform: none !important;
     box-shadow: none !important;
 }
+
+/* ============================================================
+   🆕 TABS BAR
+   ============================================================ */
+body.marketer-dashboard-page.no-header {
+    padding-top: 0 !important;
+    background: var(--bg-body);
+}
+
+.md-tabbar {
+    position: sticky;
+    top: 0;
+    z-index: 500;
+    background: #FFFFFF;
+    box-shadow: 0 2px 12px rgba(34, 85, 159, 0.08);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.md-tabbar-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: stretch;
+    gap: 4px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+.md-tabbar-inner::-webkit-scrollbar { display: none; }
+
+.md-tab-btn {
+    flex-shrink: 0;
+    padding: 16px 20px;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    position: relative;
+}
+.md-tab-btn i { font-size: 1rem; }
+.md-tab-btn:hover {
+    color: var(--primary-color);
+    background: rgba(34, 85, 159, 0.04);
+}
+.md-tab-btn.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+    background: rgba(34, 85, 159, 0.06);
+}
+
+.md-logout-btn {
+    margin-inline-start: auto;
+    align-self: center;
+    flex-shrink: 0;
+    padding: 10px 20px;
+    background: transparent;
+    color: var(--danger-color);
+    border: 2px solid var(--danger-color);
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 800;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 42px;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+}
+.md-logout-btn:hover {
+    background: var(--danger-color);
+    color: #FFFFFF;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(230, 57, 70, 0.25);
+}
+.md-logout-btn:active { transform: translateY(0); }
+
+/* ============================================================
+   🆕 TAB PANELS
+   ============================================================ */
+.md-tab-panel {
+    display: none;
+    animation: mdFadeIn 0.3s ease;
+}
+.md-tab-panel.active { display: block; }
+
+@keyframes mdFadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Dashboard wrapper adjustments */
+.dashboard-wrapper {
+    margin: 24px auto 40px;
+}
+
+/* ============================================================
+   🆕 Cards shared (withdraw, settings)
+   ============================================================ */
+.md-withdraw-card,
+.md-settings-card,
+.md-danger-card {
+    background: #FFFFFF;
+    border-radius: var(--radius-lg);
+    padding: 24px 26px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(34, 85, 159, 0.06);
+}
+
+.md-section-header {
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border-color);
+}
+.md-section-header h2 {
+    margin: 0 0 6px;
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.md-section-desc {
+    margin: 0;
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+
+/* ============================================================
+   🆕 Balance info (withdraw)
+   ============================================================ */
+.md-balance-info {
+    background: linear-gradient(135deg, #E8F5EE, #D1FAE5);
+    border-right: 4px solid var(--secondary-color);
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.md-balance-label {
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: #065F46;
+}
+.md-balance-value {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--secondary-dark);
+    font-family: 'Cairo', sans-serif;
+}
+
+/* ============================================================
+   🆕 Forms (withdraw + change password)
+   ============================================================ */
+.md-form-group {
+    margin-bottom: 18px;
+}
+.md-form-group label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+.md-form-group label.required::after {
+    content: " *";
+    color: var(--danger-color);
+}
+.md-form-group input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 0.95rem;
+    background: #FFFFFF;
+    color: var(--text-primary);
+    transition: all 0.2s ease;
+    min-height: 48px;
+}
+.md-form-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(34, 85, 159, 0.08);
+}
+.md-form-group input:disabled,
+.md-form-group input[readonly] {
+    background: #F3F4F6;
+    color: var(--text-secondary);
+    cursor: not-allowed;
+    -webkit-text-fill-color: var(--text-secondary);
+    opacity: 1;
+}
+.md-field-hint {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    margin-top: 6px;
+    line-height: 1.5;
+}
+.md-field-error {
+    display: none;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--danger-color);
+    margin-top: 6px;
+}
+.md-field-error.show {
+    display: block;
+    animation: mdShake 0.3s ease;
+}
+@keyframes mdShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+}
+
+/* ============================================================
+   🆕 Payment Methods (radio cards)
+   ============================================================ */
+.md-payment-methods {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+.md-radio-card {
+    display: block;
+    cursor: pointer;
+    background: #FFFFFF;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    transition: all 0.2s ease;
+    position: relative;
+}
+.md-radio-card:hover {
+    border-color: var(--primary-color);
+    background: #FAFBFF;
+}
+.md-radio-card input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+.md-radio-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
+}
+.md-radio-content i {
+    font-size: 1.6rem;
+    color: var(--primary-color);
+}
+.md-radio-content strong {
+    font-size: 0.92rem;
+    font-weight: 800;
+    color: var(--text-primary);
+}
+.md-radio-content small {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+}
+.md-radio-card:has(input[type="radio"]:checked) {
+    border-color: var(--primary-color);
+    background: linear-gradient(135deg, #EFF6FF, #DBEAFE);
+    box-shadow: 0 4px 14px rgba(34, 85, 159, 0.12);
+}
+
+/* ============================================================
+   🆕 Info box + Message
+   ============================================================ */
+.md-info-box {
+    background: #EFF6FF;
+    border-right: 4px solid var(--primary-color);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    margin: 18px 0;
+    font-size: 0.85rem;
+    color: #1E3A8A;
+    line-height: 1.7;
+}
+.md-info-box i {
+    color: var(--primary-color);
+    margin-left: 6px;
+}
+.md-info-box strong {
+    color: var(--primary-dark);
+    font-weight: 900;
+    direction: ltr;
+    unicode-bidi: embed;
+}
+
+.md-message {
+    display: none;
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    margin-top: 14px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    line-height: 1.6;
+}
+.md-message.show { display: block; }
+.md-message.success {
+    display: block;
+    background: #E8F5EE;
+    color: #166534;
+    border-right: 4px solid var(--secondary-color);
+}
+.md-message.error {
+    display: block;
+    background: #FEE2E2;
+    color: #991B1B;
+    border-right: 4px solid var(--danger-color);
+}
+.md-message.info {
+    display: block;
+    background: #EFF6FF;
+    color: #1E3A8A;
+    border-right: 4px solid var(--primary-color);
+}
+.md-message.warning {
+    display: block;
+    background: #FEF3C7;
+    color: #92400E;
+    border-right: 4px solid var(--warning-color);
+}
+
+/* ============================================================
+   🆕 Change Password — Channel / Warning / OTP
+   ============================================================ */
+.md-channel-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    background: #F8FAFC;
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+}
+.md-channel-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 700;
+}
+.md-channel-value {
+    font-size: 0.92rem;
+    font-weight: 900;
+    color: var(--primary-color);
+}
+
+.md-warning-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: #FEF3C7;
+    border-right: 4px solid var(--warning-color);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    margin-bottom: 18px;
+    color: #92400E;
+    font-size: 0.88rem;
+    line-height: 1.7;
+}
+.md-warning-box > i {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    margin-top: 3px;
+    color: var(--warning-color);
+}
+.md-warning-box strong {
+    display: block;
+    color: #78350F;
+    font-weight: 900;
+    margin-bottom: 4px;
+}
+.md-warning-box p { margin: 0; }
+.md-warning-box a {
+    color: var(--primary-color);
+    font-weight: 900;
+    text-decoration: underline;
+}
+.md-warning-box a:hover { color: var(--primary-dark); }
+
+.md-otp-section {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px dashed var(--border-color);
+    animation: mdFadeIn 0.3s ease;
+}
+.md-otp-timer {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin: 8px 0 16px;
+}
+.md-otp-timer span {
+    font-weight: 900;
+    color: var(--danger-color);
+    font-family: 'Courier New', monospace;
+    font-size: 1rem;
+}
+
+/* ============================================================
+   🆕 Danger Card + Delete Warnings
+   ============================================================ */
+.md-danger-card {
+    border: 2px solid rgba(230, 57, 70, 0.15);
+    background: linear-gradient(180deg, #FFFFFF 0%, #FEF2F2 100%);
+}
+.md-danger-desc {
+    font-size: 0.88rem;
+    color: #7F1D1D;
+    line-height: 1.7;
+    margin: 0 0 16px;
+    padding: 12px 16px;
+    background: #FEF2F2;
+    border-radius: var(--radius-sm);
+    border-right: 4px solid var(--danger-color);
+}
+
+.md-delete-warnings {
+    background: #FEF2F2;
+    border: 2px solid rgba(230, 57, 70, 0.3);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    margin: 14px 0;
+}
+.md-delete-warnings .dw-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    font-weight: 900;
+    color: #991B1B;
+    margin: 0 0 10px;
+}
+.md-delete-warnings .dw-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.md-delete-warnings .dw-list li {
+    font-size: 0.85rem;
+    color: #7F1D1D;
+    line-height: 1.6;
+    padding-right: 4px;
+}
+.md-delete-warnings .dw-list li strong {
+    color: #991B1B;
+    font-weight: 900;
+}
+
+/* ============================================================
+   📱 Responsive
+   ============================================================ */
+@media (max-width: 768px) {
+    .md-tabbar-inner {
+        padding: 0 12px;
+        gap: 2px;
+    }
+    .md-tab-btn {
+        padding: 14px 12px;
+        font-size: 0.85rem;
+    }
+    .md-tab-btn span { display: none; }
+    .md-tab-btn i { font-size: 1.15rem; }
+    .md-logout-btn {
+        padding: 10px 14px;
+        font-size: 0.85rem;
+    }
+    .md-logout-btn span { display: none; }
+
+    .dashboard-wrapper {
+        margin: 16px auto 32px;
+        padding: 0 12px;
+    }
+    .md-withdraw-card,
+    .md-settings-card,
+    .md-danger-card {
+        padding: 18px 16px;
+    }
+    .md-payment-methods {
+        grid-template-columns: 1fr;
+    }
+    .md-balance-info {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 480px) {
+    .md-tab-btn {
+        padding: 12px 10px;
+    }
+    .md-logout-btn {
+        padding: 8px 12px;
+    }
+    .md-balance-value {
+        font-size: 1.25rem;
+    }
+    .md-section-header h2 {
+        font-size: 1.05rem;
+    }
+    .md-form-group input {
+        font-size: 16px; /* prevent iOS zoom */
+    }
+}
