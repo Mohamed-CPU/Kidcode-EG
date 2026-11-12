@@ -109,33 +109,27 @@
      * @returns {{from: string, to: string}}
      */
     function getRangeDates(rangeDays) {
-        // 1️⃣ "Cairo today" عبر Intl — DST-aware
-        const todayParts = new Intl.DateTimeFormat('en-CA', {
-            timeZone: 'Africa/Cairo',
-            year: 'numeric', month: '2-digit', day: '2-digit'
-        }).formatToParts(new Date());
-        const getP = (t) => parseInt(todayParts.find(p => p.type === t).value, 10);
-        const y = getP('year');
-        const m = getP('month');   // 1-indexed (كما يرجعها Intl)
-        const d = getP('day');
+        // ✅ تخصيص: لو المستخدم طالب 30 يوم أو 90 يوم (شهور)، نستخدم setMonth عشان تبقى دقيقة
+        if (rangeDays === 30 || rangeDays === 90) {
+            const to = new Date();
+            const from = new Date();
+            // 30 يوم = شهر تقويمي / 90 يوم = 3 شهور تقويمية
+            from.setMonth(from.getMonth() - (rangeDays / 30)); 
+            
+            return {
+                from: formatDate(from),
+                to: formatDate(to)
+            };
+        }
 
-        // 2️⃣ حساب from/to في UTC (لتفادي DST بين الأيام)
-        //    Date.UTC() تستقبل month 0-indexed → نمرر m - 1
-        const toUTC = Date.UTC(y, m - 1, d);
-        const fromUTC = toUTC - (rangeDays - 1) * 86400000;  // inclusive
-
-        // 3️⃣ صياغة "YYYY-MM-DD" مباشرة من UTC components
-        //    (لأننا بنشتغل على "calendar date" مش لحظة زمنية)
-        const fmtUTC = (ms) => {
-            const dt = new Date(ms);
-            return dt.getUTCFullYear() + '-' +
-                   String(dt.getUTCMonth() + 1).padStart(2, '0') + '-' +
-                   String(dt.getUTCDate()).padStart(2, '0');
-        };
+        // الافتراضي (7 أيام)
+        const to = new Date();
+        const from = new Date();
+        from.setDate(from.getDate() - rangeDays + 1); // inclusive
 
         return {
-            from: fmtUTC(fromUTC),
-            to: fmtUTC(toUTC)
+            from: formatDate(from),
+            to: formatDate(to)
         };
     }
 
