@@ -440,9 +440,6 @@
         if (summary.expiryDate) {
             const dur = calculateRemainingDuration(summary.expiryDate);
             els.statDaysRemaining.textContent = dur.text;
-        } else if (summary.status === 'active') {
-            // الحساب نشط لكن مفيش تاريخ انتهاء في الداتابيز
-            els.statDaysRemaining.textContent = 'غير محدد (راجع الدعم)';
         } else if (summary.daysRemaining !== null && summary.daysRemaining !== undefined) {
             // fallback: لو مفيش expiryDate
             if (summary.daysRemaining <= 0) {
