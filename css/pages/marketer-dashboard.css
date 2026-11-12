@@ -36,12 +36,33 @@
 }
 
 .dashboard-header .logout-btn {
-    background: none;
-    border: none;
+    background: transparent;
+    border: 2px solid var(--danger-color);
     color: var(--danger-color);
-    font-weight: 700;
+    font-weight: 800;
     cursor: pointer;
     font-size: 0.95rem;
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    font-family: inherit;
+    transition: all 0.25s ease;
+}
+
+.dashboard-header .logout-btn:hover {
+    background: var(--danger-color);
+    color: #FFFFFF;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(230, 57, 70, 0.25);
+}
+
+.dashboard-header .logout-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px rgba(230, 57, 70, 0.2);
 }
 
 .stats-grid {
@@ -555,4 +576,36 @@
         min-width: 0;
         flex: 1 1 100%;
     }
+}
+
+/* ============================================================
+   🔧 زر "فك الربط" — hover ناعم (تعديل CSS فقط)
+   ============================================================ */
+#marketerUnlinkBtn.btn-outline {
+    background: transparent !important;
+    color: var(--danger-color) !important;
+    border: 2px solid var(--danger-color) !important;
+    transition: all 0.25s ease !important;
+    font-weight: 800;
+}
+
+#marketerUnlinkBtn.btn-outline:hover:not(:disabled) {
+    background: #FEE2E2 !important;
+    color: var(--danger-color) !important;
+    border-color: var(--danger-color) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(230, 57, 70, 0.15) !important;
+}
+
+#marketerUnlinkBtn.btn-outline:active:not(:disabled) {
+    transform: translateY(0);
+    background: #FECACA !important;
+    box-shadow: none !important;
+}
+
+#marketerUnlinkBtn.btn-outline:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
 }
