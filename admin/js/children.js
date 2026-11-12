@@ -1064,7 +1064,11 @@
   // ============================================================
   //  📅 normalizeDateForInput — يحوّل أي صيغة إلى YYYY-MM-DD
   // ============================================================
-  function normalizeDateForInput(value) {
+// ============================================================
+//  📅 normalizeDateForInput — يحوّل أي صيغة إلى YYYY-MM-DD
+//  ✅ Cairo date (DST-aware) بدل Local TZ
+// ============================================================
+function normalizeDateForInput(value) {
     if (!value) return '';
     const str = String(value).trim();
 
@@ -1080,17 +1084,21 @@
       return m2[3] + '-' + mm + '-' + dd;
     }
 
-    // ISO مع T
+    // ISO مع T — ✅ Cairo date (DST-aware)
     const d = new Date(str);
     if (!isNaN(d.getTime())) {
-      const yyyy = d.getFullYear();
-      const mm = String(d.getMonth() + 1).padStart(2, '0');
-      const dd = String(d.getDate()).padStart(2, '0');
+      const parts = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Africa/Cairo',
+        year: 'numeric', month: '2-digit', day: '2-digit'
+      }).formatToParts(d);
+      const yyyy = parts.find(p => p.type === 'year').value;
+      const mm = parts.find(p => p.type === 'month').value;
+      const dd = parts.find(p => p.type === 'day').value;
       return yyyy + '-' + mm + '-' + dd;
     }
 
     return '';
-  }
+}
 
     // ============================================================
   //  🔐 Revoke Child ID
