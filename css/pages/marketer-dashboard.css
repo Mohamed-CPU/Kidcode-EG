@@ -1438,3 +1438,248 @@ body.marketer-dashboard-page.no-header {
     color: var(--text-secondary);
     line-height: 1.7;
 }
+
+/* ============================================================
+   🆕 الرصيد المتاح (stat card)
+   ============================================================ */
+.stat-card.available {
+    border-right-color: #0891B2;
+    background: linear-gradient(135deg, #ECFEFF 0%, #FFFFFF 100%);
+}
+
+.stat-card .stat-value.available {
+    color: #0891B2;
+}
+
+/* Dark mode */
+[data-theme="dark"] .stat-card.available {
+    background: linear-gradient(135deg, rgba(8, 145, 178, 0.15) 0%, rgba(15, 23, 42, 0.6) 100%);
+}
+
+/* ============================================================
+   🆕 History Card + Table
+   ============================================================ */
+.md-history-card {
+    background: #FFFFFF;
+    border-radius: var(--radius-lg);
+    padding: 24px 26px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(34, 85, 159, 0.06);
+}
+
+.md-history-table-wrapper {
+    overflow-x: auto;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+}
+
+.md-history-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    min-width: 720px;
+}
+
+.md-history-table thead th {
+    background: #F8FAFC;
+    padding: 12px 14px;
+    text-align: right;
+    font-weight: 900;
+    font-size: 0.82rem;
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--border-color);
+    white-space: nowrap;
+}
+
+.md-history-table tbody td {
+    padding: 14px;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: middle;
+    color: var(--text-primary);
+}
+
+.md-history-table tbody tr:hover {
+    background: #FAFBFF;
+}
+
+.md-history-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.md-history-table .cell-request-id {
+    font-family: 'Courier New', monospace;
+    font-weight: 900;
+    color: var(--primary-color);
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+}
+
+.md-history-table .cell-date {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+.md-history-table .cell-amount {
+    font-weight: 900;
+    color: var(--primary-dark);
+    white-space: nowrap;
+}
+
+.md-history-table .cell-method {
+    min-width: 140px;
+}
+
+.md-history-table .cell-method .method-label {
+    font-weight: 800;
+    color: var(--text-primary);
+    font-size: 0.85rem;
+}
+
+.md-history-table .cell-method .method-number {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    direction: ltr;
+    text-align: right;
+    font-family: 'Courier New', monospace;
+    margin-top: 2px;
+}
+
+/* ============================================================
+   🆕 Status Badges
+   ============================================================ */
+.md-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 800;
+    white-space: nowrap;
+    line-height: 1.3;
+}
+
+.md-status-badge.submitted {
+    background: #EFF6FF;
+    color: #22559F;
+    border: 1px solid rgba(34, 85, 159, 0.2);
+}
+.md-status-badge.under_review {
+    background: #FEF3C7;
+    color: #92400E;
+    border: 1px solid rgba(245, 158, 11, 0.25);
+}
+.md-status-badge.sending {
+    background: #FFEDD5;
+    color: #9A3412;
+    border: 1px solid rgba(251, 146, 60, 0.25);
+}
+.md-status-badge.sent {
+    background: #D1FAE5;
+    color: #065F46;
+    border: 1px solid rgba(16, 185, 129, 0.25);
+}
+.md-status-badge.rejected,
+.md-status-badge.failed {
+    background: #FEE2E2;
+    color: #991B1B;
+    border: 1px solid rgba(220, 38, 38, 0.2);
+}
+.md-status-badge.cancelled {
+    background: #F1F5F9;
+    color: #475569;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+}
+.md-status-badge.expired {
+    background: #F5F5F4;
+    color: #78716C;
+    border: 1px solid rgba(168, 162, 158, 0.3);
+}
+
+/* ============================================================
+   🆕 Action Buttons (في جدول السجل)
+   ============================================================ */
+.md-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 12px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 800;
+    font-family: inherit;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.md-action-btn.danger {
+    background: #FEF2F2;
+    color: #DC2626;
+    border-color: rgba(220, 38, 38, 0.25);
+}
+.md-action-btn.danger:hover {
+    background: #DC2626;
+    color: #FFFFFF;
+    border-color: #DC2626;
+}
+
+.md-action-btn.success {
+    background: #ECFDF5;
+    color: #047857;
+    border-color: rgba(16, 185, 129, 0.25);
+}
+.md-action-btn.success:hover {
+    background: #10B981;
+    color: #FFFFFF;
+    border-color: #10B981;
+}
+
+.md-action-btn.muted {
+    background: #F1F5F9;
+    color: #475569;
+    border-color: rgba(148, 163, 184, 0.3);
+}
+.md-action-btn.muted:hover {
+    background: #475569;
+    color: #FFFFFF;
+    border-color: #475569;
+}
+
+/* ============================================================
+   🆕 Responsive — History Table
+   ============================================================ */
+@media (max-width: 768px) {
+    .md-history-card {
+        padding: 18px 16px;
+    }
+    .md-history-table {
+        font-size: 0.78rem;
+        min-width: 640px;
+    }
+    .md-history-table thead th,
+    .md-history-table tbody td {
+        padding: 10px 8px;
+    }
+    .md-status-badge {
+        font-size: 0.7rem;
+        padding: 4px 10px;
+    }
+    .md-action-btn {
+        font-size: 0.72rem;
+        padding: 6px 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .md-history-table {
+        font-size: 0.72rem;
+        min-width: 580px;
+    }
+    .md-history-table thead th {
+        font-size: 0.72rem;
+    }
+}

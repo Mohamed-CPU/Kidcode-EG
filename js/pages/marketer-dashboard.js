@@ -79,6 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const totalChildrenEl = document.getElementById('totalChildren');
     const earnedCommissionEl = document.getElementById('earnedCommission');
     const pendingCommissionEl = document.getElementById('pendingCommission');
+    const availableBalanceEl = document.getElementById('availableBalance');
     const ordersBody = document.getElementById('ordersBody');
 
     async function loadDashboard() {
@@ -93,6 +94,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 totalChildrenEl.textContent = stats.totalChildren;
                 earnedCommissionEl.textContent = stats.totalEarnedCommission + ' ج.م';
                 pendingCommissionEl.textContent = stats.totalPendingCommission + ' ج.م';
+                if (availableBalanceEl) {
+                    availableBalanceEl.textContent = (stats.availableBalance || 0) + ' ج.م';
+                }
                 statsGrid.style.display = 'grid';
                 ordersSection.style.display = 'block';
 
@@ -853,7 +857,7 @@ function formatShortDate(dateStr) {
     // ============================================================
     //  1. Tabs + Sidebar
     // ============================================================
-    const VALID_TABS = ['children', 'notifications', 'referral', 'withdraw', 'settings'];
+    const VALID_TABS = ['children', 'notifications', 'referral', 'withdraw', 'withdrawals', 'settings'];
 
     function openSidebar() {
         const sidebar = document.getElementById('mdSidebar');
@@ -903,6 +907,8 @@ function formatShortDate(dateStr) {
         // Per-tab hooks
         if (tabName === 'withdraw') {
             setTimeout(refreshWithdrawData, 50);
+        } else if (tabName === 'withdrawals') {
+            setTimeout(loadWithdrawalHistory, 50);
         } else if (tabName === 'settings') {
             setTimeout(refreshChannelInfo, 50);
         }
@@ -979,6 +985,9 @@ function formatShortDate(dateStr) {
             reloadWithdrawBtn: async function() {
                 refreshWithdrawData();
             },
+            reloadHistoryBtn: async function() {
+                await loadWithdrawalHistory();
+            },
             reloadSettingsBtn: async function() {
                 await refreshChannelInfo();
             }
@@ -1017,18 +1026,18 @@ function formatShortDate(dateStr) {
         if (codeInput) codeInput.value = code;
         if (nameInput) nameInput.value = name;
 
-        // Max = earned commission (from Children tab)
-        const max = readNumberFromEl('earnedCommission');
+        // Max = available balance (بعد خصم الطلبات النشطة)
+        const max = readNumberFromEl('availableBalance');
 
         const balanceEl = document.getElementById('withdrawAvailableBalance');
         if (balanceEl) balanceEl.textContent = max + ' ج.م';
 
         const hintEl = document.getElementById('withdrawAmountHint');
-        if (hintEl) hintEl.textContent = 'الحد الأقصى: ' + max + ' ج.م';
+        if (hintEl) hintEl.textContent = 'الرصيد المتاح: ' + max + ' ج.م';
 
         const amountInput = document.getElementById('withdrawAmount');
-        if (amountInput && max > 0) {
-            amountInput.max = String(max);
+        if (amountInput) {
+            amountInput.max = String(Math.max(0, max));
         }
     }
 
@@ -1092,7 +1101,7 @@ function formatShortDate(dateStr) {
             e.preventDefault();
 
             const code = getMarketerCode();
-            const max = readNumberFromEl('earnedCommission');
+            const max = readNumberFromEl('availableBalance');
             const amount = parseInt(amountInput ? amountInput.value : '0', 10);
             const methodRadio = form.querySelector('input[name="withdrawMethod"]:checked');
             const method = methodRadio ? methodRadio.value : '';
@@ -1106,6 +1115,10 @@ function formatShortDate(dateStr) {
             // 1. Validate amount
             if (!amount || amount < 1) {
                 showError(amountError, 'أدخل مبلغاً صحيحاً (رقم أكبر من 0)');
+                return;
+            }
+            if (max <= 0) {
+                showError(amountError, 'لا يوجد رصيد متاح للسحب حالياً');
                 return;
             }
             if (amount > max) {
@@ -1504,6 +1517,366 @@ function formatShortDate(dateStr) {
         }
     }
 
+        // ============================================================
+    //  5. Withdrawal History + Modals
+    // ============================================================
+    let stateHistory = [];
+    let currentCancelRequestId = null;
+
+    function formatDateShort(value) {
+        if (!value) return '—';
+        if (window.Utils && typeof window.Utils.formatCairoDate === 'function') {
+            try {
+                const r = window.Utils.formatCairoDate(value);
+                if (r && r !== String(value)) return r;
+            } catch (e) {}
+        }
+        try {
+            const d = new Date(value);
+            if (isNaN(d.getTime())) return '—';
+            const parts = new Intl.DateTimeFormat('en-CA', {
+                timeZone: 'Africa/Cairo',
+                year: 'numeric', month: '2-digit', day: '2-digit'
+            }).formatToParts(d);
+            const y = parts.find(p => p.type === 'year').value;
+            const m = parts.find(p => p.type === 'month').value;
+            const dd = parts.find(p => p.type === 'day').value;
+            return dd + '/' + m + '/' + y;
+        } catch (e) { return '—'; }
+    }
+
+    async function loadWithdrawalHistory() {
+        const loader = document.getElementById('mdHistoryLoader');
+        const empty = document.getElementById('mdHistoryEmpty');
+        const table = document.getElementById('mdHistoryTable');
+        const body = document.getElementById('mdHistoryBody');
+        if (!body) return;
+
+        if (loader) loader.style.display = 'block';
+        if (empty) empty.style.display = 'none';
+        if (table) table.style.display = 'none';
+
+        const code = getMarketerCode();
+        if (!code) {
+            if (loader) loader.style.display = 'none';
+            if (empty) empty.style.display = 'block';
+            return;
+        }
+
+        try {
+            const res = await fetch('/api?action=marketer&innerAction=getWithdrawHistory&code=' + encodeURIComponent(code));
+            const data = await res.json();
+
+            if (loader) loader.style.display = 'none';
+
+            if (!data.success) {
+                if (empty) empty.style.display = 'block';
+                console.warn('⚠️ [loadWithdrawalHistory]', data.error);
+                return;
+            }
+
+            stateHistory = data.requests || [];
+            renderWithdrawalHistory(stateHistory);
+
+        } catch (err) {
+            console.error('❌ [loadWithdrawalHistory]', err);
+            if (loader) loader.style.display = 'none';
+            if (empty) empty.style.display = 'block';
+        }
+    }
+
+    function renderWithdrawalHistory(requests) {
+        const body = document.getElementById('mdHistoryBody');
+        const empty = document.getElementById('mdHistoryEmpty');
+        const table = document.getElementById('mdHistoryTable');
+        if (!body) return;
+
+        if (!requests || requests.length === 0) {
+            if (table) table.style.display = 'none';
+            if (empty) empty.style.display = 'block';
+            return;
+        }
+
+        if (empty) empty.style.display = 'none';
+        if (table) table.style.display = 'block';
+
+        const statusLabels = {
+            submitted:    { label: '📤 تم إرسال طلب', cls: 'submitted' },
+            under_review: { label: '🔍 قيد المراجعة', cls: 'under_review' },
+            sending:      { label: '💸 قيد الإرسال', cls: 'sending' },
+            sent:         { label: '✅ تم الإرسال', cls: 'sent' },
+            rejected:     { label: '❌ مرفوض', cls: 'rejected' },
+            cancelled:    { label: '⚪ ملغى', cls: 'cancelled' },
+            failed:       { label: '⚠️ فشل', cls: 'failed' },
+            expired:      { label: '⏰ منتهي الصلاحية', cls: 'expired' }
+        };
+
+        let html = '';
+        requests.forEach(function(r) {
+            const st = statusLabels[r.status] || { label: r.status, cls: 'cancelled' };
+            const dateStr = formatDateShort(r.createdAt);
+            const amountStr = r.amount + ' ج.م';
+
+            let actions = '<span style="color: var(--text-light); font-size: 0.8rem;">—</span>';
+
+            if (r.status === 'submitted' || r.status === 'under_review') {
+                actions = '<button type="button" class="md-action-btn danger" data-action="cancel" data-request-id="' + escapeHtml(r.requestId) + '">' +
+                            '<i class="fas fa-times"></i> إلغاء' +
+                          '</button>';
+            } else if (r.status === 'rejected' && r.rejectionReason) {
+                actions = '<button type="button" class="md-action-btn danger" data-action="reason" data-type="rejected" data-request-id="' + escapeHtml(r.requestId) + '">' +
+                            '<i class="fas fa-info-circle"></i> عرض السبب' +
+                          '</button>';
+            } else if (r.status === 'cancelled' && r.cancellationReason) {
+                actions = '<button type="button" class="md-action-btn muted" data-action="reason" data-type="cancelled" data-request-id="' + escapeHtml(r.requestId) + '">' +
+                            '<i class="fas fa-info-circle"></i> عرض السبب' +
+                          '</button>';
+            } else if (r.status === 'sent' && r.screenshotUrl) {
+                actions = '<button type="button" class="md-action-btn success" data-action="screenshot" data-url="' + escapeHtml(r.screenshotUrl) + '" data-request-id="' + escapeHtml(r.requestId) + '">' +
+                            '<i class="fas fa-receipt"></i> عرض الإيصال' +
+                          '</button>';
+            }
+
+            html += '<tr data-request-id="' + escapeHtml(r.requestId) + '">' +
+                '<td class="cell-request-id">' + escapeHtml(r.requestId) + '</td>' +
+                '<td class="cell-date">' + escapeHtml(dateStr) + '</td>' +
+                '<td class="cell-amount">' + amountStr + '</td>' +
+                '<td class="cell-method">' +
+                    '<div class="method-label">' + escapeHtml(r.methodLabel) + '</div>' +
+                    '<div class="method-number">' + escapeHtml(r.transferNumber) + '</div>' +
+                '</td>' +
+                '<td><span class="md-status-badge ' + st.cls + '">' + st.label + '</span></td>' +
+                '<td>' + actions + '</td>' +
+            '</tr>';
+        });
+
+        body.innerHTML = html;
+    }
+
+    function findHistoryRequest(requestId) {
+        for (let i = 0; i < stateHistory.length; i++) {
+            if (stateHistory[i].requestId === requestId) return stateHistory[i];
+        }
+        return null;
+    }
+
+    function openCancelModal(requestId, amount) {
+        currentCancelRequestId = requestId;
+        const idEl = document.getElementById('mdCancelRequestId');
+        const amountEl = document.getElementById('mdCancelAmount');
+        if (idEl) idEl.textContent = requestId;
+        if (amountEl) amountEl.textContent = amount + ' ج.م';
+        const modal = document.getElementById('mdCancelWithdrawModal');
+        if (modal) modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeCancelModal() {
+        const modal = document.getElementById('mdCancelWithdrawModal');
+        if (modal) modal.style.display = 'none';
+        document.body.style.overflow = '';
+        currentCancelRequestId = null;
+    }
+
+    async function confirmCancelWithdraw() {
+        if (!currentCancelRequestId) return;
+        const requestId = currentCancelRequestId;
+        const code = getMarketerCode();
+        const btn = document.getElementById('mdCancelConfirmBtn');
+
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإلغاء...';
+        }
+
+        try {
+            const res = await fetch('/api?action=marketer', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    innerAction: 'cancelWithdrawRequest',
+                    marketerCode: code,
+                    requestId: requestId
+                })
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                closeCancelModal();
+                // تحديث الجدول
+                await loadWithdrawalHistory();
+                // تحديث الأرصدة
+                if (window.MD && window.MD.loadDashboard) {
+                    await window.MD.loadDashboard();
+                }
+                // إشعار
+                const msgEl = document.getElementById('withdrawMessage');
+                if (msgEl) {
+                    msgEl.className = 'md-message success';
+                    msgEl.textContent = '✅ تم إلغاء الطلب بنجاح';
+                    msgEl.style.display = 'block';
+                    setTimeout(function() { msgEl.style.display = 'none'; }, 4000);
+                }
+            } else {
+                alert('❌ ' + (data.message || data.error || 'فشل إلغاء الطلب'));
+            }
+        } catch (err) {
+            console.error('❌ confirmCancelWithdraw:', err);
+            alert('⚠️ تعذر الاتصال بالخادم');
+        } finally {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-times"></i> تأكيد الإلغاء';
+            }
+        }
+    }
+
+    function openReasonModal(type, requestId, reason) {
+        const iconBox = document.getElementById('mdReasonIconBox');
+        const icon = document.getElementById('mdReasonIcon');
+        const title = document.getElementById('mdReasonTitle');
+        const bodyEl = document.getElementById('mdReasonBody');
+
+        if (type === 'rejected') {
+            if (iconBox) iconBox.style.background = '#FEE2E2';
+            if (icon) { icon.style.color = '#DC2626'; icon.className = 'fas fa-times-circle'; }
+            if (title) { title.textContent = 'سبب الرفض'; title.style.color = '#991B1B'; }
+        } else {
+            if (iconBox) iconBox.style.background = '#F1F5F9';
+            if (icon) { icon.style.color = '#64748B'; icon.className = 'fas fa-info-circle'; }
+            if (title) { title.textContent = 'سبب الإلغاء'; title.style.color = '#334155'; }
+        }
+
+        if (bodyEl) bodyEl.textContent = reason || 'لم يتم تسجيل سبب.';
+
+        const modal = document.getElementById('mdReasonModal');
+        if (modal) modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeReasonModal() {
+        const modal = document.getElementById('mdReasonModal');
+        if (modal) modal.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+
+    function openScreenshotModal(requestId, url) {
+        const idEl = document.getElementById('mdScreenshotRequestId');
+        if (idEl) idEl.textContent = requestId;
+
+        const img = document.getElementById('mdScreenshotImage');
+        const loader = document.getElementById('mdScreenshotLoader');
+
+        if (img) {
+            img.style.display = 'none';
+            img.src = '';
+            img.onload = function() {
+                if (loader) loader.style.display = 'none';
+                img.style.display = 'block';
+            };
+            img.onerror = function() {
+                if (loader) {
+                    loader.innerHTML = '<p style="color: var(--danger-color); padding: 20px;">⚠️ تعذر تحميل الصورة</p>';
+                    loader.style.display = 'block';
+                }
+                img.style.display = 'none';
+            };
+            img.src = url;
+        }
+        if (loader) {
+            loader.innerHTML = '<i class="fas fa-spinner fa-spin" style="font-size: 2rem;"></i><p style="margin-top: 12px;">جاري تحميل الصورة...</p>';
+            loader.style.display = 'block';
+        }
+
+        const modal = document.getElementById('mdScreenshotModal');
+        if (modal) modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeScreenshotModal() {
+        const modal = document.getElementById('mdScreenshotModal');
+        if (modal) modal.style.display = 'none';
+        document.body.style.overflow = '';
+        const img = document.getElementById('mdScreenshotImage');
+        if (img) img.src = '';
+    }
+
+    function initWithdrawalHistory() {
+        // Cancel modal
+        const cancelConfirmBtn = document.getElementById('mdCancelConfirmBtn');
+        if (cancelConfirmBtn) cancelConfirmBtn.addEventListener('click', confirmCancelWithdraw);
+
+        const cancelBackBtn = document.getElementById('mdCancelCancelBtn');
+        if (cancelBackBtn) cancelBackBtn.addEventListener('click', closeCancelModal);
+
+        const cancelModal = document.getElementById('mdCancelWithdrawModal');
+        if (cancelModal) {
+            cancelModal.addEventListener('click', function(e) {
+                if (e.target === cancelModal) closeCancelModal();
+            });
+        }
+
+        // Reason modal
+        const reasonOkBtn = document.getElementById('mdReasonOkBtn');
+        if (reasonOkBtn) reasonOkBtn.addEventListener('click', closeReasonModal);
+
+        const reasonCloseBtn = document.getElementById('mdReasonCloseBtn');
+        if (reasonCloseBtn) reasonCloseBtn.addEventListener('click', closeReasonModal);
+
+        const reasonModal = document.getElementById('mdReasonModal');
+        if (reasonModal) {
+            reasonModal.addEventListener('click', function(e) {
+                if (e.target === reasonModal) closeReasonModal();
+            });
+        }
+
+        // Screenshot modal
+        const ssCloseBtn = document.getElementById('mdScreenshotCloseBtn');
+        if (ssCloseBtn) ssCloseBtn.addEventListener('click', closeScreenshotModal);
+
+        const ssModal = document.getElementById('mdScreenshotModal');
+        if (ssModal) {
+            ssModal.addEventListener('click', function(e) {
+                if (e.target === ssModal) closeScreenshotModal();
+            });
+        }
+
+        // Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key !== 'Escape') return;
+            closeCancelModal();
+            closeReasonModal();
+            closeScreenshotModal();
+        });
+
+        // Event delegation for action buttons
+        const historyBody = document.getElementById('mdHistoryBody');
+        if (historyBody && !historyBody.dataset.bound) {
+            historyBody.dataset.bound = 'true';
+            historyBody.addEventListener('click', function(e) {
+                const btn = e.target.closest('.md-action-btn');
+                if (!btn) return;
+
+                const action = btn.getAttribute('data-action');
+                const requestId = btn.getAttribute('data-request-id');
+
+                if (action === 'cancel') {
+                    const req = findHistoryRequest(requestId);
+                    if (req) openCancelModal(requestId, req.amount);
+                } else if (action === 'reason') {
+                    const req = findHistoryRequest(requestId);
+                    if (req) {
+                        const type = btn.getAttribute('data-type');
+                        const reason = type === 'rejected' ? req.rejectionReason : req.cancellationReason;
+                        openReasonModal(type, requestId, reason);
+                    }
+                } else if (action === 'screenshot') {
+                    openScreenshotModal(requestId, btn.getAttribute('data-url'));
+                }
+            });
+        }
+    }
+
     // ============================================================
     //  Init
     // ============================================================
@@ -1512,10 +1885,11 @@ function formatShortDate(dateStr) {
             initSidebarToggle();
             initTabs();
             initWithdraw();
+            initWithdrawalHistory();
             initChangePassword();
             initDeleteWarnings();
             initReloadButtons();
-            console.log('✅ marketer-dashboard extras loaded (sidebar + tabs + withdraw + password + warnings + reload)');
+            console.log('✅ marketer-dashboard extras loaded (sidebar + tabs + withdraw + withdrawal-history + password + warnings + reload)');
         }, 0);
     });
 
