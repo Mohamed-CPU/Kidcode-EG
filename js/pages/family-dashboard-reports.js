@@ -109,27 +109,32 @@
      * @returns {{from: string, to: string}}
      */
     function getRangeDates(rangeDays) {
-        // ✅ تخصيص: لو المستخدم طالب 30 يوم أو 90 يوم (شهور)، نستخدم setMonth عشان تبقى دقيقة
-        if (rangeDays === 30 || rangeDays === 90) {
-            const to = new Date();
-            const from = new Date();
-            // 30 يوم = شهر تقويمي / 90 يوم = 3 شهور تقويمية
-            from.setMonth(from.getMonth() - (rangeDays / 30)); 
-            
-            return {
-                from: formatDate(from),
-                to: formatDate(to)
-            };
-        }
+        // 1. جيب تاريخ النهاردة في القاهرة (بالتوقيت العالمي المطلق)
+        const todayParts = new Intl.DateTimeFormat('en-CA', {
+            timeZone: 'Africa/Cairo',
+            year: 'numeric', month: '2-digit', day: '2-digit'
+        }).formatToParts(new Date());
+        
+        const getP = (t) => parseInt(todayParts.find(p => p.type === t).value, 10);
+        const y = getP('year');
+        const m = getP('month') - 1; // 0-indexed
+        const d = getP('day');
 
-        // الافتراضي (7 أيام)
-        const to = new Date();
-        const from = new Date();
-        from.setDate(from.getDate() - rangeDays + 1); // inclusive
+        // 2. احسب الـ to والـ from باستخدام UTC (عشان نتجنب أي مشاكل توقيت صيفي)
+        const toUTC = Date.UTC(y, m, d);
+        const fromUTC = toUTC - (rangeDays - 1) * 86400000; // inclusive
+
+        // 3. دالة تنسيق مضمونة 100% (من غير أي توقيت محلي)
+        const fmt = (ms) => {
+            const dt = new Date(ms);
+            return dt.getUTCFullYear() + '-' +
+                   String(dt.getUTCMonth() + 1).padStart(2, '0') + '-' +
+                   String(dt.getUTCDate()).padStart(2, '0');
+        };
 
         return {
-            from: formatDate(from),
-            to: formatDate(to)
+            from: fmt(fromUTC),
+            to: fmt(toUTC)
         };
     }
 
@@ -435,6 +440,9 @@
         if (summary.expiryDate) {
             const dur = calculateRemainingDuration(summary.expiryDate);
             els.statDaysRemaining.textContent = dur.text;
+        } else if (summary.status === 'active') {
+            // الحساب نشط لكن مفيش تاريخ انتهاء في الداتابيز
+            els.statDaysRemaining.textContent = 'غير محدد (راجع الدعم)';
         } else if (summary.daysRemaining !== null && summary.daysRemaining !== undefined) {
             // fallback: لو مفيش expiryDate
             if (summary.daysRemaining <= 0) {
