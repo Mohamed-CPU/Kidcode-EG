@@ -1672,15 +1672,39 @@ function formatBirthDateForDisplay(dateStr) {
     //  Public Hook (called by family-dashboard.js on tab activation)
     // ============================================================
     window.onTabActivate = function(tabName, data) {
-        if (tabName !== 'data') return;
-
-        // First time
+        // ✅ Bind events مرة واحدة (أي تاب يتفعّل أول)
         if (!state.isInitialized) {
             state.isInitialized = true;
             bindEvents();
-            loadData();
+        }
+
+        // ===== Tab: data =====
+        if (tabName === 'data') {
+            if (!state.childData) {
+                loadData();
+            }
+            return;
+        }
+
+        // ===== 🆕 Tab: settings — ارسم كارت الاشتراك =====
+        // (كان بيظهر فقط لو المستخدم دخل "بيانات الطفل" الأول)
+        if (tabName === 'settings') {
+            let childData = data;
+            if (!childData && window.FD && typeof window.FD.getState === 'function') {
+                const fdState = window.FD.getState();
+                childData = fdState ? fdState.childData : null;
+            }
+            if (childData) {
+                updatePaymentCard(childData);
+                updateDangerZoneUI(childData);
+            }
         }
     };
+
+    // ✅ Expose updatePaymentCard (لو احتاجها ملف تاني مستقبلاً)
+    if (window.FD) {
+        window.FD.renderPaymentCard = updatePaymentCard;
+    }
 
     console.log('✅ family-dashboard-data.js loaded');
 
