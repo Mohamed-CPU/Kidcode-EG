@@ -297,6 +297,7 @@ function formatLocal(digits) {
 
 /**
  * حساب العمر من تاريخ الميلاد
+ * ✅ Cairo "today" via Intl (DST-aware) — بدل Local TZ
  */
 function calculateAgeFromBirthDate(birthDateStr) {
     if (!birthDateStr) return 'غير محدد';
@@ -307,10 +308,20 @@ function calculateAgeFromBirthDate(birthDateStr) {
     }
     let d = new Date(normalized);
     if (isNaN(d.getTime())) return 'غير محدد';
-    const today = new Date();
-    let years = today.getFullYear() - d.getFullYear();
-    let months = today.getMonth() - d.getMonth();
-    if (today.getDate() < d.getDate()) months--;
+
+    // ✅ Cairo "today" — يحسب DST تلقائياً
+    const todayParts = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Africa/Cairo',
+        year: 'numeric', month: '2-digit', day: '2-digit'
+    }).formatToParts(new Date());
+    const getP = (t) => parseInt(todayParts.find(p => p.type === t).value, 10);
+    const todayYear = getP('year');
+    const todayMonth = getP('month') - 1;
+    const todayDay = getP('day');
+
+    let years = todayYear - d.getUTCFullYear();
+    let months = todayMonth - d.getUTCMonth();
+    if (todayDay < d.getUTCDate()) months--;
     if (months < 0) { years--; months += 12; }
     if (years <= 0 && months === 0) return 'أقل من شهر';
 

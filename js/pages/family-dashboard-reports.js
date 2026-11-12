@@ -81,21 +81,61 @@
     // ============================================================
     //  Date Helpers
     // ============================================================
+
+    /**
+     * formatCairoDateStr — تُنسّق Date object كـ "YYYY-MM-DD" بتوقيت Cairo
+     * ✅ DST-aware (Africa/Cairo) — لا Local TZ
+     * @param {Date} d
+     * @returns {string} "YYYY-MM-DD"
+     */
     function formatDate(d) {
-        const yyyy = d.getFullYear();
-        const mm = String(d.getMonth() + 1).padStart(2, '0');
-        const dd = String(d.getDate()).padStart(2, '0');
-        return yyyy + '-' + mm + '-' + dd;
+        const parts = new Intl.DateTimeFormat('en-CA', {
+            timeZone: 'Africa/Cairo',
+            year: 'numeric', month: '2-digit', day: '2-digit'
+        }).formatToParts(d);
+        const y = parts.find(p => p.type === 'year').value;
+        const m = parts.find(p => p.type === 'month').value;
+        const dd = parts.find(p => p.type === 'day').value;
+        return y + '-' + m + '-' + dd;
     }
 
+    /**
+     * getRangeDates — تُرجع { from, to } بصيغة "YYYY-MM-DD" بتوقيت Cairo
+     * ✅ DST-aware:
+     *  1. جيب "Cairo today" عبر Intl (Africa/Cairo)
+     *  2. احسب from/to في UTC (لتجنب DST بين الأيام)
+     *  3. صيغها كـ "YYYY-MM-DD" مباشرة (لا إعادة تحويل عبر Cairo)
+     * @param {number} rangeDays — عدد الأيام (inclusive)
+     * @returns {{from: string, to: string}}
+     */
     function getRangeDates(rangeDays) {
-        const to = new Date();
-        const from = new Date();
-        from.setDate(from.getDate() - rangeDays + 1); // inclusive
+        // 1️⃣ "Cairo today" عبر Intl — DST-aware
+        const todayParts = new Intl.DateTimeFormat('en-CA', {
+            timeZone: 'Africa/Cairo',
+            year: 'numeric', month: '2-digit', day: '2-digit'
+        }).formatToParts(new Date());
+        const getP = (t) => parseInt(todayParts.find(p => p.type === t).value, 10);
+        const y = getP('year');
+        const m = getP('month');   // 1-indexed (كما يرجعها Intl)
+        const d = getP('day');
+
+        // 2️⃣ حساب from/to في UTC (لتفادي DST بين الأيام)
+        //    Date.UTC() تستقبل month 0-indexed → نمرر m - 1
+        const toUTC = Date.UTC(y, m - 1, d);
+        const fromUTC = toUTC - (rangeDays - 1) * 86400000;  // inclusive
+
+        // 3️⃣ صياغة "YYYY-MM-DD" مباشرة من UTC components
+        //    (لأننا بنشتغل على "calendar date" مش لحظة زمنية)
+        const fmtUTC = (ms) => {
+            const dt = new Date(ms);
+            return dt.getUTCFullYear() + '-' +
+                   String(dt.getUTCMonth() + 1).padStart(2, '0') + '-' +
+                   String(dt.getUTCDate()).padStart(2, '0');
+        };
 
         return {
-            from: formatDate(from),
-            to: formatDate(to)
+            from: fmtUTC(fromUTC),
+            to: fmtUTC(toUTC)
         };
     }
 
@@ -164,43 +204,59 @@
 
     // ============================================================
     //  📅 حساب المدة المتبقية بالتقويم الفعلي
-    //  Input:  "2027-04-07" (expiryDate)
+    //  Input:  "2027-04-07" (expiryDate — Cairo calendar date)
     //  Output: { expired: bool, text: "6 شهور" }
+    //
+    //  ✅ DST-aware: Cairo "today" via Intl
+    //  ✅ مقارنة "تواريخ تقويمية" (calendar dates) — ليس لحظات (moments)
+    //     السبب: الاشتراك ينتهي في "منتصف ليل Cairo" — لا علاقة له بلحظة UTC
     // ============================================================
     function calculateRemainingDuration(expiryDateStr) {
         if (!expiryDateStr) return { expired: false, text: 'غير متاح' };
 
-        // اقبل: "yyyy-MM-dd" أو "yyyy-MM-dd HH:mm:ss"
+        // 1️⃣ استخرج "Cairo calendar date" من الـ expiry
         const datePart = String(expiryDateStr).trim().split(/[\sT]/)[0];
         const parts = datePart.split('-');
         if (parts.length !== 3) return { expired: false, text: 'غير متاح' };
 
         const expiryYear = parseInt(parts[0], 10);
-        const expiryMonth = parseInt(parts[1], 10) - 1; // 0-indexed
+        const expiryMonth = parseInt(parts[1], 10) - 1;  // 0-indexed
         const expiryDay = parseInt(parts[2], 10);
 
         if (isNaN(expiryYear) || isNaN(expiryMonth) || isNaN(expiryDay)) {
             return { expired: false, text: 'غير متاح' };
         }
 
-        const today = new Date();
-        const expiry = new Date(expiryYear, expiryMonth, expiryDay);
+        // 2️⃣ جيب "Cairo today" عبر Intl — DST-aware
+        const todayParts = new Intl.DateTimeFormat('en-CA', {
+            timeZone: 'Africa/Cairo',
+            year: 'numeric', month: '2-digit', day: '2-digit'
+        }).formatToParts(new Date());
+        const getP = (t) => parseInt(todayParts.find(p => p.type === t).value, 10);
+        const todayYear = getP('year');
+        const todayMonth = getP('month') - 1;  // 0-indexed
+        const todayDay = getP('day');
 
-        // لو منتهي
-        if (expiry.getTime() <= today.getTime()) {
+        // 3️⃣ مقارنة "calendar dates" في UTC
+        //    (Date.UTC() آمن — لا DST بين التواريخ، فبيمثل "calendar date")
+        const todayUTC = Date.UTC(todayYear, todayMonth, todayDay);
+        const expiryUTC = Date.UTC(expiryYear, expiryMonth, expiryDay);
+
+        if (expiryUTC <= todayUTC) {
             return { expired: true, text: '⛔ منتهي' };
         }
 
-        // ✅ فرق تقويمي فعلي
-        let years = expiryYear - today.getFullYear();
-        let months = expiryMonth - today.getMonth();
-        let days = expiryDay - today.getDate();
+        // 4️⃣ فرق تقويمي فعلي (بالسنوات/الشهور/الأيام)
+        let years = expiryYear - todayYear;
+        let months = expiryMonth - todayMonth;
+        let days = expiryDay - todayDay;
 
         // لو الأيام سالبة → استلف من الشهور
         if (days < 0) {
             months--;
-            const prevMonth = new Date(expiryYear, expiryMonth, 0).getDate();
-            days += prevMonth;
+            // آخر يوم في الشهر اللي قبل expiry — احسبها في UTC لتفادي DST
+            const prevMonthDays = new Date(Date.UTC(expiryYear, expiryMonth, 0)).getUTCDate();
+            days += prevMonthDays;
         }
         // لو الشهور سالبة → استلف من السنين
         if (months < 0) {
@@ -208,12 +264,12 @@
             months += 12;
         }
 
-        // لو الناتج كله صفر
+        // 5️⃣ لو الناتج كله صفر
         if (years === 0 && months === 0 && days === 0) {
             return { expired: false, text: 'أقل من يوم' };
         }
 
-        // بناء النص وفق قواعد العدد العربية
+        // 6️⃣ بناء النص وفق قواعد العدد العربية
         const textParts = [];
 
         if (years > 0) {
@@ -242,14 +298,6 @@
 
         if (textParts.length === 0) return { expired: false, text: 'أقل من يوم' };
         return { expired: false, text: textParts.join(' و ') };
-    }
-
-    // ✅ Helper: تحويل من 24h لـ 12h + AM/PM
-    function formatAMPM(hours, minutes, seconds) {
-        const ampm = hours >= 12 ? 'PM' : 'AM';
-        let h = hours % 12;
-        if (h === 0) h = 12;
-        return h + ':' + minutes + ':' + seconds + ' ' + ampm;
     }
 
     // ============================================================
@@ -548,10 +596,11 @@
 
             tr.innerHTML =
                 '<td class="cell-num">' + (index + 1) + '</td>' +
-                '<td class="cell-time">' +
-                    '<div style="font-weight:600;">' + escapeHtml(Utils.formatCairoDate(log.timestamp) || '--') + '</div>' +
-                    '<div style="font-size:0.85em; color:#64748b; margin-top:2px;">' + escapeHtml(Utils.formatCairoTime(log.timestamp) || '--') + '</div>' +
-                '</td>' +
+                '<td class="cell-time">' + escapeHtml(
+                    (window.Utils && typeof Utils.formatCairoDateTime === 'function')
+                        ? (Utils.formatCairoDateTime(log.timestamp) || '--')
+                        : (Utils.formatDateTime(log.timestamp) || '--')
+                ) + '</td>' +
                 '<td class="cell-address">' + addressText + '</td>' +
                 '<td>' + mapsLink + '</td>';
 

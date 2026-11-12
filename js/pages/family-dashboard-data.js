@@ -495,35 +495,39 @@
     //  Helper: تنسيق تاريخ قصير بتوقيت القاهرة
     //  ✅ يستخدم Utils.formatCairoDate للعرض العربي الموحد
     // ============================================================
-    function formatShortDate(value) {
-        if (!value) return '—';
+function formatShortDate(value) {
+    if (!value) return '—';
 
-        // ✅ الأولوية للعرض العربي الموحد (زي باقي الصفحات)
-        if (window.Utils && typeof Utils.formatCairoDate === 'function') {
-            try {
-                const result = Utils.formatCairoDate(value);
-                if (result && result !== String(value)) return result;
-            } catch (e) {}
-        }
-
-        // Fallback: النسخة القديمة
+    // ✅ الأولوية للعرض العربي الموحد
+    if (window.Utils && typeof Utils.formatCairoDate === 'function') {
         try {
-            const d = new Date(value);
-            if (isNaN(d.getTime())) return String(value).split(' ')[0];
-            const yyyy = d.getFullYear();
-            const mm = String(d.getMonth() + 1).padStart(2, '0');
-            const dd = String(d.getDate()).padStart(2, '0');
-            return yyyy + '-' + mm + '-' + dd;
-        } catch (e) {
-            return '—';
-        }
+            const result = Utils.formatCairoDate(value);
+            if (result && result !== String(value)) return result;
+        } catch (e) {}
     }
 
-    function openPaymentPage(childID, currentPlan) {
-        // ✅ تحويل مباشر بدون صفحة وسيطة
-        const plan = (currentPlan === 'عام واحد') ? 'عام واحد' : '6 أشهر';
-        startDirectPayment(childID, plan);
+    // Fallback — ✅ Cairo date (DST-aware)
+    try {
+        const d = new Date(value);
+        if (isNaN(d.getTime())) return String(value).split(' ')[0];
+        const parts = new Intl.DateTimeFormat('en-CA', {
+            timeZone: 'Africa/Cairo',
+            year: 'numeric', month: '2-digit', day: '2-digit'
+        }).formatToParts(d);
+        const yyyy = parts.find(p => p.type === 'year').value;
+        const mm = parts.find(p => p.type === 'month').value;
+        const dd = parts.find(p => p.type === 'day').value;
+        return yyyy + '-' + mm + '-' + dd;
+    } catch (e) {
+        return '—';
     }
+}
+
+function openPaymentPage(childID, currentPlan) {
+    // ✅ تحويل مباشر بدون صفحة وسيطة
+    const plan = (currentPlan === 'عام واحد') ? 'عام واحد' : '6 أشهر';
+    startDirectPayment(childID, plan);
+}
 
     // ============================================================
     //  💳 Direct Payment (بدون صفحة وسيطة)
@@ -673,66 +677,74 @@
         return digits;
     }
 
-    function normalizeDateForInput(dateStr) {
-        if (!dateStr) return '';
-        const str = String(dateStr).trim();
+function normalizeDateForInput(dateStr) {
+    if (!dateStr) return '';
+    const str = String(dateStr).trim();
 
-        // Already yyyy-mm-dd
-        if (/^\d{4}-\d{2}-\d{2}$/.test(str)) return str;
+    // Already yyyy-mm-dd
+    if (/^\d{4}-\d{2}-\d{2}$/.test(str)) return str;
 
-        // dd-mm-yyyy or dd/mm/yyyy
-        const m = str.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})$/);
-        if (m) {
-            const d = String(m[1]).padStart(2, '0');
-            const mo = String(m[2]).padStart(2, '0');
-            return m[3] + '-' + mo + '-' + d;
-        }
-
-        // Try Date parse
-        const dt = new Date(str);
-        if (!isNaN(dt.getTime())) {
-            const yyyy = dt.getFullYear();
-            const mm = String(dt.getMonth() + 1).padStart(2, '0');
-            const dd = String(dt.getDate()).padStart(2, '0');
-            return yyyy + '-' + mm + '-' + dd;
-        }
-
-        return '';
+    // dd-mm-yyyy or dd/mm/yyyy
+    const m = str.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})$/);
+    if (m) {
+        const d = String(m[1]).padStart(2, '0');
+        const mo = String(m[2]).padStart(2, '0');
+        return m[3] + '-' + mo + '-' + d;
     }
+
+    // Try Date parse — ✅ Cairo date (DST-aware)
+    const dt = new Date(str);
+    if (!isNaN(dt.getTime())) {
+        const parts = new Intl.DateTimeFormat('en-CA', {
+            timeZone: 'Africa/Cairo',
+            year: 'numeric', month: '2-digit', day: '2-digit'
+        }).formatToParts(dt);
+        const yyyy = parts.find(p => p.type === 'year').value;
+        const mm = parts.find(p => p.type === 'month').value;
+        const dd = parts.find(p => p.type === 'day').value;
+        return yyyy + '-' + mm + '-' + dd;
+    }
+
+    return '';
+}
 
     // ============================================================
     //  📅 formatBirthDateForDisplay
     //  يحوّل من أي صيغة (YYYY-MM-DD من Supabase) لـ DD/MM/YYYY
     // ============================================================
-    function formatBirthDateForDisplay(dateStr) {
-        if (!dateStr) return '';
-        const str = String(dateStr).trim();
+function formatBirthDateForDisplay(dateStr) {
+    if (!dateStr) return '';
+    const str = String(dateStr).trim();
 
-        // YYYY-MM-DD → DD/MM/YYYY
-        if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
-            const parts = str.split('-');
-            return parts[2] + '/' + parts[1] + '/' + parts[0];
-        }
-
-        // DD/MM/YYYY → كما هو
-        if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(str)) {
-            const parts = str.split('/');
-            const d = String(parts[0]).padStart(2, '0');
-            const m = String(parts[1]).padStart(2, '0');
-            return d + '/' + m + '/' + parts[2];
-        }
-
-        // محاولة أخيرة: Date parse
-        const dt = new Date(str);
-        if (!isNaN(dt.getTime())) {
-            const yyyy = dt.getFullYear();
-            const mm = String(dt.getMonth() + 1).padStart(2, '0');
-            const dd = String(dt.getDate()).padStart(2, '0');
-            return dd + '/' + mm + '/' + yyyy;
-        }
-
-        return str;
+    // YYYY-MM-DD → DD/MM/YYYY
+    if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
+        const parts = str.split('-');
+        return parts[2] + '/' + parts[1] + '/' + parts[0];
     }
+
+    // DD/MM/YYYY → كما هو
+    if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(str)) {
+        const parts = str.split('/');
+        const d = String(parts[0]).padStart(2, '0');
+        const m = String(parts[1]).padStart(2, '0');
+        return d + '/' + m + '/' + parts[2];
+    }
+
+    // محاولة أخيرة — ✅ Cairo date (DST-aware)
+    const dt = new Date(str);
+    if (!isNaN(dt.getTime())) {
+        const parts = new Intl.DateTimeFormat('en-CA', {
+            timeZone: 'Africa/Cairo',
+            year: 'numeric', month: '2-digit', day: '2-digit'
+        }).formatToParts(dt);
+        const yyyy = parts.find(p => p.type === 'year').value;
+        const mm = parts.find(p => p.type === 'month').value;
+        const dd = parts.find(p => p.type === 'day').value;
+        return dd + '/' + mm + '/' + yyyy;
+    }
+
+    return str;
+}
 
     function renderPhoto(fileId) {
         if (!els.photoPreview) return;
