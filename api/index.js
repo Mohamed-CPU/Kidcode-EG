@@ -744,7 +744,8 @@ async function handleMarketer(req, res) {
     const SUPABASE_READ_ACTIONS = [
       'getMarketerStats',
       'validateMarketerCode',
-      'marketerLogin'
+      'marketerLogin',
+      'getWithdrawHistory'
     ];
 
     if (SUPABASE_READ_ACTIONS.includes(innerAction)) {
@@ -760,11 +761,12 @@ async function handleMarketer(req, res) {
       }
     }
 
-    // 🆕 WRITE ACTIONS — تغيير كلمة السر عبر OTP + طلب السحب
+    // 🆕 WRITE ACTIONS — تغيير كلمة السر عبر OTP + طلبات السحب
     const SUPABASE_WRITE_ACTIONS = [
       'requestPasswordChangeOTP',
       'confirmPasswordChange',
-      'submitWithdrawRequest'
+      'submitWithdrawRequest',
+      'cancelWithdrawRequest'
     ];
 
     if (SUPABASE_WRITE_ACTIONS.includes(innerAction)) {

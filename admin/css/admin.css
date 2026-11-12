@@ -361,6 +361,24 @@ img {
     background: var(--danger);
 }
 
+/* ============================================================
+   🆕 Withdrawals Badge — نبض أحمر لو العدد كبير
+   ============================================================ */
+.sidebar-nav-badge.badge-urgent {
+  background: linear-gradient(135deg, #DC2626, #991B1B);
+  color: #FFFFFF;
+  animation: badgePulse 1.5s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(220, 38, 38, 0);
+  }
+}
+
 /* محتوى الصفحة */
 .admin-content {
     flex: 1;

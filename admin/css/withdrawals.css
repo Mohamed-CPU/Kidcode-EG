@@ -1,0 +1,533 @@
+/* ============================================================
+   Withdrawals Page Styles
+   ============================================================ */
+
+/* ============================================================
+   📊 Stats Grid
+   ============================================================ */
+.wd-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.wd-stat-card {
+  background: var(--bg-card, #FFFFFF);
+  border-radius: 14px;
+  padding: 18px 16px;
+  text-align: center;
+  border: 1px solid var(--border-color, #E2E8F0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-top: 3px solid var(--border-color);
+}
+
+.wd-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.wd-stat-value {
+  font-size: 1.6rem;
+  font-weight: 900;
+  line-height: 1.2;
+  margin-bottom: 6px;
+}
+
+.wd-stat-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted, #64748B);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.wd-stat-card.total { border-top-color: #6366F1; }
+.wd-stat-card.total .wd-stat-value { color: #6366F1; }
+
+.wd-stat-card.pending { border-top-color: #F59E0B; }
+.wd-stat-card.pending .wd-stat-value { color: #D97706; }
+
+.wd-stat-card.sent { border-top-color: #10B981; }
+.wd-stat-card.sent .wd-stat-value { color: #059669; }
+
+.wd-stat-card.rejected { border-top-color: #DC2626; }
+.wd-stat-card.rejected .wd-stat-value { color: #DC2626; }
+
+.wd-stat-card.amount { border-top-color: #22559F; }
+.wd-stat-card.amount .wd-stat-value { color: #22559F; font-size: 1.3rem; }
+
+.wd-stat-card.pending-amount { border-top-color: #F97316; }
+.wd-stat-card.pending-amount .wd-stat-value { color: #EA580C; font-size: 1.3rem; }
+
+/* ============================================================
+   📋 Table
+   ============================================================ */
+.wd-table .mono {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.wd-table .wd-request-id {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-weight: 900;
+  color: #22559F;
+  font-size: 0.88rem;
+}
+
+.wd-table .wd-amount {
+  font-weight: 900;
+  color: #0F172A;
+}
+
+.wd-table .wd-marketer-cell .code {
+  font-size: 0.78rem;
+  color: var(--text-muted, #64748B);
+  font-family: 'JetBrains Mono', monospace;
+  margin-top: 2px;
+}
+
+/* ============================================================
+   🏷️ Status Badges
+   ============================================================ */
+.wd-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  white-space: nowrap;
+  line-height: 1.3;
+}
+
+.wd-status-badge.submitted {
+  background: #EFF6FF; color: #1E40AF; border: 1px solid rgba(30, 64, 175, 0.2);
+}
+.wd-status-badge.under_review {
+  background: #FEF3C7; color: #92400E; border: 1px solid rgba(245, 158, 11, 0.25);
+}
+.wd-status-badge.sending {
+  background: #FFEDD5; color: #9A3412; border: 1px solid rgba(251, 146, 60, 0.25);
+}
+.wd-status-badge.sent {
+  background: #D1FAE5; color: #065F46; border: 1px solid rgba(16, 185, 129, 0.25);
+}
+.wd-status-badge.rejected,
+.wd-status-badge.failed {
+  background: #FEE2E2; color: #991B1B; border: 1px solid rgba(220, 38, 38, 0.2);
+}
+.wd-status-badge.cancelled {
+  background: #F1F5F9; color: #475569; border: 1px solid rgba(148, 163, 184, 0.3);
+}
+.wd-status-badge.expired {
+  background: #F5F5F4; color: #78716C; border: 1px solid rgba(168, 162, 158, 0.3);
+}
+
+/* ============================================================
+   🔍 Info Grid in Modal
+   ============================================================ */
+.wd-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  background: var(--bg-subtle, #F8FAFC);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.wd-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.wd-info-item label {
+  font-size: 0.72rem;
+  color: var(--text-muted, #64748B);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.wd-info-item span {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-primary, #0F172A);
+  word-break: break-word;
+}
+
+.wd-info-item span.mono {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-size: 0.85rem;
+}
+
+/* ============================================================
+   🎯 Current Status Block
+   ============================================================ */
+.wd-current-status-block {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: var(--bg-subtle, #F8FAFC);
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
+.wd-current-status-block label {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--text-secondary, #475569);
+}
+
+/* ============================================================
+   📝 Reason Block (existing)
+   ============================================================ */
+.wd-reason-block {
+  padding: 14px 18px;
+  background: #FEF2F2;
+  border-right: 4px solid #DC2626;
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
+.wd-reason-block label {
+  font-size: 0.82rem;
+  font-weight: 900;
+  color: #991B1B;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.wd-reason-block p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #7F1D1D;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+/* ============================================================
+   📸 Screenshot Block (existing)
+   ============================================================ */
+.wd-screenshot-block {
+  padding: 14px 18px;
+  background: #ECFDF5;
+  border-right: 4px solid #10B981;
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
+.wd-screenshot-block label {
+  font-size: 0.82rem;
+  font-weight: 900;
+  color: #065F46;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.wd-screenshot-thumb {
+  max-width: 300px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid #10B981;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.wd-screenshot-thumb:hover {
+  transform: scale(1.02);
+}
+
+.wd-screenshot-thumb img {
+  width: 100%;
+  display: block;
+}
+
+/* ============================================================
+   📝 Notes Block (existing)
+   ============================================================ */
+.wd-notes-block {
+  padding: 14px 18px;
+  background: #EFF6FF;
+  border-right: 4px solid #22559F;
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
+.wd-notes-block label {
+  font-size: 0.82rem;
+  font-weight: 900;
+  color: #1E40AF;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.wd-notes-block p {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #1E3A8A;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+/* ============================================================
+   🔄 Status Change Section
+   ============================================================ */
+.wd-status-change-section {
+  padding-top: 18px;
+  border-top: 2px dashed var(--border-color, #E2E8F0);
+}
+
+.wd-status-change-section h4 {
+  margin: 0 0 14px;
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: var(--text-primary, #0F172A);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Status radio cards */
+.wd-status-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.wd-status-radio {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--bg-card, #FFFFFF);
+  border: 2px solid var(--border-color, #E2E8F0);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.wd-status-radio:hover {
+  border-color: #22559F;
+  background: #FAFBFF;
+}
+
+.wd-status-radio input[type="radio"] {
+  margin: 0;
+  accent-color: #22559F;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.wd-status-radio:has(input:checked) {
+  border-color: #22559F;
+  background: #EFF6FF;
+  box-shadow: 0 2px 8px rgba(34, 85, 159, 0.12);
+}
+
+.wd-status-radio span {
+  flex: 1;
+}
+
+/* Conditional fields */
+.wd-conditional {
+  margin-bottom: 14px;
+}
+
+.wd-conditional label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--text-primary, #0F172A);
+  margin-bottom: 6px;
+}
+
+.wd-conditional label.required::after {
+  content: ' *';
+  color: #DC2626;
+}
+
+.wd-conditional textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid var(--border-color, #E2E8F0);
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  resize: vertical;
+  min-height: 80px;
+  transition: all 0.2s ease;
+}
+
+.wd-conditional textarea:focus {
+  outline: none;
+  border-color: #22559F;
+  box-shadow: 0 0 0 3px rgba(34, 85, 159, 0.1);
+}
+
+.wd-field-error {
+  color: #DC2626;
+  font-size: 0.78rem;
+  font-weight: 700;
+  margin-top: 5px;
+  display: none;
+}
+
+.wd-field-error.show {
+  display: block;
+}
+
+/* ============================================================
+   📤 Upload Area
+   ============================================================ */
+.wd-upload-area {
+  border: 2px dashed var(--border-color, #E2E8F0);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: #F8FAFC;
+  min-height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.wd-upload-area:hover {
+  border-color: #22559F;
+  background: #FAFBFF;
+}
+
+.wd-upload-placeholder {
+  color: var(--text-muted, #64748B);
+}
+
+.wd-upload-placeholder i {
+  font-size: 2rem;
+  color: #22559F;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.wd-upload-placeholder p {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.wd-upload-preview {
+  position: relative;
+  max-width: 100%;
+  max-height: 300px;
+}
+
+.wd-upload-preview img {
+  max-width: 100%;
+  max-height: 280px;
+  border-radius: 8px;
+  display: block;
+}
+
+.wd-upload-remove {
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #DC2626;
+  color: #FFFFFF;
+  border: 2px solid #FFFFFF;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.4);
+}
+
+.wd-upload-remove:hover {
+  background: #991B1B;
+  transform: scale(1.1);
+}
+
+.wd-upload-loader {
+  color: #22559F;
+}
+
+.wd-upload-loader i {
+  font-size: 2rem;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.wd-upload-loader p {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+/* ============================================================
+   📱 Responsive
+   ============================================================ */
+@media (max-width: 900px) {
+  .wd-status-options {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .wd-info-grid {
+    grid-template-columns: 1fr;
+  }
+  .wd-status-options {
+    grid-template-columns: 1fr;
+  }
+  .wd-stat-value {
+    font-size: 1.3rem;
+  }
+  .wd-stat-card.amount .wd-stat-value,
+  .wd-stat-card.pending-amount .wd-stat-value {
+    font-size: 1.05rem;
+  }
+}
+
+/* ============================================================
+   Dark Mode
+   ============================================================ */
+[data-theme="dark"] .wd-stat-card {
+  background: rgba(30, 41, 59, 0.6);
+  border-color: rgba(148, 163, 184, 0.15);
+}
+
+[data-theme="dark"] .wd-info-grid,
+[data-theme="dark"] .wd-current-status-block {
+  background: rgba(30, 41, 59, 0.4);
+}
+
+[data-theme="dark"] .wd-status-radio {
+  background: rgba(30, 41, 59, 0.5);
+  border-color: rgba(148, 163, 184, 0.2);
+}
+
+[data-theme="dark"] .wd-status-radio:has(input:checked) {
+  background: rgba(34, 85, 159, 0.25);
+  border-color: #22559F;
+}
+
+[data-theme="dark"] .wd-upload-area {
+  background: rgba(30, 41, 59, 0.4);
+  border-color: rgba(148, 163, 184, 0.2);
+}

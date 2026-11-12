@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>طلبات السحب — لوحة الأدمن</title>
+
+  <script>
+    (function() {
+      try {
+        var theme = localStorage.getItem('admin_theme') || 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {}
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/all.min.css">
+
+  <link rel="stylesheet" href="/admin/css/admin.css">
+  <link rel="stylesheet" href="/admin/css/theme-light.css">
+  <link rel="stylesheet" href="/admin/css/theme-dark.css">
+  <link rel="stylesheet" href="/admin/css/components.css">
+  <link rel="stylesheet" href="/admin/css/marketers.css">
+  <link rel="stylesheet" href="/admin/css/withdrawals.css">
+</head>
+<body>
+
+  <div class="admin-layout">
+    <div id="navbarPlaceholder"></div>
+
+    <main class="admin-main">
+      <header class="admin-topbar">
+        <button class="topbar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+        <h1 class="topbar-title">طلبات السحب</h1>
+        <div class="topbar-actions">
+          <button class="topbar-btn" id="reloadListBtn" title="تحديث">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+          <button class="topbar-btn" id="themeToggleBtn" title="تبديل الثيم">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+      </header>
+
+      <div class="admin-content">
+
+        <div class="page-header">
+          <h1><i class="fas fa-wallet"></i> طلبات سحب الأرباح</h1>
+          <p>مراجعة وإدارة طلبات السحب من المسوقين</p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="wd-stats-grid" id="wdStatsGrid">
+          <div class="wd-stat-card total">
+            <div class="wd-stat-value" id="statTotal">—</div>
+            <div class="wd-stat-label">إجمالي الطلبات</div>
+          </div>
+          <div class="wd-stat-card pending">
+            <div class="wd-stat-value" id="statPending">—</div>
+            <div class="wd-stat-label">قيد المراجعة</div>
+          </div>
+          <div class="wd-stat-card sent">
+            <div class="wd-stat-value" id="statSent">—</div>
+            <div class="wd-stat-label">تم الإرسال</div>
+          </div>
+          <div class="wd-stat-card rejected">
+            <div class="wd-stat-value" id="statRejected">—</div>
+            <div class="wd-stat-label">مرفوضة</div>
+          </div>
+          <div class="wd-stat-card amount">
+            <div class="wd-stat-value" id="statTotalAmount">—</div>
+            <div class="wd-stat-label">إجمالي المبالغ</div>
+          </div>
+          <div class="wd-stat-card pending-amount">
+            <div class="wd-stat-value" id="statPendingAmount">—</div>
+            <div class="wd-stat-label">مبالغ معلقة</div>
+          </div>
+        </div>
+
+        <div class="filters-bar">
+          <input type="text" id="searchInput" class="form-control search" placeholder="🔍 بحث برقم الطلب، كود المسوق، الاسم، الهاتف...">
+          <select id="statusFilter" class="form-select">
+            <option value="">كل الحالات</option>
+            <option value="submitted">تم إرسال طلب</option>
+            <option value="under_review">قيد المراجعة</option>
+            <option value="sending">قيد الإرسال</option>
+            <option value="sent">تم الإرسال</option>
+            <option value="rejected">مرفوض</option>
+            <option value="cancelled">ملغى</option>
+            <option value="failed">فشل</option>
+            <option value="expired">منتهي الصلاحية</option>
+          </select>
+          <input type="date" id="fromDateFilter" class="form-control" title="من تاريخ">
+          <input type="date" id="toDateFilter" class="form-control" title="إلى تاريخ">
+          <button class="btn btn-secondary" id="clearFiltersBtn">
+            <i class="fas fa-times"></i> مسح
+          </button>
+        </div>
+
+        <div class="toolbar">
+          <span class="toolbar-info" id="listInfo">جاري التحميل...</span>
+        </div>
+
+        <div class="marketers-table-wrapper">
+          <table class="marketers-table wd-table">
+            <thead>
+              <tr>
+                <th>رقم الطلب</th>
+                <th>المسوق</th>
+                <th>المبلغ</th>
+                <th>الطريقة</th>
+                <th>رقم التحويل</th>
+                <th>الحالة</th>
+                <th>التاريخ</th>
+                <th class="cell-actions">إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="wdTableBody">
+              <tr><td colspan="8" style="text-align:center; padding:40px;">
+                <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; color:var(--accent);"></i>
+              </td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="pagination-bar" id="paginationBar"></div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ============================================================
+       Withdrawal Details Modal
+       ============================================================ -->
+  <div class="modal-overlay" id="wdDetailsModal" data-static="true">
+    <div class="modal modal-xl" style="max-width: 820px;">
+
+      <div class="modal-header">
+        <h3 class="modal-title">
+          تفاصيل طلب السحب <code id="wdModalRequestId" style="background:#EFF6FF; padding:3px 10px; border-radius:6px; color:#22559F; font-family:'Courier New',monospace;">—</code>
+        </h3>
+        <button class="modal-close" id="wdCloseModalBtn"><i class="fas fa-times"></i></button>
+      </div>
+
+      <div class="modal-body">
+
+        <!-- Info Grid -->
+        <div class="wd-info-grid">
+          <div class="wd-info-item">
+            <label>كود المسوق</label>
+            <span id="wdMarketerCode" class="mono">—</span>
+          </div>
+          <div class="wd-info-item">
+            <label>اسم المسوق</label>
+            <span id="wdMarketerName">—</span>
+          </div>
+          <div class="wd-info-item">
+            <label>البريد</label>
+            <span id="wdMarketerEmail" class="mono" style="font-size:0.85rem;">—</span>
+          </div>
+          <div class="wd-info-item">
+            <label>المبلغ</label>
+            <span id="wdAmount" style="font-weight:900; color:#22559F;">—</span>
+          </div>
+          <div class="wd-info-item">
+            <label>طريقة الاستلام</label>
+            <span id="wdMethod">—</span>
+          </div>
+          <div class="wd-info-item">
+            <label>رقم التحويل</label>
+            <span id="wdTransferNumber" class="mono" style="direction:ltr; text-align:right;">—</span>
+          </div>
+          <div class="wd-info-item">
+            <label>تاريخ الطلب</label>
+            <span id="wdCreatedAt">—</span>
+          </div>
+          <div class="wd-info-item">
+            <label>آخر تحديث</label>
+            <span id="wdUpdatedAt">—</span>
+          </div>
+        </div>
+
+        <!-- Current Status -->
+        <div class="wd-current-status-block">
+          <label>الحالة الحالية:</label>
+          <span id="wdCurrentStatusBadge" class="wd-status-badge">—</span>
+        </div>
+
+        <!-- Rejection / Cancellation Reason (if exists) -->
+        <div class="wd-reason-block" id="wdExistingReasonBlock" style="display:none;">
+          <label id="wdExistingReasonLabel">السبب:</label>
+          <p id="wdExistingReasonText">—</p>
+        </div>
+
+        <!-- Screenshot (if exists) -->
+        <div class="wd-screenshot-block" id="wdExistingScreenshotBlock" style="display:none;">
+          <label>سكرين شوت التحويل:</label>
+          <div class="wd-screenshot-thumb" id="wdExistingScreenshotThumb">
+            <img id="wdExistingScreenshotImg" src="" alt="التحويل">
+          </div>
+        </div>
+
+        <!-- Admin Notes (if exists) -->
+        <div class="wd-notes-block" id="wdExistingNotesBlock" style="display:none;">
+          <label>ملاحظات سابقة:</label>
+          <p id="wdExistingNotesText">—</p>
+        </div>
+
+        <!-- Status Change Section -->
+        <div class="wd-status-change-section" id="wdStatusChangeSection">
+          <h4><i class="fas fa-exchange-alt"></i> تغيير الحالة</h4>
+
+          <div class="wd-status-options" id="wdStatusOptions">
+            <!-- تُملأ ديناميكياً حسب الحالة -->
+          </div>
+
+          <!-- Conditional: rejection reason -->
+          <div class="wd-conditional" id="wdRejectionReasonBox" style="display:none;">
+            <label class="required">سبب الرفض</label>
+            <textarea id="wdRejectionReason" rows="3" placeholder="اذكر سبب رفض الطلب (5 أحرف على الأقل)..."></textarea>
+            <div class="wd-field-error" id="wdRejectionReasonError"></div>
+          </div>
+
+          <!-- Conditional: cancellation reason -->
+          <div class="wd-conditional" id="wdCancellationReasonBox" style="display:none;">
+            <label class="required">سبب الإلغاء</label>
+            <textarea id="wdCancellationReason" rows="3" placeholder="اذكر سبب إلغاء الطلب (5 أحرف على الأقل)..."></textarea>
+            <div class="wd-field-error" id="wdCancellationReasonError"></div>
+          </div>
+
+          <!-- Conditional: screenshot upload -->
+          <div class="wd-conditional" id="wdScreenshotUploadBox" style="display:none;">
+            <label class="required">سكرين شوت التحويل</label>
+            <div class="wd-upload-area" id="wdUploadArea">
+              <input type="file" id="wdScreenshotFileInput" accept="image/png,image/jpeg" hidden>
+              <div class="wd-upload-placeholder" id="wdUploadPlaceholder">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>اضغط لاختيار صورة (PNG / JPG — حتى 5MB)</p>
+              </div>
+              <div class="wd-upload-preview" id="wdUploadPreview" style="display:none;">
+                <img id="wdUploadPreviewImg" src="" alt="معاينة">
+                <button type="button" class="wd-upload-remove" id="wdUploadRemoveBtn">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+              <div class="wd-upload-loader" id="wdUploadLoader" style="display:none;">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>جاري الرفع...</p>
+              </div>
+            </div>
+            <div class="wd-field-error" id="wdScreenshotError"></div>
+          </div>
+
+          <!-- Admin notes (always) -->
+          <div class="wd-conditional">
+            <label>ملاحظات داخلية (اختياري)</label>
+            <textarea id="wdAdminNotes" rows="2" placeholder="ملاحظات لا يراها المسوق..."></textarea>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="wdCancelBtn">إغلاق</button>
+        <button class="btn btn-primary" id="wdSaveBtn" disabled>
+          <i class="fas fa-save"></i> حفظ التغييرات
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="/admin/js/utils.js"></script>
+  <script src="/js/config.js"></script>
+  <script src="/js/error-reporter.js" defer></script>
+  <script src="/admin/js/ui.js"></script>
+  <script src="/admin/js/core.js"></script>
+  <script src="/admin/js/freeze.js"></script>
+  <script src="/admin/js/navbar.js"></script>
+  <script src="/admin/js/withdrawals.js"></script>
+
+  <script>
+    window.onSessionFrozen = function(info) {
+      if (window.FreezeOverlay) window.FreezeOverlay.show(info);
+    };
+    window.onFreezeUpdate = function(info) {
+      if (window.FreezeOverlay) window.FreezeOverlay.update(info);
+    };
+    window.onSessionUnfrozen = function() {
+      if (window.FreezeOverlay) window.FreezeOverlay.hide();
+      if (window.UI) window.UI.toast.success('تم رفع التجميد.');
+    };
+    window.onAccountDisabled = function() {
+      if (window.FreezeOverlay) window.FreezeOverlay.hide();
+      if (window.UI) {
+        window.UI.toast.error('الحساب معطَّل. تواصل مع superAdmin.', { duration: 0, title: 'معطَّل' });
+      }
+    };
+
+    (async function() {
+      const ok = await window.Core.guard();
+      if (!ok) return;
+
+      await window.Navbar.load('navbarPlaceholder');
+
+      const themeBtn = document.getElementById('themeToggleBtn');
+      if (themeBtn) {
+        themeBtn.addEventListener('click', async function() {
+          await window.Core.toggleTheme();
+        });
+      }
+
+      const reloadBtn = document.getElementById('reloadListBtn');
+      if (reloadBtn) {
+        reloadBtn.addEventListener('click', function() {
+          if (window.WithdrawalsPage) window.WithdrawalsPage.reload();
+        });
+      }
+
+      if (window.WithdrawalsPage) window.WithdrawalsPage.init();
+    })();
+  </script>
+
+</body>
+</html>

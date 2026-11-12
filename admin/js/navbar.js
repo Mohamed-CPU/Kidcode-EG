@@ -214,3 +214,144 @@
   };
 
 })();
+
+// ================================================================
+//  🆕 Withdrawals Badge — عرض عدد الطلبات المعلقة في السايدبار
+//  - يقرأ getWithdrawalsStats (Phase 3)
+//  - يعرض العدد في #withdrawalsBadge
+//  - Polling كل 3 دقائق + عند رجوع التاب/الـ focus
+//  - لا يعدّل أي كود موجود في الملف
+// ================================================================
+(function() {
+  'use strict';
+
+  const REFRESH_INTERVAL_MS = 3 * 60 * 1000; // 3 دقائق
+  const INITIAL_DELAY_MS = 1500;
+
+  let refreshIntervalId = null;
+  let isFetching = false;
+  let lastKnownCount = 0;
+
+  // ============================================================
+  //  Helpers
+  // ============================================================
+  function getBadgeEl() {
+    return document.getElementById('withdrawalsBadge');
+  }
+
+  function setBadge(count) {
+    const el = getBadgeEl();
+    if (!el) return;
+
+    const num = parseInt(count, 10) || 0;
+    lastKnownCount = num;
+
+    el.textContent = num > 99 ? '99+' : String(num);
+
+    if (num > 0) {
+      el.classList.remove('hidden');
+      // ✅ نبض خفيف لو العدد كبر (اختياري)
+      if (num > 5) {
+        el.classList.add('badge-urgent');
+      } else {
+        el.classList.remove('badge-urgent');
+      }
+    } else {
+      el.classList.add('hidden');
+      el.classList.remove('badge-urgent');
+    }
+  }
+
+  // ============================================================
+  //  Fetch pending count
+  // ============================================================
+  async function fetchAndUpdateBadge() {
+    if (isFetching) return;
+
+    // تأكد من وجود الـ element — لو مش موجود، مفيش داعي لطلب API
+    const el = getBadgeEl();
+    if (!el) return;
+
+    // تأكد من توفر Core.api
+    if (!window.Core || typeof window.Core.api !== 'function') {
+      return;
+    }
+
+    isFetching = true;
+
+    try {
+      const result = await window.Core.api('getWithdrawalsStats', {}, 'GET');
+
+      if (result && result.success && result.stats) {
+        // ✅ الطلبات المعلقة = submitted + under_review + sending
+        const pending =
+          (result.stats.submitted    || 0) +
+          (result.stats.under_review || 0) +
+          (result.stats.sending      || 0);
+
+        setBadge(pending);
+      }
+    } catch (e) {
+      // فشل صامت — نحتفظ بآخر قيمة معروفة
+      console.warn('⚠️ [withdrawalsBadge] fetch failed:', e.message);
+    } finally {
+      isFetching = false;
+    }
+  }
+
+  // ============================================================
+  //  Polling setup
+  // ============================================================
+  function startPolling() {
+    if (refreshIntervalId) return;
+
+    // 1. تحديث أولي (بعد تحميل النافبار)
+    setTimeout(fetchAndUpdateBadge, INITIAL_DELAY_MS);
+
+    // 2. تحديث دوري
+    refreshIntervalId = setInterval(fetchAndUpdateBadge, REFRESH_INTERVAL_MS);
+
+    // 3. تحديث عند رجوع التاب
+    document.addEventListener('visibilitychange', function() {
+      if (!document.hidden) fetchAndUpdateBadge();
+    });
+
+    // 4. تحديث عند focus النافذة
+    window.addEventListener('focus', function() {
+      fetchAndUpdateBadge();
+    });
+  }
+
+  // ============================================================
+  //  Init
+  // ============================================================
+  function boot() {
+    // انتظر شوية عشان الـ Navbar.load() يخلص
+    setTimeout(function() {
+      // تأكد أن عنصر الـ badge موجود قبل بدء الـ polling
+      if (!getBadgeEl()) {
+        // لو لسه مش موجود، حاول تاني بعد ثانية (edge case)
+        setTimeout(function() {
+          if (getBadgeEl()) startPolling();
+        }, 1000);
+        return;
+      }
+      startPolling();
+    }, 500);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+
+  // ============================================================
+  //  ✅ واجهة برمجية يدوية (اختياري — للتحديث الفوري)
+  // ============================================================
+  window.WithdrawalsBadge = {
+    refresh: fetchAndUpdateBadge,
+    getLastCount: function() { return lastKnownCount; }
+  };
+
+})();
