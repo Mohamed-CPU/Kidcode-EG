@@ -450,20 +450,6 @@
 
     // Existing notes
     const existingNotesBlock = document.getElementById('wdExistingNotesBlock');
-    // 🆕 Children List
-    const childrenBlock = document.getElementById('wdChildrenBlock');
-    const childrenList = document.getElementById('wdChildrenList');
-    if (req.children && req.children.length > 0) {
-      childrenList.innerHTML = req.children.map(c => 
-        `<li style="margin-bottom: 6px; font-size: 0.9rem; color: #1E3A8A; display: flex; justify-content: space-between;">
-           <span>👶 ${c.childName} (${c.childID})</span>
-           <strong style="color: #22559F;">${c.commission} ج.م</strong>
-         </li>`
-      ).join('');
-      childrenBlock.style.display = 'block';
-    } else {
-      childrenBlock.style.display = 'none';
-    }
     const existingNotesText = document.getElementById('wdExistingNotesText');
     if (req.adminNotes) {
       existingNotesBlock.style.display = 'block';

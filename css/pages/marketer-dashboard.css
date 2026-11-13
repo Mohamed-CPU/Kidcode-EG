@@ -1,3 +1,4 @@
+marketer-dashboard.css
 /* ============================================================
    PAGE: MARKETER DASHBOARD - لوحة تحكم المسوق
    تصميم خاص بالصفحة
@@ -1710,79 +1711,4 @@ body.marketer-dashboard-page.no-header {
     .md-history-table thead th {
         font-size: 0.72rem;
     }
-}
-
-/* ============================================================
-   🆕 Children Checkboxes List
-   ============================================================ */
-.md-children-list {
-    border: 2px solid var(--border-color);
-    border-radius: var(--radius-md);
-    padding: 12px;
-    max-height: 300px;
-    overflow-y: auto;
-    background: #F8FAFC;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.md-child-checkbox {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    background: #FFFFFF;
-    border: 2px solid var(--border-color);
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.md-child-checkbox:hover {
-    border-color: var(--primary-color);
-    background: #FAFBFF;
-}
-
-.md-child-checkbox:has(input:checked) {
-    border-color: var(--secondary-color);
-    background: #ECFDF5;
-    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);
-}
-
-.md-child-checkbox input[type="checkbox"] {
-    width: 20px;
-    height: 20px;
-    accent-color: var(--secondary-color);
-    cursor: pointer;
-    flex-shrink: 0;
-}
-
-.md-child-info {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex: 1;
-    flex-wrap: wrap;
-}
-
-.md-child-info strong {
-    font-size: 0.95rem;
-    color: var(--text-primary);
-}
-
-.md-child-id {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-    font-family: monospace;
-    background: var(--bg-body);
-    padding: 2px 8px;
-    border-radius: 6px;
-}
-
-.md-child-amount {
-    font-size: 0.9rem;
-    font-weight: 900;
-    color: var(--secondary-dark);
-    margin-right: auto;
 }
