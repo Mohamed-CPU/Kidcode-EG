@@ -468,7 +468,7 @@ function handleFilePreview(input, previewImg, placeholder) {
 // ============================================================
 
 /**
- * التحقق من وجود جلسة مسوق
+ * التحقق من وجود جلسة مسوق + صلاحيتها (60 دقيقة)
  */
 function checkMarketerSession() {
     const code = localStorage.getItem('marketerCode');
@@ -476,6 +476,30 @@ function checkMarketerSession() {
         window.location.href = '/marketer-login.html';
         return null;
     }
+
+    // ✅ فحص expiry — ساعة واحدة
+    let expiryTime = null;
+    try {
+        const stored = sessionStorage.getItem('marketer_session_expiry')
+                     || localStorage.getItem('marketer_session_expiry');
+        if (stored) {
+            const t = new Date(stored).getTime();
+            if (!isNaN(t)) expiryTime = t;
+        }
+    } catch (e) {}
+
+    if (!expiryTime || Date.now() >= expiryTime) {
+        // ❌ جلسة منتهية أو بدون expiry — نظّف وredirect
+        try {
+            localStorage.removeItem('marketerCode');
+            localStorage.removeItem('marketerName');
+            localStorage.removeItem('marketer_session_expiry');
+            sessionStorage.removeItem('marketer_session_expiry');
+        } catch (e) {}
+        window.location.href = '/marketer-login.html?reason=session_expired';
+        return null;
+    }
+
     return code;
 }
 

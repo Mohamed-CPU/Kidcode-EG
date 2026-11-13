@@ -14,6 +14,26 @@ if (!window.Utils) {
                 window.location.href = '/marketer-login';
                 return null;
             }
+            // ✅ فحص expiry — ساعة
+            let expiryTime = null;
+            try {
+                const s = sessionStorage.getItem('marketer_session_expiry')
+                       || localStorage.getItem('marketer_session_expiry');
+                if (s) {
+                    const t = new Date(s).getTime();
+                    if (!isNaN(t)) expiryTime = t;
+                }
+            } catch (e) {}
+            if (!expiryTime || Date.now() >= expiryTime) {
+                try {
+                    localStorage.removeItem('marketerCode');
+                    localStorage.removeItem('marketerName');
+                    localStorage.removeItem('marketer_session_expiry');
+                    sessionStorage.removeItem('marketer_session_expiry');
+                } catch (e) {}
+                window.location.href = '/marketer-login?reason=session_expired';
+                return null;
+            }
             return code;
         },
         updateMarketerName: function() {
@@ -64,8 +84,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', function() {
+            try {
+                if (window.MarketerSession && typeof window.MarketerSession.stop === 'function') {
+                    window.MarketerSession.stop();
+                }
+            } catch (e) {}
             localStorage.removeItem('marketerCode');
             localStorage.removeItem('marketerName');
+            localStorage.removeItem('marketer_session_expiry');
+            sessionStorage.removeItem('marketer_session_expiry');
             window.location.href = '/marketer-login';
         });
     }
@@ -210,6 +237,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     setTimeout(() => {
                         localStorage.removeItem('marketerCode');
                         localStorage.removeItem('marketerName');
+                        localStorage.removeItem('marketer_session_expiry');
+                        sessionStorage.removeItem('marketer_session_expiry');
                         window.location.href = '/marketer-login';
                     }, 2500);
                 } else {
@@ -1444,6 +1473,8 @@ function formatShortDate(dateStr) {
                         setTimeout(function() {
                             localStorage.removeItem('marketerCode');
                             localStorage.removeItem('marketerName');
+                            localStorage.removeItem('marketer_session_expiry');
+                            sessionStorage.removeItem('marketer_session_expiry');
                             window.location.href = '/marketer-login';
                         }, 2000);
                     } else {
@@ -1893,4 +1924,125 @@ function formatShortDate(dateStr) {
         }, 0);
     });
 
+})();
+
+// ================================================================
+//  ⏱️ Session Expiry Timer — 60 دقيقة
+//  - يحسب المتبقي من expiry
+//  - ينهي الجلسة تلقائياً عند انتهاء الوقت
+//  - فحص فوري عند رجوع التاب/الـ focus
+// ================================================================
+(function() {
+    'use strict';
+
+    const SESSION_EXPIRY_KEY = 'marketer_session_expiry';
+    let expiryTimerId = null;
+    let isRedirecting = false;
+
+    function getExpiryTime() {
+        try {
+            const stored = sessionStorage.getItem(SESSION_EXPIRY_KEY)
+                         || localStorage.getItem(SESSION_EXPIRY_KEY);
+            if (!stored) return null;
+            const t = new Date(stored).getTime();
+            return isNaN(t) ? null : t;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function clearMarketerStorage() {
+        try {
+            localStorage.removeItem('marketerCode');
+            localStorage.removeItem('marketerName');
+            localStorage.removeItem(SESSION_EXPIRY_KEY);
+            sessionStorage.removeItem(SESSION_EXPIRY_KEY);
+        } catch (e) {}
+    }
+
+    function handleExpired() {
+        if (isRedirecting) return;
+        isRedirecting = true;
+        console.warn('🚫 [Marketer Expiry] انتهت الجلسة — redirect');
+        stopTimer();
+        clearMarketerStorage();
+        window.location.replace('/marketer-login.html?reason=session_expired');
+    }
+
+    function startTimer() {
+        stopTimer();
+
+        const expiryTime = getExpiryTime();
+
+        // ✅ لو مفيش expiry → خروج فوري (مش تمديد)
+        if (!expiryTime) {
+            console.warn('🚫 [Marketer Expiry] مفيش expiry → خروج فوري');
+            handleExpired();
+            return;
+        }
+
+        const remaining = expiryTime - Date.now();
+        const remainingMin = Math.max(0, Math.round(remaining / 1000 / 60));
+
+        console.log('⏱️ [Marketer Expiry] الجلسة تنتهي خلال ' + remainingMin + ' دقيقة');
+
+        if (remaining <= 0) {
+            handleExpired();
+            return;
+        }
+
+        expiryTimerId = setTimeout(function() {
+            console.warn('🚫 [Marketer Expiry] انتهت مدة الجلسة');
+            handleExpired();
+        }, remaining);
+    }
+
+    function stopTimer() {
+        if (expiryTimerId) {
+            clearTimeout(expiryTimerId);
+            expiryTimerId = null;
+        }
+    }
+
+    function checkOnReturn() {
+        if (isRedirecting) return;
+        const expiryTime = getExpiryTime();
+        if (!expiryTime || Date.now() >= expiryTime) {
+            handleExpired();
+        } else {
+            startTimer(); // إعادة ضبط الـ timer
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // لو مفيش جلسة → اخرج (main IIFE هيعالج)
+        if (!localStorage.getItem('marketerCode')) return;
+
+        // ابدأ الـ timer
+        startTimer();
+
+        // فحص عند رجوع التاب
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                console.log('👁️ [Marketer Expiry] التاب رجع — فحص فوري');
+                checkOnReturn();
+            }
+        });
+
+        // فحص عند focus
+        window.addEventListener('focus', function() {
+            if (document.hidden) return;
+            console.log('🖱️ [Marketer Expiry] focus — فحص فوري');
+            checkOnReturn();
+        });
+
+        console.log('✅ [Marketer Expiry] Session timer started (60 min)');
+    });
+
+    // API عام — للـ logout اليدوي
+    window.MarketerSession = {
+        stop: stopTimer,
+        clear: clearMarketerStorage,
+        handleExpired: handleExpired
+    };
 })();
