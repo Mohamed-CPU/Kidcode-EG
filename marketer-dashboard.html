@@ -336,8 +336,29 @@
                         <div class="md-form-group">
                             <label class="required">طريقة استلام العمولة</label>
                             <div class="md-payment-methods">
-                                <!-- ... أزرار انستاباي والمحفظة كما هي ... -->
+                                <label class="md-radio-card">
+                                    <input type="radio" name="withdrawMethod" value="instapay">
+                                    <div class="md-radio-content">
+                                        <i class="fas fa-university"></i>
+                                        <strong>انستاباي</strong>
+                                        <small>تحويل فوري</small>
+                                    </div>
+                                </label>
+                                <label class="md-radio-card">
+                                    <input type="radio" name="withdrawMethod" value="wallet">
+                                    <div class="md-radio-content">
+                                        <i class="fas fa-mobile-alt"></i>
+                                        <strong>محفظة إلكترونية</strong>
+                                        <div class="md-wallet-icons">
+                                            <img src="assets/images/wallets/Vodafone.png" alt="Vodafone Cash">
+                                            <img src="assets/images/wallets/E%26.png" alt="Etisalat Cash">
+                                            <img src="assets/images/wallets/Orange-Money.png" alt="Orange Cash">
+                                            <img src="assets/images/wallets/WE-Pay.png" alt="WE Pay">
+                                        </div>
+                                    </div>
+                                </label>
                             </div>
+                            <div class="md-field-error" id="withdrawMethodError"></div>
                         </div>
 
                         <div class="md-form-group">
