@@ -552,3 +552,15 @@
 .wd-stat-card.cancelled .wd-stat-value { color: #64748B; }
 
 [data-theme="dark"] .wd-stat-card.cancelled .wd-stat-value { color: #CBD5E1; }
+
+/* ============================================================
+   🆕 Dark Mode Overrides للجدول
+   ============================================================ */
+
+[data-theme="dark"] .wd-table .wd-amount {
+    color: #F1F5F9; /* لون أبيض مائل للرمادي الفاتح */
+}
+
+[data-theme="dark"] .wd-table .wd-request-id {
+    color: #60A5FA; /* لون أزرق فاتح للـ ID عشان يبان */
+}
