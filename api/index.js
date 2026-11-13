@@ -726,7 +726,18 @@ async function handleMarketer(req, res) {
   const query = req.query || {};
   const body = req.body || {};
 
-  const innerAction = query.innerAction || body.innerAction || '';
+  // 🆕 استخراج آمن لـ innerAction من req.url كطريقة احتياطية
+  let innerAction = query.innerAction || body.innerAction || '';
+
+  if (!innerAction && req.url) {
+    try {
+      const urlObj = new URL(req.url, 'http://localhost');
+      innerAction = urlObj.searchParams.get('innerAction') || '';
+    } catch (e) {
+      // تجاهل أخطاء URL
+    }
+  }
+
   if (!innerAction) {
     return res.status(400).json({
       success: false,
