@@ -124,6 +124,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (availableBalanceEl) {
                     availableBalanceEl.textContent = (stats.availableBalance || 0) + ' ج.م';
                 }
+
+                // 🆕 hint: مبلغ محجوز في طلبات نشطة
+                const hintEl = document.getElementById('availableBalanceHint');
+                if (hintEl) {
+                    const withdrawn = stats.totalWithdrawn || 0;
+                    if (withdrawn > 0) {
+                        hintEl.textContent = 'محجوز في طلبات نشطة: ' + withdrawn + ' ج.م';
+                        hintEl.style.display = 'block';
+                    } else {
+                        hintEl.style.display = 'none';
+                    }
+                }
                 statsGrid.style.display = 'grid';
                 ordersSection.style.display = 'block';
 
