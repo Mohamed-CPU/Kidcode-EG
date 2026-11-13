@@ -733,10 +733,11 @@ async function handleMarketer(req, res) {
     try {
       const urlObj = new URL(req.url, 'http://localhost');
       innerAction = urlObj.searchParams.get('innerAction') || '';
-    } catch (e) {
-      // تجاهل أخطاء URL
-    }
+    } catch (e) {}
   }
+
+  // 🆕 تسجيل لمعرفة الإجراء القادم
+  console.log('[handleMarketer] innerAction:', innerAction);
 
   if (!innerAction) {
     return res.status(400).json({
@@ -768,7 +769,13 @@ async function handleMarketer(req, res) {
           return res.status(200).json(result);
         }
       } catch (supabaseError) {
-        // نكمل
+        // 🆕 إرجاع الخطأ الفعلي بدل تجاهله
+        console.error('[handleMarketer] Supabase read error:', supabaseError);
+        return res.status(500).json({
+          success: false,
+          error: 'supabase_error',
+          message: supabaseError.message || 'خطأ في قاعدة البيانات'
+        });
       }
     }
 
