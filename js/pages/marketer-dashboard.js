@@ -1059,69 +1059,6 @@ function formatShortDate(dateStr) {
     // ============================================================
     //  2. Withdraw
     // ============================================================
-    let eligibleChildren = [];
-
-    async function loadEligibleChildren() {
-        const list = document.getElementById('mdEligibleChildrenList');
-        if (!list) return;
-        const code = getMarketerCode();
-        if (!code) return;
-
-        list.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary);">جاري التحميل...</div>';
-
-        try {
-            const res = await fetch(`/api?action=marketer&innerAction=getEligibleChildrenForWithdrawal&code=${encodeURIComponent(code)}`);
-            const data = await res.json();
-            if (data.success) {
-                eligibleChildren = data.children || [];
-                renderEligibleChildren(eligibleChildren);
-            } else {
-                list.innerHTML = `<p style="color:red; text-align:center;">فشل تحميل الأطفال</p>`;
-            }
-        } catch (err) {
-            list.innerHTML = `<p style="color:red; text-align:center;">تعذر الاتصال بالخادم</p>`;
-        }
-    }
-
-    function renderEligibleChildren(children) {
-        const list = document.getElementById('mdEligibleChildrenList');
-        if (!list) return;
-
-        if (children.length === 0) {
-            list.innerHTML = '<p style="text-align:center; color:var(--text-light); padding:10px;">لا يوجد أطفال مستحقون للسحب حالياً</p>';
-            updateWithdrawTotal();
-            return;
-        }
-
-        let html = '';
-        children.forEach(function(c) {
-            html += `<label class="md-child-checkbox">
-                <input type="checkbox" value="${c.childID}" data-amount="${c.commission}">
-                <div class="md-child-info">
-                    <strong>${c.childName}</strong>
-                    <span class="md-child-id">${c.childID}</span>
-                    <span class="md-child-amount">${c.commission} ج.م</span>
-                </div>
-            </label>`;
-        });
-        list.innerHTML = html;
-
-        list.querySelectorAll('input[type="checkbox"]').forEach(function(cb) {
-            cb.addEventListener('change', updateWithdrawTotal);
-        });
-        updateWithdrawTotal();
-    }
-
-    function updateWithdrawTotal() {
-        let total = 0;
-        const checkboxes = document.querySelectorAll('#mdEligibleChildrenList input[type="checkbox"]:checked');
-        checkboxes.forEach(function(cb) {
-            total += parseFloat(cb.getAttribute('data-amount') || '0');
-        });
-        const amountInput = document.getElementById('withdrawAmount');
-        if (amountInput) amountInput.value = total;
-    }
-
     function refreshWithdrawData() {
         const code = getMarketerCode();
         const name = getMarketerName();
@@ -1131,72 +1068,19 @@ function formatShortDate(dateStr) {
         if (codeInput) codeInput.value = code;
         if (nameInput) nameInput.value = name;
 
+        // Max = available balance (بعد خصم الطلبات النشطة)
         const max = readNumberFromEl('availableBalance');
+
         const balanceEl = document.getElementById('withdrawAvailableBalance');
         if (balanceEl) balanceEl.textContent = max + ' ج.م';
 
-        loadEligibleChildren();
-    }
+        const hintEl = document.getElementById('withdrawAmountHint');
+        if (hintEl) hintEl.textContent = 'الرصيد المتاح: ' + max + ' ج.م';
 
-    function initWithdraw() {
-        const form = document.getElementById('withdrawForm');
-        if (!form) return;
-
-        // ... (نفس الكود السابق لـ TransferInput, Method Radio, إلخ) ...
-
-        form.addEventListener('submit', async function(e) {
-            e.preventDefault();
-
-            const code = getMarketerCode();
-            const methodRadio = form.querySelector('input[name="withdrawMethod"]:checked');
-            const method = methodRadio ? methodRadio.value : '';
-            const transferNumber = (document.getElementById('withdrawTransferNumber').value || '').trim();
-            const childIDs = Array.from(document.querySelectorAll('#mdEligibleChildrenList input:checked')).map(cb => cb.value);
-
-            // Validation
-            if (childIDs.length === 0) return showMessage(messageEl, 'error', 'اختر طفل واحد على الأقل');
-            if (!method) return showMessage(messageEl, 'error', 'اختر طريقة الاستلام');
-            if (!transferNumber || !/^01[0125]\d{8}$/.test(transferNumber)) {
-                return showMessage(messageEl, 'error', 'رقم هاتف غير صحيح');
-            }
-
-            const btn = document.getElementById('submitWithdrawBtn');
-            if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...'; }
-
-            try {
-                const res = await fetch('/api?action=marketer', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        innerAction: 'submitWithdrawRequest',
-                        marketerCode: code,
-                        childIDs: childIDs,
-                        method: method,
-                        transferNumber: transferNumber
-                    })
-                });
-                const data = await res.json();
-
-                if (data.success) {
-                    showMessage(messageEl, 'success',
-                        `✅ تم إرسال طلبك بنجاح. رقم الطلب: ${data.requestId} — المبلغ: ${data.amount} ج.م`);
-                    
-                    // Reset form
-                    form.reset();
-                    document.getElementById('withdrawTransferNumber').value = '';
-                    if (window.MD && window.MD.loadDashboard) await window.MD.loadDashboard();
-                    refreshWithdrawData();
-                } else {
-                    showMessage(messageEl, 'error', '❌ ' + (data.message || data.error));
-                }
-            } catch (err) {
-                showMessage(messageEl, 'error', '⚠️ تعذر الاتصال بالخادم');
-            } finally {
-                if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane"></i> إرسال طلب السحب'; }
-            }
-        });
-
-        refreshWithdrawData();
+        const amountInput = document.getElementById('withdrawAmount');
+        if (amountInput) {
+            amountInput.max = String(Math.max(0, max));
+        }
     }
 
     function initWithdraw() {
