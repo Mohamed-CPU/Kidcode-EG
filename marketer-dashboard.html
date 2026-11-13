@@ -1,3 +1,4 @@
+marketer-dashboard.html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -292,11 +293,14 @@
                  Tab 4: Withdraw
                  ============================================================ -->
             <section class="md-tab-panel" data-tab="withdraw">
+
                 <div class="card md-withdraw-card">
                     <div class="md-section-header">
                         <div>
                             <h2><i class="fas fa-wallet"></i> سحب الأرباح</h2>
-                            <p class="md-section-desc">اختر الأطفال المستحقين لإرسال طلب السحب.</p>
+                            <p class="md-section-desc">
+                                أرسل طلب سحب للإدارة، وسيتم التواصل معك خلال 48 ساعة عمل.
+                            </p>
                         </div>
                         <button class="md-reload-btn" id="reloadWithdrawBtn" title="إعادة تحميل">
                             <i class="fas fa-rotate"></i>
@@ -321,16 +325,10 @@
                         </div>
 
                         <div class="md-form-group">
-                            <label class="required">اختر الأطفال المستحقين</label>
-                            <div id="mdEligibleChildrenList" class="md-children-list">
-                                <div style="text-align:center; padding:20px; color:var(--text-secondary);">جاري تحميل الأطفال...</div>
-                            </div>
-                        </div>
-
-                        <div class="md-form-group">
-                            <label>المبلغ الإجمالي المطلوب (ج.م)</label>
-                            <input type="number" id="withdrawAmount" readonly disabled dir="ltr">
-                            <div class="md-field-hint">يتم حسابه تلقائياً بناءً على الأطفال المختارين</div>
+                            <label class="required">المبلغ المطلوب سحبه (ج.م)</label>
+                            <input type="number" id="withdrawAmount" min="1" step="1" placeholder="أدخل المبلغ" dir="ltr">
+                            <div class="md-field-hint" id="withdrawAmountHint">الحد الأقصى: 0 ج.م</div>
+                            <div class="md-field-error" id="withdrawAmountError"></div>
                         </div>
 
                         <div class="md-form-group">
@@ -363,14 +361,30 @@
 
                         <div class="md-form-group">
                             <label class="required">رقم التحويل</label>
-                            <input type="tel" id="withdrawTransferNumber" maxlength="11" inputmode="numeric" placeholder="01XXXXXXXXX" dir="ltr">
+                            <input type="tel" id="withdrawTransferNumber" maxlength="11" inputmode="numeric"
+                                   placeholder="01XXXXXXXXX" dir="ltr" autocomplete="tel">
+                            <div class="md-field-hint" id="withdrawTransferNumberHint">
+                                رقم الهاتف المسجل على وسيلة الاستلام
+                            </div>
+                            <div class="md-field-error" id="withdrawTransferNumberError"></div>
+                        </div>
+
+                        <div class="md-info-box">
+                            <i class="fas fa-info-circle"></i>
+                            سيتم إرسال طلبك إلى الإدارة عبر البريد <strong>sales@kidcode-eg.com</strong> فوراً.
+                            وستصلك نسخة تأكيد على بريدك الإلكتروني.
                         </div>
 
                         <button type="submit" class="btn btn-primary btn-block btn-lg" id="submitWithdrawBtn">
-                            <i class="fas fa-paper-plane"></i> إرسال طلب السحب
+                            <i class="fas fa-paper-plane"></i>
+                            إرسال طلب السحب
                         </button>
+
+                        <div class="md-message" id="withdrawMessage"></div>
+
                     </form>
                 </div>
+
             </section>
 
             <!-- ============================================================
