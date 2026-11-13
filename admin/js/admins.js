@@ -19,17 +19,19 @@
   //  📋 تعريف الأقسام والصلاحيات
   // ============================================================
   const SECTIONS = [
-    { key: 'dashboard',  label: 'لوحة المعلومات', icon: 'fa-chart-pie',         actions: ['view'] },
-    { key: 'children',   label: 'الأطفال',         icon: 'fa-child',            actions: ['view', 'edit', 'delete', 'export'] },
-    { key: 'payments',   label: 'المدفوعات',       icon: 'fa-receipt',          actions: ['view', 'refund'] },
-    { key: 'marketers',  label: 'المسوقون',        icon: 'fa-user-tie',         actions: ['view', 'edit', 'delete', 'export'] },
-    { key: 'newsletter', label: 'المشتركون',       icon: 'fa-bell',             actions: ['view', 'edit', 'delete', 'export'] },
-    { key: 'reports',    label: 'البلاغات',        icon: 'fa-exclamation-triangle', actions: ['view', 'edit', 'close'] },
-    { key: 'scan_logs',  label: 'سجل المسحات',     icon: 'fa-qrcode',           actions: ['view', 'export', 'delete'] },
-    { key: 'emails',     label: 'مركز البريد',     icon: 'fa-envelope',         actions: ['send_individual', 'send_bulk', 'manage_campaigns'] },
-    { key: 'admins',     label: 'المسؤولون',       icon: 'fa-user-shield',      actions: ['view', 'create', 'edit', 'delete'] },
-    { key: 'config',     label: 'الإعدادات',       icon: 'fa-cog',              actions: ['view', 'edit'] },
-    { key: 'audit_log',  label: 'سجل العمليات',    icon: 'fa-clipboard-list',   actions: ['view'] }
+    { key: 'dashboard',   label: 'لوحة المعلومات', icon: 'fa-chart-pie',         actions: ['view'] },
+    { key: 'children',    label: 'الأطفال',         icon: 'fa-child',            actions: ['view', 'edit', 'delete', 'export'] },
+    { key: 'payments',    label: 'المدفوعات',       icon: 'fa-receipt',          actions: ['view', 'refund'] },
+    { key: 'marketers',   label: 'المسوقون',        icon: 'fa-user-tie',         actions: ['view', 'edit', 'delete', 'export'] },
+    // 🆕 قسم منفصل لطلبات السحب
+    { key: 'withdrawals', label: 'طلبات السحب',    icon: 'fa-wallet',           actions: ['view', 'edit'] },
+    { key: 'newsletter',  label: 'المشتركون',       icon: 'fa-bell',             actions: ['view', 'edit', 'delete', 'export'] },
+    { key: 'reports',     label: 'البلاغات',        icon: 'fa-exclamation-triangle', actions: ['view', 'edit', 'close'] },
+    { key: 'scan_logs',   label: 'سجل المسحات',     icon: 'fa-qrcode',           actions: ['view', 'export', 'delete'] },
+    { key: 'emails',      label: 'مركز البريد',     icon: 'fa-envelope',         actions: ['send_individual', 'send_bulk', 'manage_campaigns'] },
+    { key: 'admins',      label: 'المسؤولون',       icon: 'fa-user-shield',      actions: ['view', 'create', 'edit', 'delete'] },
+    { key: 'config',      label: 'الإعدادات',       icon: 'fa-cog',              actions: ['view', 'edit'] },
+    { key: 'audit_log',   label: 'سجل العمليات',    icon: 'fa-clipboard-list',   actions: ['view'] }
   ];
 
   const ACTION_LABELS = {
