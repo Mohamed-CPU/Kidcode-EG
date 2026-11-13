@@ -18,8 +18,6 @@ function nowEgypt12() {
 
 // ================================================================
 //  🧰 Helper: تصنيف الأخطاء وإرجاع رسالة مناسبة للمستخدم
-//  - النوع: شبكة / خادم / قاعدة بيانات / مهلة / غير معروف
-//  - لا يكشف أي تفاصيل تقنية
 // ================================================================
 function classifyError(error) {
   if (!error) {
@@ -76,7 +74,6 @@ function classifyError(error) {
   }
 
   // 4. خطأ في مزود البريد أو تليجرام
-  //    (نستثني أخطاء الاستيراد — لأنها لا علاقة لها بالإشعارات)
   if (
     !message.includes('does not provide an export') &&
     !message.includes('cannot find module') &&
@@ -105,9 +102,6 @@ function classifyError(error) {
 
 // ================================================================
 //  🧰 Helper: استجابة خطأ آمنة موحّدة
-//  - يفحص نوع الخطأ
-//  - يرسل التفاصيل التقنية إلى تليجرام الأدمن
-//  - يرد على المستخدم برسالة عربية مناسبة + رقم مرجعي (عند اللزوم)
 // ================================================================
 async function safeErrorResponse(res, error, source, context) {
   // 1. تصنيف الخطأ
@@ -726,7 +720,19 @@ async function handleMarketer(req, res) {
   const query = req.query || {};
   const body = req.body || {};
 
-  const innerAction = query.innerAction || body.innerAction || '';
+  // 🆕 استخراج آمن لـ innerAction من req.url كطريقة احتياطية
+  let innerAction = query.innerAction || body.innerAction || '';
+
+  if (!innerAction && req.url) {
+    try {
+      const urlObj = new URL(req.url, 'http://localhost');
+      innerAction = urlObj.searchParams.get('innerAction') || '';
+    } catch (e) {}
+  }
+
+  // 🆕 تسجيل لمعرفة الإجراء القادم
+  console.log('[handleMarketer] innerAction:', innerAction);
+
   if (!innerAction) {
     return res.status(400).json({
       success: false,
@@ -757,7 +763,13 @@ async function handleMarketer(req, res) {
           return res.status(200).json(result);
         }
       } catch (supabaseError) {
-        // نكمل
+        // 🆕 إرجاع الخطأ الفعلي بدل تجاهله
+        console.error('[handleMarketer] Supabase read error:', supabaseError);
+        return res.status(200).json({
+          success: false,
+          error: 'supabase_error',
+          message: supabaseError.message || 'خطأ في قاعدة البيانات'
+        });
       }
     }
 
@@ -780,7 +792,7 @@ async function handleMarketer(req, res) {
 
         // لو وصلنا هنا — action مسجّل لكن مفيش handler
         console.warn('[handleMarketer] No write handler for:', innerAction);
-        return res.status(500).json({
+        return res.status(200).json({
           success: false,
           error: 'handler_not_implemented',
           message: 'هذا الإجراء غير مُنفَّذ بعد'
@@ -791,7 +803,7 @@ async function handleMarketer(req, res) {
           action: innerAction,
           message: supabaseError.message
         });
-        return res.status(500).json({
+        return res.status(200).json({
           success: false,
           error: 'supabase_error',
           message: supabaseError.message || 'خطأ في قاعدة البيانات'
@@ -803,7 +815,8 @@ async function handleMarketer(req, res) {
     return res.status(400).json({ success: false, error: 'unsupported_marketer_action', message: 'هذا الإجراء غير مدعوم حالياً' });
 
   } catch (error) {
-    return await safeErrorResponse(res, error, 'handleMarketer', { innerAction });
+    console.error('[handleMarketer] Fatal error:', error);
+    return res.status(200).json({ success: false, error: 'internal_error', message: error.message });
   }
 }
 
@@ -1388,12 +1401,8 @@ async function handleReportError(req, res) {
 // ================================================================
 //  🧪 Handler: Test Telegram — أداة تشخيصية (للأدمن فقط)
 //  GET /api?action=testTelegram&secret=<CRON_SECRET>
-//  - تتحقق من ADMIN_TELEGRAM_CHAT_ID
-//  - ترسل رسالة تجريبية
-//  - ترجع نتيجة الإرسال بالكامل
 // ================================================================
 async function handleTestTelegram(req, res) {
-  // حماية بـ CRON_SECRET
   const secret = (req.query && req.query.secret) || '';
   const expected = process.env.CRON_SECRET;
   if (!expected || secret !== expected) {
@@ -1405,7 +1414,6 @@ async function handleTestTelegram(req, res) {
     checks: {}
   };
 
-  // 1. فحص ADMIN_TELEGRAM_CHAT_ID
   const chatId = process.env.ADMIN_TELEGRAM_CHAT_ID || '';
   if (!chatId) {
     result.checks.adminChatId = {
@@ -1424,7 +1432,6 @@ async function handleTestTelegram(req, res) {
     };
   }
 
-  // 2. فحص BOT_TOKEN
   const botToken = process.env.BOT_TOKEN || '';
   if (!botToken) {
     result.checks.botToken = { status: '❌', message: 'غير مضبوط' };
@@ -1436,7 +1443,6 @@ async function handleTestTelegram(req, res) {
     };
   }
 
-  // 3. محاولة إرسال رسالة تجريبية
   if (chatId && botToken) {
     try {
       const { sendViaTelegram } = await import('../lib/telegram.js');
@@ -1507,17 +1513,12 @@ async function handleEscalateMissingReport(req, res) {
 
 // ================================================================
 //  💰 Handler: Check Marketer Commissions (Cron Daily 9AM)
-//  - يُستدعى من GAS Trigger يومي
-//  - يدور على العمولات المؤهلة (≥ 14 يوم + commission_notified != 'نعم')
-//  - يبعت إشعار لكل مسوق
-//  - يعلّمها كـ 'commission_notified = نعم'
 // ================================================================
 async function handleCheckMarketerCommissions(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ success: false, error: 'method_not_allowed' });
   }
 
-  // حماية بـ CRON_SECRET
   const secret = req.headers['x-cron-secret'] || '';
   const expected = process.env.CRON_SECRET;
   if (!expected) {
@@ -1535,7 +1536,6 @@ async function handleCheckMarketerCommissions(req, res) {
     const FOURTEEN_DAYS_MS = 14 * 24 * 60 * 60 * 1000;
     const now = Date.now();
 
-    // 1. جيب كل الأطفال اللي عندهم marketer_id + commission_notified != 'نعم'
     const { data: children, error } = await supabaseAdmin
       .from(TABLES.CHILDREN)
       .select('*')
@@ -1552,26 +1552,20 @@ async function handleCheckMarketerCommissions(req, res) {
       );
     }
 
-    // 2. تجميع المؤهلين حسب المسوق
-    //    { marketerCode: [ { childID, childName, commission } ] }
     const eligibleByMarketer = {};
 
     for (const child of (children || [])) {
-      // 2.1 المسوق موجود؟
       const marketerId = String(child[COLS_CHILDREN.marketer_id] || '').trim().toUpperCase();
       if (!marketerId) continue;
 
-      // 2.2 الحالة مش deleted؟
       const status = String(child[COLS_CHILDREN.status] || '').trim().toLowerCase();
       if (status === 'deleted') continue;
 
-      // 2.3 العمولة > 0؟
       const originalPrice = parseFloat(child[COLS_CHILDREN.original_price]) || 0;
       const finalPrice = parseFloat(child[COLS_CHILDREN.plan_price]) || 0;
       const commission = Math.max(0, originalPrice - finalPrice);
       if (commission === 0) continue;
 
-      // 2.4 مر 14 يوم من التسجيل؟
       const regRaw = child[COLS_CHILDREN.registration_date] || child[COLS_CHILDREN.timestamp];
       if (!regRaw) continue;
 
@@ -1579,7 +1573,6 @@ async function handleCheckMarketerCommissions(req, res) {
       if (isNaN(regMs)) continue;
       if ((now - regMs) < FOURTEEN_DAYS_MS) continue;
 
-      // ✅ مؤهل
       if (!eligibleByMarketer[marketerId]) eligibleByMarketer[marketerId] = [];
       eligibleByMarketer[marketerId].push({
         childID: String(child[COLS_CHILDREN.child_id] || '').trim(),
@@ -1602,14 +1595,11 @@ async function handleCheckMarketerCommissions(req, res) {
 
     console.log(`📊 [checkMarketerCommissions] ${marketerCodes.length} مسوق لديهم عمولات مؤهلة`);
 
-    // 3. لكل مسوق: احسب الإجماليات + ابعت الإشعارات + علّم
     let sent = 0;
     let failed = 0;
 
     for (const marketerCode of marketerCodes) {
       const eligibleChildren = eligibleByMarketer[marketerCode];
-
-      // احسب الإجماليات مرة واحدة لكل مسوق (للعرض في الإشعار)
       const totals = await calculateMarketerTotals(marketerCode);
 
       for (const child of eligibleChildren) {
@@ -1627,7 +1617,6 @@ async function handleCheckMarketerCommissions(req, res) {
           });
 
           if (notifyResult.success) {
-            // علّم كـ "تم الإشعار"
             await supabaseAdmin
               .from(TABLES.CHILDREN)
               .update({ [COLS_CHILDREN.commission_notified]: 'نعم' })
@@ -1640,7 +1629,6 @@ async function handleCheckMarketerCommissions(req, res) {
             console.log(`⚠️ [checkMarketerCommissions] فشل ${marketerCode} | ${child.childID} — سيُعاد غداً`);
           }
 
-          // تأخير بسيط بين الإشعارات (Telegram rate limits)
           await new Promise(r => setTimeout(r, 500));
 
         } catch (childErr) {
@@ -1678,7 +1666,6 @@ async function handleCheckRevoked(req, res) {
     return res.status(200).json(result);
 
   } catch (error) {
-    // Fail-safe: نرجّع {revoked: false} عشان الفلو يكمل عادي
     return res.status(200).json({ revoked: false });
   }
 }
@@ -1710,17 +1697,14 @@ async function handleCreatePaymobIntention(req, res) {
       return res.status(400).json({ success: false, error: 'invalid_plan', message: 'الباقة غير صالحة' });
     }
 
-    // Anti double-click
     const pending = await getPendingPayment(childID, 2);
     if (pending) {
-      // ✅ Math.max(0, ...) + cap في [1, 2]
       const createdUTC = new Date(pending.created_at).getTime();
       const ageSeconds = Math.max(0, Math.floor((Date.now() - createdUTC) / 1000));
-      const MAX_WAIT_SECONDS = 120;  // 2 دقائق
+      const MAX_WAIT_SECONDS = 120;
       const remainingSeconds = Math.max(0, MAX_WAIT_SECONDS - ageSeconds);
       const retryAfterMinutes = Math.max(1, Math.min(2, Math.ceil(remainingSeconds / 60)));
 
-      // ⚠️ حساب نص وقت الانتظار (قبل الـ return — هذا هو مكانه الصحيح)
       const retryText = retryAfterMinutes === 1 ? 'دقيقة واحدة'
                       : retryAfterMinutes === 2 ? 'دقيقتين'
                       : retryAfterMinutes + ' دقائق';
@@ -1736,7 +1720,6 @@ async function handleCreatePaymobIntention(req, res) {
       });
     }
 
-    // Get child
     const { data: child } = await supabaseAdmin
       .from(TABLES.CHILDREN)
       .select('*')
@@ -1752,7 +1735,6 @@ async function handleCreatePaymobIntention(req, res) {
       return res.status(400).json({ success: false, error: 'child_deleted', message: 'لا يمكن الدفع لطفل محذوف' });
     }
 
-    // Marketer discount
     let finalPrice = basePrice;
     let discountPercent = 0;
     const marketerID = String(child[COLS_CHILDREN.marketer_id] || '').trim();
@@ -1769,11 +1751,9 @@ async function handleCreatePaymobIntention(req, res) {
       }
     }
 
-    // Type: initial / renewal
     const paidCount = await countPaidPayments(childID);
     const type = paidCount > 0 ? 'renewal' : 'initial';
 
-    // Create intention
     const intention = await createPaymobIntention({
       amountEGP: finalPrice,
       planName: plan,
@@ -1798,7 +1778,6 @@ async function handleCreatePaymobIntention(req, res) {
       });
     }
 
-    // ✅ 1. عدّ محاولات الدفع السابقة للطفل
     const { count: totalAttempts } = await supabaseAdmin
       .from(TABLES.PAYMENTS)
       .select('id', { count: 'exact', head: true })
@@ -1806,9 +1785,6 @@ async function handleCreatePaymobIntention(req, res) {
 
     const attemptNumber = (totalAttempts || 0) + 1;
 
-    // ✅ 2. تحديد طريقة الدفع المبدئية
-    // - لو فيه طريقة واحدة مفعّلة → نعرفها
-    // - لو أكتر من طريقة → 'unknown' (الـ Webhook هيحددها بعد الدفع)
     const cardIdCheck = parseInt(process.env.PAYMOB_INTEGRATION_ID, 10);
     const walletIdCheck = parseInt(process.env.PAYMOB_WALLET_INTEGRATION_ID, 10);
     const applePayIdCheck = parseInt(process.env.PAYMOB_APPLEPAY_INTEGRATION_ID, 10);
@@ -1820,7 +1796,6 @@ async function handleCreatePaymobIntention(req, res) {
 
     const initialPaymentMethod = enabledMethods.length === 1 ? enabledMethods[0] : 'unknown';
 
-    // Store pending
     const paymentResult = await createPayment({
       childID,
       amountCents: Math.round(finalPrice * 100),
@@ -1829,8 +1804,8 @@ async function handleCreatePaymobIntention(req, res) {
       intentionId: intention.intentionId,
       integrationId: intention.integrationId,
       paymobOrderId: intention.orderId || null,
-      attemptNumber: attemptNumber,          // ✅ NEW
-      paymentMethod: initialPaymentMethod    // ✅ NEW
+      attemptNumber: attemptNumber,
+      paymentMethod: initialPaymentMethod
     });
 
     if (!paymentResult.success) {
@@ -1847,8 +1822,8 @@ async function handleCreatePaymobIntention(req, res) {
       discountPercent,
       plan,
       type,
-      attemptNumber: attemptNumber,          // ✅ NEW
-      paymentMethod: initialPaymentMethod    // ✅ NEW
+      attemptNumber: attemptNumber,
+      paymentMethod: initialPaymentMethod
     });
 
   } catch (error) {
@@ -1892,13 +1867,11 @@ async function handlePaymobWebhook(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // ✅ FIX: نحاول نجيب الـ payment عن طريق order_id أولاً (الأكثر موثوقية)
     const { getPaymentByOrderId } = await import('../lib/db/payments.js');
     let payment = await getPaymentByOrderId(paymobOrderId);
 
     let childId = payment ? payment.child_id : null;
 
-    // Fallback: نستخرج child_id من special_reference (نشيل _timestamp)
     if (!childId && specialRef) {
       childId = String(specialRef).replace(/_[a-z0-9]+$/i, '');
     }
@@ -1932,7 +1905,6 @@ async function handlePaymobWebhook(req, res) {
       return res.status(200).json({ ok: true, already_paid: true });
     }
 
-    // Activate on success
     if (success && result.payment) {
       const activation = await activateChildSubscription({
         childId,
@@ -1943,7 +1915,6 @@ async function handlePaymobWebhook(req, res) {
       if (activation.success) {
         console.log(`✅ [paymobWebhook] تم تفعيل ${childId} حتى ${activation.newExpiry}`);
 
-        // 🆕 إرسال بريد "دفعة ناجحة" + QR
         try {
           const { supabaseAdmin } = await import('../lib/supabase.js');
           const { TABLES, COLS_CHILDREN } = await import('../lib/db/tables.js');
@@ -1984,7 +1955,6 @@ async function handlePaymobWebhook(req, res) {
           console.error('[paymobWebhook] email error:', emailErr.message);
         }
 
-        // إشعار تليجرام للأسرة (best-effort)
         try {
           const { notifyFamily } = await import('../lib/notify.js');
           await notifyFamily({
@@ -2039,7 +2009,6 @@ async function handleGetPaymentStatus(req, res) {
 
 // ============================================================
 //  🔍 Handler: Paymob Diagnostics (تشخيص الإعدادات)
-//  يرجع معلومات عن المتغيرات بدون كشف القيم الحقيقية
 // ============================================================
 async function handlePaymobDiagnostics(req, res) {
   try {
@@ -2085,11 +2054,9 @@ async function handlePaymobDiagnostics(req, res) {
       }
     };
 
-    // فحص المشاكل
     const issues = [];
     const recommendations = [];
 
-    // 1. Secret Key
     if (!diag.secretKey.exists) {
       issues.push('PAYMOB_SECRET_KEY غير موجود أصلاً على Vercel');
       recommendations.push('Vercel → Settings → Environment Variables → أضف PAYMOB_SECRET_KEY');
@@ -2110,7 +2077,6 @@ async function handlePaymobDiagnostics(req, res) {
       recommendations.push('تأكد إنك نسخت القيمة كاملة');
     }
 
-    // 2. Public Key
     if (!diag.publicKey.exists) {
       issues.push('PAYMOB_PUBLIC_KEY غير موجود');
       recommendations.push('أضف PAYMOB_PUBLIC_KEY (pk_test_...)');
@@ -2119,7 +2085,6 @@ async function handlePaymobDiagnostics(req, res) {
       recommendations.push('راجع Public Key في Paymob Dashboard');
     }
 
-    // 3. Integration ID
     if (!diag.integrationId.exists) {
       issues.push('PAYMOB_INTEGRATION_ID غير موجود');
       recommendations.push('أضف PAYMOB_INTEGRATION_ID (رقم Card Integration ID)');
@@ -2128,7 +2093,6 @@ async function handlePaymobDiagnostics(req, res) {
       recommendations.push('أدخل رقم صحيح فقط (بدون مسافات أو حروف)');
     }
 
-    // 4. HMAC
     if (!diag.hmacSecret.exists) {
       issues.push('PAYMOB_HMAC_SECRET غير موجود');
       recommendations.push('أضف PAYMOB_HMAC_SECRET (للتحقق من الـ webhooks)');
@@ -2136,7 +2100,6 @@ async function handlePaymobDiagnostics(req, res) {
       issues.push('PAYMOB_HMAC_SECRET قصير جداً');
     }
 
-    // 5. اختبار فعلي مع Paymob
     let liveTest = null;
     if (issues.length === 0) {
       try {
@@ -2179,7 +2142,6 @@ async function handlePaymobDiagnostics(req, res) {
       }
     }
 
-    // ⚠️ حساب نص عدد المشاكل (قبل الـ return — هذا هو مكانه الصحيح)
     const issuesCountText = issues.length === 1 ? 'مشكلة واحدة'
                           : issues.length === 2 ? 'مشكلتان'
                           : (issues.length >= 3 && issues.length <= 10) ? issues.length + ' مشاكل'
