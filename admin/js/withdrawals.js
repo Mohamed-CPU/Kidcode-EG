@@ -36,14 +36,15 @@
   };
 
   const ALLOWED_TRANSITIONS = {
-    submitted:    ['under_review', 'rejected', 'failed', 'cancelled'],
-    under_review: ['sending', 'rejected', 'failed', 'cancelled'],
+    submitted:    ['under_review', 'sending', 'sent', 'rejected', 'failed', 'cancelled'],
+    under_review: ['sending', 'sent', 'rejected', 'failed', 'cancelled'],
     sending:      ['sent', 'failed', 'cancelled'],
     sent:         [],
     rejected:     [],
     cancelled:    [],
     failed:       [],
     expired:      []
+  };
   };
 
   // ============================================================
@@ -175,6 +176,7 @@
       setText('statPending', (s.submitted || 0) + (s.under_review || 0) + (s.sending || 0));
       setText('statSent', s.sent || 0);
       setText('statRejected', (s.rejected || 0) + (s.failed || 0));
+      setText('statCancelled', s.cancelled || 0);
       setText('statTotalAmount', s.totalAmount.toLocaleString('ar-EG') + ' ج.م');
       setText('statPendingAmount', s.pendingAmount.toLocaleString('ar-EG') + ' ج.م');
     } catch (e) {

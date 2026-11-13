@@ -531,3 +531,24 @@
   background: rgba(30, 41, 59, 0.4);
   border-color: rgba(148, 163, 184, 0.2);
 }
+
+/* ============================================================
+   🆕 Amount Highlight (Dark Mode Safe)
+   ============================================================ */
+.wd-amount-highlight {
+    font-weight: 900;
+    color: #22559F;
+    font-size: 1.05rem;
+}
+
+[data-theme="dark"] .wd-amount-highlight {
+    color: #93C5FD;
+}
+
+/* ============================================================
+   🆕 Cancelled Stat Card
+   ============================================================ */
+.wd-stat-card.cancelled { border-top-color: #94A3B8; }
+.wd-stat-card.cancelled .wd-stat-value { color: #64748B; }
+
+[data-theme="dark"] .wd-stat-card.cancelled .wd-stat-value { color: #CBD5E1; }
