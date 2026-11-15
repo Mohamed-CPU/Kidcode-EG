@@ -1127,7 +1127,7 @@ function formatShortDate(dateStr) {
                             '<span class="md-child-days"><i class="fas fa-clock"></i> ' + child.daysSinceRegistration + ' يوم</span>' +
                         '</div>' +
                     '</div>' +
-                    // مبلغ العمولة
+                    // مبلغ العمولة (تم فصل الرقم عن العملة)
                     '<div class="md-child-commission">' +
                         '<span class="md-commission-value">' + child.commission + '</span>' +
                         '<span class="md-commission-currency">ج.م</span>' +

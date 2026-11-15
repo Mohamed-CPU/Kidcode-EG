@@ -1723,7 +1723,7 @@ body.marketer-dashboard-page.no-header {
 [data-theme="dark"] .stat-card.reserved { background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(15, 23, 42, 0.6) 100%); }
 
 /* ============================================================
-   🆕 قائمة الأطفال المؤهلين (تصميم احترافي)
+   🆕 قائمة الأطفال المؤهلين
    ============================================================ */
 .md-eligible-header {
     display: flex;
@@ -1739,13 +1739,14 @@ body.marketer-dashboard-page.no-header {
     font-weight: 800;
 }
 
-/* أزرار تحديد الكل */
+/* أزرار تحديد الكل / إلغاء التحديد */
 .md-eligible-actions {
     display: inline-flex;
     background: #F1F5F9;
     border: 1px solid var(--border-color);
     border-radius: 8px;
     overflow: hidden;
+    width: max-content; /* يمنع التمدد */
 }
 .md-link-btn {
     background: transparent;
@@ -1758,10 +1759,7 @@ body.marketer-dashboard-page.no-header {
     cursor: pointer;
     transition: all 0.2s ease;
 }
-.md-link-btn:hover {
-    background: #E2E8F0;
-    color: var(--primary-color);
-}
+.md-link-btn:hover { background: #E2E8F0; color: var(--primary-color); }
 .md-link-btn:first-child { border-left: 1px solid var(--border-color); }
 .md-divider { display: none; }
 
@@ -1776,23 +1774,9 @@ body.marketer-dashboard-page.no-header {
     color: var(--text-secondary);
 }
 .md-eligible-loader i,
-.md-eligible-empty i {
-    font-size: 2rem;
-    color: var(--primary-color);
-    margin-bottom: 12px;
-    display: block;
-}
-.md-eligible-empty p {
-    margin: 0 0 8px;
-    font-weight: 800;
-    font-size: 0.95rem;
-}
-.md-eligible-empty small {
-    font-size: 0.82rem;
-    color: var(--text-light);
-    line-height: 1.6;
-    display: block;
-}
+.md-eligible-empty i { font-size: 2rem; color: var(--primary-color); margin-bottom: 12px; display: block; }
+.md-eligible-empty p { margin: 0 0 8px; font-weight: 800; font-size: 0.95rem; }
+.md-eligible-empty small { font-size: 0.82rem; color: var(--text-light); line-height: 1.6; display: block; }
 
 /* قائمة الكروت */
 .md-eligible-list {
@@ -1805,11 +1789,12 @@ body.marketer-dashboard-page.no-header {
 }
 
 /* ------------------------------------------------------------
-   كارت الطفل (التصميم الجديد)
+   كارت الطفل (التصميم المُصلح)
    ------------------------------------------------------------ */
 .md-eligible-child-card {
     display: flex;
     align-items: center;
+    justify-content: space-between; /* يوزع العناصر */
     gap: 16px;
     padding: 16px;
     background: #FFFFFF;
@@ -1817,21 +1802,21 @@ body.marketer-dashboard-page.no-header {
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.25s ease;
-    position: relative;
+    flex-wrap: nowrap; /* يمنع الالتفاف على الشاشات الكبيرة */
 }
+
 .md-eligible-child-card:hover {
     border-color: #94A3B8;
     background: #FAFBFF;
 }
 
-/* الحالة عند التحديد */
 .md-eligible-child-card:has(input:checked) {
     border-color: var(--primary-color);
     background: #F0F7FF;
     box-shadow: 0 4px 14px rgba(34, 85, 159, 0.08);
 }
 
-/* مربع الاختيار المخصص (Custom Checkbox) */
+/* مربع الاختيار المخصص */
 .md-custom-checkbox-wrapper {
     position: relative;
     width: 24px;
@@ -1880,7 +1865,7 @@ body.marketer-dashboard-page.no-header {
 
 /* بيانات الطفل */
 .md-eligible-child-info {
-    flex: 1;
+    flex: 1; /* يأخذ المساحة المتبقية */
     min-width: 0;
     display: flex;
     flex-direction: column;
@@ -1910,38 +1895,27 @@ body.marketer-dashboard-page.no-header {
     background: #F1F5F9;
     padding: 4px 10px;
     border-radius: 6px;
+    width: max-content; /* يمنع التمدد */
+    flex-shrink: 0;
 }
 .md-child-meta i { font-size: 0.7rem; opacity: 0.7; }
-.md-child-id {
-    font-family: 'Courier New', monospace;
-    color: var(--primary-color) !important;
-    direction: ltr;
-}
+.md-child-id { font-family: 'Courier New', monospace; color: var(--primary-color) !important; direction: ltr; }
 
 /* مبلغ العمولة */
 .md-child-commission {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
+    gap: 4px;
     background: #ECFDF5;
     padding: 8px 14px;
     border-radius: 10px;
     border: 1px solid #D1FAE5;
-    flex-shrink: 0;
+    flex-shrink: 0; /* يمنع الانكماش */
+    width: max-content; /* العرض على قد المحتوى فقط */
 }
-.md-commission-value {
-    font-size: 1.15rem;
-    font-weight: 900;
-    color: #059669;
-    line-height: 1.1;
-}
-.md-commission-currency {
-    font-size: 0.7rem;
-    font-weight: 700;
-    color: #10B981;
-    margin-top: 2px;
-}
+.md-commission-value { font-size: 1.15rem; font-weight: 900; color: #059669; line-height: 1; }
+.md-commission-currency { font-size: 0.75rem; font-weight: 700; color: #10B981; }
 
 /* عداد المحددين */
 .md-eligible-count {
@@ -1953,6 +1927,8 @@ body.marketer-dashboard-page.no-header {
     font-size: 0.88rem;
     font-weight: 800;
     color: var(--primary-color);
+    width: max-content;
+    margin-inline: auto; /* يجعله في المنتصف */
 }
 
 /* ============================================================
@@ -1972,15 +1948,9 @@ body.marketer-dashboard-page.no-header {
 .md-total-value { font-size: 1.6rem; font-weight: 900; color: #047857; font-family: 'Cairo', sans-serif; }
 
 /* ============================================================
-   🆕 النوافذ المنبثقة (المودال)
+   🆕 النوافذ المنبثقة والمودال
    ============================================================ */
-.md-confirm-section {
-    background: #F8FAFC;
-    border-radius: 12px;
-    padding: 16px;
-    margin-bottom: 16px;
-    border: 1px solid #E2E8F0;
-}
+.md-confirm-section { background: #F8FAFC; border-radius: 12px; padding: 16px; margin-bottom: 16px; border: 1px solid #E2E8F0; }
 .md-confirm-label { margin: 0 0 10px; font-size: 0.88rem; font-weight: 800; color: var(--text-secondary); }
 .md-confirm-children-list { display: flex; flex-direction: column; gap: 8px; max-height: 220px; overflow-y: auto; }
 .md-confirm-child-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: #FFFFFF; border-radius: 8px; border: 1px solid #E2E8F0; }
@@ -2033,19 +2003,23 @@ body.marketer-dashboard-page.no-header {
 [data-theme="dark"] .md-confirm-child-item { background: rgba(15, 23, 42, 0.6); border-color: rgba(148, 163, 184, 0.2); }
 
 /* ============================================================
-   📱 التجاوب مع الموبايل (Responsive)
+   📱 التجاوب مع الموبايل (فقط عند الحاجة)
    ============================================================ */
 @media (max-width: 768px) {
     .md-eligible-header { flex-direction: column; align-items: stretch; }
     .md-eligible-actions { justify-content: center; width: 100%; }
     .md-link-btn { flex: 1; text-align: center; }
-    .md-eligible-child-card { flex-wrap: wrap; gap: 12px; }
+    
+    /* السماح بالالتفاف على الموبايل فقط */
+    .md-eligible-child-card {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
     .md-custom-checkbox-wrapper { order: 1; }
-    .md-child-commission { order: 2; margin-right: auto; }
+    .md-child-commission { order: 2; margin-right: auto; margin-left: 0; }
     .md-eligible-child-info { flex: 1 1 100%; order: 3; margin-top: 4px; }
+    
     .md-eligible-list { max-height: 350px; }
-}
-@media (max-width: 480px) {
     .md-total-amount-box, .md-confirm-amount { flex-direction: column; text-align: center; gap: 10px; }
     .md-confirm-child-item, .md-history-child-item { flex-direction: column; align-items: flex-start; gap: 8px; }
     .md-confirm-child-commission, .md-history-child-right { align-self: stretch; flex-direction: row; justify-content: space-between; align-items: center; width: 100%; }
