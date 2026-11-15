@@ -547,22 +547,6 @@
     margin: 0 auto;
 }
 
-/* Dark mode */
-[data-theme="dark"] .referral-link-box {
-    background: rgba(30, 41, 59, 0.6);
-}
-[data-theme="dark"] .referral-link-box input {
-    color: #93C5FD;
-}
-[data-theme="dark"] .referral-hint {
-    background: rgba(34, 85, 159, 0.15);
-    color: #93C5FD;
-}
-[data-theme="dark"] .referral-badge {
-    background: rgba(16, 185, 129, 0.15);
-    color: #6EE7B7;
-}
-
 /* Mobile */
 @media (max-width: 600px) {
     .referral-link-box input {
@@ -1414,12 +1398,6 @@ body.marketer-dashboard-page.no-header {
     border-color: var(--primary-color);
 }
 
-/* Dark mode */
-[data-theme="dark"] .md-wallet-icons img {
-    background: rgba(30, 41, 59, 0.6);
-    border-color: rgba(148, 163, 184, 0.3);
-}
-
 /* Responsive */
 @media (max-width: 480px) {
     .md-wallet-icons {
@@ -1477,11 +1455,6 @@ body.marketer-dashboard-page.no-header {
 
 .stat-card .stat-value.available {
     color: #0891B2;
-}
-
-/* Dark mode */
-[data-theme="dark"] .stat-card.available {
-    background: linear-gradient(135deg, rgba(8, 145, 178, 0.15) 0%, rgba(15, 23, 42, 0.6) 100%);
 }
 
 /* ============================================================
@@ -1719,8 +1692,6 @@ body.marketer-dashboard-page.no-header {
 .stat-card.total-unpaid .stat-value.total-unpaid { color: #6D28D9; }
 .stat-card.reserved { border-right-color: #F59E0B; background: linear-gradient(135deg, #FEF3C7 0%, #FFFFFF 100%); }
 .stat-card.reserved .stat-value.reserved { color: #B45309; }
-[data-theme="dark"] .stat-card.total-unpaid { background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(15, 23, 42, 0.6) 100%); }
-[data-theme="dark"] .stat-card.reserved { background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(15, 23, 42, 0.6) 100%); }
 
 /* ============================================================
    🆕 قائمة الأطفال المؤهلين
@@ -1789,43 +1760,27 @@ body.marketer-dashboard-page.no-header {
 }
 
 /* ============================================================
-   🎨 كارت الطفل — تصميم احترافي (Part 2 Redesign)
+   🎨 كارت الطفل — تصميم أفقي احترافي (Redesign)
    ============================================================ */
 .md-child-card {
     display: flex;
-    align-items: center;
+    align-items: stretch;
     gap: 16px;
-    padding: 16px 18px;
+    padding: 16px 20px;
     background: #FFFFFF;
     border: 2px solid #E2E8F0;
-    border-radius: 14px;
+    border-radius: 16px;
     cursor: pointer;
     transition: all 0.25s ease;
     position: relative;
     width: 100%;
     box-sizing: border-box;
-    overflow: hidden;
-}
-
-.md-child-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    pointer-events: none;
-    transition: opacity 0.25s ease;
-    opacity: 0;
-    background: linear-gradient(135deg, rgba(34, 85, 159, 0.05) 0%, rgba(16, 185, 129, 0.03) 100%);
 }
 
 .md-child-card:hover {
     border-color: #94A3B8;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
-}
-
-.md-child-card:hover::before {
-    opacity: 1;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);
 }
 
 .md-child-card:has(.md-child-checkbox:checked) {
@@ -1834,16 +1789,18 @@ body.marketer-dashboard-page.no-header {
     box-shadow: 0 4px 16px rgba(34, 85, 159, 0.12);
 }
 
-.md-child-card:has(.md-child-checkbox:checked)::before {
-    opacity: 1;
+/* 1. القسم الأيمن (التحديد + الأفاتار) */
+.mdc-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-shrink: 0;
 }
 
-/* 1️⃣ منطقة مربع الاختيار */
 .md-child-select-zone {
     position: relative;
     width: 24px;
     height: 24px;
-    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1853,8 +1810,6 @@ body.marketer-dashboard-page.no-header {
     position: absolute;
     inset: 0;
     opacity: 0;
-    width: 100%;
-    height: 100%;
     cursor: pointer;
     z-index: 2;
     margin: 0;
@@ -1864,13 +1819,12 @@ body.marketer-dashboard-page.no-header {
     width: 24px;
     height: 24px;
     border: 2px solid #CBD5E1;
-    border-radius: 7px;
+    border-radius: 8px;
     background: #FFFFFF;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
-    pointer-events: none;
 }
 
 .md-checkbox-ui::after {
@@ -1886,7 +1840,6 @@ body.marketer-dashboard-page.no-header {
 .md-child-checkbox:checked + .md-checkbox-ui {
     background: var(--primary-color);
     border-color: var(--primary-color);
-    box-shadow: 0 2px 8px rgba(34, 85, 159, 0.3);
 }
 
 .md-child-checkbox:checked + .md-checkbox-ui::after {
@@ -1894,35 +1847,33 @@ body.marketer-dashboard-page.no-header {
     transform: scale(1);
 }
 
-/* 2️⃣ الأفاتار (حرف أول من الاسم) */
 .md-child-avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     font-weight: 900;
     color: #FFFFFF;
     background: linear-gradient(135deg, #22559F 0%, #3B82F6 100%);
     flex-shrink: 0;
-    box-shadow: 0 2px 8px rgba(34, 85, 159, 0.25);
-    font-family: 'Cairo', sans-serif;
-    user-select: none;
+    box-shadow: 0 2px 8px rgba(34, 85, 159, 0.2);
 }
 
-/* 3️⃣ جسم الكارت (الاسم + الشرائح) */
-.md-child-body {
+/* 2. القسم الأوسط (الاسم + الشرائح) */
+.mdc-center {
     flex: 1;
     min-width: 0;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: 8px;
 }
 
 .md-child-name {
-    font-size: 1.02rem;
+    font-size: 1.05rem;
     font-weight: 900;
     color: var(--text-primary);
     white-space: nowrap;
@@ -1934,7 +1885,7 @@ body.marketer-dashboard-page.no-header {
 .md-child-chips {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     flex-wrap: wrap;
 }
 
@@ -1942,93 +1893,59 @@ body.marketer-dashboard-page.no-header {
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    font-size: 0.73rem;
+    font-size: 0.75rem;
     font-weight: 700;
     padding: 4px 10px;
-    border-radius: 20px;
+    border-radius: 8px;
     white-space: nowrap;
     line-height: 1.4;
-    transition: all 0.2s ease;
 }
 
-.md-child-chip i {
-    font-size: 0.7rem;
-    opacity: 0.85;
-}
+.md-child-chip.chip-id { background: #F1F5F9; color: #334155; font-family: 'Courier New', monospace; }
+.md-child-chip.chip-plan { background: #F5F3FF; color: #6D28D9; }
+.md-child-chip.chip-days { background: #FEF3C7; color: #92400E; }
 
-.md-child-chip.chip-id {
-    background: #EFF6FF;
-    color: #22559F;
-    font-family: 'Courier New', monospace;
-    direction: ltr;
-    unicode-bidi: embed;
-}
-
-.md-child-chip.chip-plan {
-    background: #F5F3FF;
-    color: #6D28D9;
-}
-
-.md-child-chip.chip-days {
-    background: #FEF3C7;
-    color: #92400E;
-}
-
-/* 4️⃣ كتلة المبلغ + شارة الأهلية */
-.md-child-money {
+/* 3. القسم الأيسر (المبلغ + الحالة) */
+.mdc-left {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    justify-content: center;
+    align-items: flex-end;
     gap: 6px;
+    padding-right: 20px;
+    border-right: 2px dashed #E2E8F0;
     flex-shrink: 0;
-    padding: 8px 14px;
-    background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
-    border: 1.5px solid #10B981;
-    border-radius: 12px;
-    min-width: 96px;
-    transition: all 0.25s ease;
-}
-
-.md-child-card:has(.md-child-checkbox:checked) .md-child-money {
-    background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
-    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
 }
 
 .md-money-value {
     display: flex;
     align-items: baseline;
-    gap: 3px;
+    gap: 4px;
     line-height: 1;
 }
 
 .md-money-number {
-    font-size: 1.35rem;
+    font-size: 1.5rem;
     font-weight: 900;
-    color: #047857;
-    font-family: 'Cairo', sans-serif;
-    line-height: 1;
+    color: var(--secondary-color);
 }
 
 .md-money-currency {
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     font-weight: 800;
-    color: #059669;
+    color: var(--secondary-dark);
 }
 
 .md-money-badge {
     display: inline-flex;
     align-items: center;
-    gap: 3px;
-    font-size: 0.66rem;
+    gap: 4px;
+    font-size: 0.7rem;
     font-weight: 800;
     color: #065F46;
-    white-space: nowrap;
-    line-height: 1.3;
-}
-
-.md-money-badge i {
-    font-size: 0.65rem;
-    color: #10B981;
+    background: #D1FAE5;
+    padding: 3px 10px;
+    border-radius: 12px;
 }
 
 /* عداد المحددين */
@@ -2089,103 +2006,6 @@ body.marketer-dashboard-page.no-header {
 .md-history-children-empty i { font-size: 2.5rem; color: #94A3B8; margin-bottom: 12px; display: block; }
 
 /* ============================================================
-   🌙 الوضع الليلي (Dark Mode)
-   ============================================================ */
-[data-theme="dark"] .md-eligible-actions { background: rgba(30, 41, 59, 0.6); border-color: rgba(148, 163, 184, 0.2); }
-[data-theme="dark"] .md-link-btn:hover { background: rgba(255, 255, 255, 0.1); color: #93C5FD; }
-[data-theme="dark"] .md-eligible-loader,
-[data-theme="dark"] .md-eligible-empty,
-[data-theme="dark"] .md-confirm-section,
-[data-theme="dark"] .md-history-child-item,
-[data-theme="dark"] .md-history-children-empty { background: rgba(30, 41, 59, 0.4); border-color: rgba(148, 163, 184, 0.2); }
-/* ============================================================
-   🌙 Dark Mode — كارت الطفل (Redesign)
-   ============================================================ */
-[data-theme="dark"] .md-child-card {
-    background: rgba(30, 41, 59, 0.6);
-    border-color: rgba(148, 163, 184, 0.2);
-}
-
-[data-theme="dark"] .md-child-card::before {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(16, 185, 129, 0.05) 100%);
-}
-
-[data-theme="dark"] .md-child-card:hover {
-    background: rgba(30, 41, 59, 0.8);
-    border-color: #60A5FA;
-}
-
-[data-theme="dark"] .md-child-card:has(.md-child-checkbox:checked) {
-    background: rgba(34, 85, 159, 0.2);
-    border-color: #60A5FA;
-    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.15);
-}
-
-[data-theme="dark"] .md-checkbox-ui {
-    background: rgba(15, 23, 42, 0.6);
-    border-color: #475569;
-}
-
-[data-theme="dark"] .md-child-checkbox:checked + .md-checkbox-ui {
-    background: #3B82F6;
-    border-color: #3B82F6;
-}
-
-[data-theme="dark"] .md-child-avatar {
-    background: linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%);
-    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.35);
-}
-
-[data-theme="dark"] .md-child-chip.chip-id {
-    background: rgba(59, 130, 246, 0.15);
-    color: #93C5FD;
-}
-
-[data-theme="dark"] .md-child-chip.chip-plan {
-    background: rgba(139, 92, 246, 0.15);
-    color: #C4B5FD;
-}
-
-[data-theme="dark"] .md-child-chip.chip-days {
-    background: rgba(245, 158, 11, 0.15);
-    color: #FCD34D;
-}
-
-[data-theme="dark"] .md-child-money {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.08) 100%);
-    border-color: rgba(16, 185, 129, 0.4);
-}
-
-[data-theme="dark"] .md-child-card:has(.md-child-checkbox:checked) .md-child-money {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(16, 185, 129, 0.15) 100%);
-    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
-}
-
-[data-theme="dark"] .md-money-number {
-    color: #34D399;
-}
-
-[data-theme="dark"] .md-money-currency {
-    color: #6EE7B7;
-}
-
-[data-theme="dark"] .md-money-badge {
-    color: #A7F3D0;
-}
-
-[data-theme="dark"] .md-money-badge i {
-    color: #34D399;
-}
-[data-theme="dark"] .md-eligible-count { background: rgba(34, 85, 159, 0.2); color: #93C5FD; }
-[data-theme="dark"] .md-total-amount-box,
-[data-theme="dark"] .md-confirm-amount { background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.05) 100%); border-color: rgba(16, 185, 129, 0.4); }
-[data-theme="dark"] .md-total-label,
-[data-theme="dark"] .md-confirm-amount span { color: #A7F3D0; }
-[data-theme="dark"] .md-total-value,
-[data-theme="dark"] .md-confirm-amount strong { color: #34D399; }
-[data-theme="dark"] .md-confirm-child-item { background: rgba(15, 23, 42, 0.6); border-color: rgba(148, 163, 184, 0.2); }
-
-/* ============================================================
    📱 التجاوب مع الموبايل (فقط عند الحاجة)
    ============================================================ */
 @media (max-width: 768px) {
@@ -2196,55 +2016,38 @@ body.marketer-dashboard-page.no-header {
     /* الموبايل: ترتيب عمودي ذكي */
     .md-child-card {
         flex-wrap: wrap;
+        padding: 14px 16px;
         gap: 12px;
-        padding: 14px 14px 12px;
     }
 
-    .md-child-select-zone {
-        order: 1;
+    .mdc-right {
+        width: 100%;
+        justify-content: space-between;
     }
 
-    .md-child-avatar {
-        order: 2;
-        width: 40px;
-        height: 40px;
-        font-size: 1.1rem;
-    }
+    .md-child-select-zone { order: 2; }
+    .md-child-avatar { order: 1; width: 44px; height: 44px; font-size: 1.2rem; border-radius: 12px; }
 
-    .md-child-money {
+    .mdc-center {
+        width: 100%;
         order: 3;
-        margin-right: auto;
-        min-width: 80px;
-        padding: 6px 10px;
+        padding: 0;
     }
 
-    .md-money-number {
-        font-size: 1.1rem;
-    }
-
-    .md-money-badge {
-        font-size: 0.6rem;
-    }
-
-    .md-child-body {
+    .mdc-left {
+        width: 100%;
         order: 4;
-        flex: 1 1 100%;
-        gap: 6px;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        border-right: none;
+        border-top: 2px dashed #E2E8F0;
         padding-right: 0;
+        padding-top: 12px;
+        margin-top: 4px;
     }
 
-    .md-child-name {
-        font-size: 0.95rem;
-    }
-
-    .md-child-chips {
-        gap: 4px;
-    }
-
-    .md-child-chip {
-        font-size: 0.68rem;
-        padding: 3px 8px;
-    }
+    .md-money-number { font-size: 1.3rem; }
     
     .md-eligible-list { max-height: 350px; }
     .md-total-amount-box, .md-confirm-amount { flex-direction: column; text-align: center; gap: 10px; }
