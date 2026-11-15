@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'display:block; padding:14px 20px; border-radius:12px; ' +
             'text-align:center; font-weight:600; background:#FEF3C7; ' +
             'color:#92400E; border-right:4px solid #F59E0B; margin-bottom:16px;';
-        messageDivInit.textContent = '⏰ انتهت مدة الجلسة (60 دقيقة). يرجى تسجيل الدخول من جديد.';
+        messageDivInit.textContent = '⏰ انتهت مدة الجلسة. يرجى تسجيل الدخول مرة أخرى.';
     }
 
     // ============================================================

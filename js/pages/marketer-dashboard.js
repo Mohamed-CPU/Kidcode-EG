@@ -119,24 +119,18 @@ document.addEventListener('DOMContentLoaded', function() {
             if (result.success) {
                 const stats = result.stats;
                 totalChildrenEl.textContent = stats.totalChildren;
-                earnedCommissionEl.textContent = stats.totalEarnedCommission + ' ج.م';
-                pendingCommissionEl.textContent = stats.totalPendingCommission + ' ج.م';
-                if (availableBalanceEl) {
-                    availableBalanceEl.textContent = (stats.availableBalance || 0) + ' ج.م';
-                }
 
-                // 🆕 hint: مبلغ محجوز في طلبات نشطة
-                // (فقط submitted / under_review / sending — لا يظهر بعد sent)
-                const hintEl = document.getElementById('availableBalanceHint');
-                if (hintEl) {
-                    const reserved = stats.totalReserved || 0;
-                    if (reserved > 0) {
-                        hintEl.textContent = 'محجوز في طلبات نشطة: ' + reserved + ' ج.م';
-                        hintEl.style.display = 'block';
-                    } else {
-                        hintEl.style.display = 'none';
-                    }
-                }
+                const totalUnpaidEl = document.getElementById('totalUnpaid');
+                if (totalUnpaidEl) totalUnpaidEl.textContent = (stats.totalUnpaid || 0) + ' ج.م';
+
+                if (earnedCommissionEl) earnedCommissionEl.textContent = (stats.availableBalance || 0) + ' ج.م';
+                if (availableBalanceEl) availableBalanceEl.textContent = (stats.availableBalance || 0) + ' ج.م';
+
+                const reservedBalanceEl = document.getElementById('reservedBalance');
+                if (reservedBalanceEl) reservedBalanceEl.textContent = (stats.totalReserved || 0) + ' ج.م';
+
+                if (pendingCommissionEl) pendingCommissionEl.textContent = (stats.totalPendingCommission || 0) + ' ج.م';
+
                 statsGrid.style.display = 'grid';
                 ordersSection.style.display = 'block';
 
@@ -1059,7 +1053,7 @@ function formatShortDate(dateStr) {
     // ============================================================
     //  2. Withdraw
     // ============================================================
-    function refreshWithdrawData() {
+    async function refreshWithdrawData() {
         const code = getMarketerCode();
         const name = getMarketerName();
 
@@ -1068,20 +1062,109 @@ function formatShortDate(dateStr) {
         if (codeInput) codeInput.value = code;
         if (nameInput) nameInput.value = name;
 
-        // Max = available balance (بعد خصم الطلبات النشطة)
         const max = readNumberFromEl('availableBalance');
-
         const balanceEl = document.getElementById('withdrawAvailableBalance');
         if (balanceEl) balanceEl.textContent = max + ' ج.م';
 
-        const hintEl = document.getElementById('withdrawAmountHint');
-        if (hintEl) hintEl.textContent = 'الرصيد المتاح: ' + max + ' ج.م';
+        await loadEligibleChildren();
+    }
 
-        const amountInput = document.getElementById('withdrawAmount');
-        if (amountInput) {
-            amountInput.max = String(Math.max(0, max));
+    // 🆕 قائمة الأطفال المؤهلين للسحب
+    let eligibleChildrenCache = [];
+
+    async function loadEligibleChildren() {
+        const loader = document.getElementById('eligibleChildrenLoader');
+        const empty = document.getElementById('eligibleChildrenEmpty');
+        const list = document.getElementById('eligibleChildrenList');
+        const countBox = document.getElementById('eligibleChildrenCount');
+
+        if (loader) loader.style.display = 'block';
+        if (empty) empty.style.display = 'none';
+        if (list) list.style.display = 'none';
+        if (countBox) countBox.style.display = 'none';
+
+        const code = getMarketerCode();
+        if (!code) {
+            if (loader) loader.style.display = 'none';
+            return;
+        }
+
+        try {
+            const res = await fetch('/api?action=marketer&innerAction=getEligibleChildrenForWithdrawal&code=' + encodeURIComponent(code));
+            const data = await res.json();
+
+            if (loader) loader.style.display = 'none';
+
+            if (!data.success) {
+                if (empty) empty.style.display = 'block';
+                console.warn('⚠️ [loadEligibleChildren]', data.error);
+                return;
+            }
+
+            eligibleChildrenCache = data.children || [];
+
+            if (eligibleChildrenCache.length === 0) {
+                if (empty) empty.style.display = 'block';
+                updateTotalAmount();
+                return;
+            }
+
+            // بناء القائمة
+            let html = '';
+            eligibleChildrenCache.forEach(function(child) {
+                html += '<label class="md-eligible-child-card">' +
+                    '<input type="checkbox" class="md-child-checkbox" value="' + escapeHtml(child.childID) + '" data-commission="' + child.commission + '">' +
+                    '<div class="md-eligible-child-info">' +
+                        '<div class="md-child-name">' + escapeHtml(child.childName || 'بدون اسم') + '</div>' +
+                        '<div class="md-child-meta">' +
+                            '<span class="md-child-id">' + escapeHtml(child.childID) + '</span>' +
+                            '<span class="md-child-plan">' + escapeHtml(child.plan || '—') + '</span>' +
+                            '<span class="md-child-days">' + child.daysSinceRegistration + ' يوم</span>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="md-child-commission">' + child.commission + ' ج.م</div>' +
+                '</label>';
+            });
+
+            if (list) {
+                list.innerHTML = html;
+                list.style.display = 'block';
+            }
+            if (countBox) countBox.style.display = 'block';
+
+            // ربط أحداث الـ checkboxes
+            list.querySelectorAll('.md-child-checkbox').forEach(function(cb) {
+                cb.addEventListener('change', updateTotalAmount);
+            });
+
+            updateTotalAmount();
+
+        } catch (err) {
+            console.error('❌ [loadEligibleChildren]', err);
+            if (loader) loader.style.display = 'none';
+            if (empty) empty.style.display = 'block';
         }
     }
+
+    function updateTotalAmount() {
+        const list = document.getElementById('eligibleChildrenList');
+        if (!list) return;
+
+        const checked = list.querySelectorAll('.md-child-checkbox:checked');
+        let total = 0;
+        checked.forEach(function(cb) {
+            total += parseInt(cb.getAttribute('data-commission')) || 0;
+        });
+
+        const totalEl = document.getElementById('withdrawTotalAmount');
+        if (totalEl) totalEl.textContent = total + ' ج.م';
+
+        const countText = document.getElementById('selectedCountText');
+        if (countText) countText.textContent = checked.length + ' طفل محدد';
+    }
+
+    // 🆕 بيانات مؤقتة لطلب السحب قبل التأكيد
+    let pendingWithdrawData = null;
 
     function initWithdraw() {
         const form = document.getElementById('withdrawForm');
@@ -1097,12 +1180,11 @@ function formatShortDate(dateStr) {
             obs.observe(statsGrid, { attributes: true, attributeFilter: ['style'] });
         }
 
-        const amountInput = document.getElementById('withdrawAmount');
         const transferInput = document.getElementById('withdrawTransferNumber');
         const transferHint = document.getElementById('withdrawTransferNumberHint');
-        const amountError = document.getElementById('withdrawAmountError');
         const transferError = document.getElementById('withdrawTransferNumberError');
         const methodError = document.getElementById('withdrawMethodError');
+        const childrenError = document.getElementById('withdrawChildrenError');
         const messageEl = document.getElementById('withdrawMessage');
 
         function clearError(el) {
@@ -1113,12 +1195,6 @@ function formatShortDate(dateStr) {
             if (!el) return;
             el.textContent = text;
             el.classList.add('show');
-        }
-
-        if (amountInput) {
-            amountInput.addEventListener('input', function() {
-                clearError(amountError);
-            });
         }
 
         if (transferInput) {
@@ -1139,42 +1215,66 @@ function formatShortDate(dateStr) {
             });
         });
 
-        form.addEventListener('submit', async function(e) {
+        // "تحديد الكل" / "إلغاء التحديد"
+        const selectAllBtn = document.getElementById('selectAllChildrenBtn');
+        const deselectAllBtn = document.getElementById('deselectAllChildrenBtn');
+
+        if (selectAllBtn) {
+            selectAllBtn.addEventListener('click', function() {
+                document.querySelectorAll('#eligibleChildrenList .md-child-checkbox').forEach(function(cb) {
+                    cb.checked = true;
+                });
+                updateTotalAmount();
+                clearError(childrenError);
+            });
+        }
+
+        if (deselectAllBtn) {
+            deselectAllBtn.addEventListener('click', function() {
+                document.querySelectorAll('#eligibleChildrenList .md-child-checkbox').forEach(function(cb) {
+                    cb.checked = false;
+                });
+                updateTotalAmount();
+            });
+        }
+
+        // Form submit → فتح Modal التأكيد
+        form.addEventListener('submit', function(e) {
             e.preventDefault();
 
-            const code = getMarketerCode();
-            const max = readNumberFromEl('availableBalance');
-            const amount = parseInt(amountInput ? amountInput.value : '0', 10);
-            const methodRadio = form.querySelector('input[name="withdrawMethod"]:checked');
-            const method = methodRadio ? methodRadio.value : '';
-            const transferNumber = (transferInput ? transferInput.value : '').trim();
-
-            hideMessage(messageEl);
-            clearError(amountError);
+            clearError(childrenError);
             clearError(methodError);
             clearError(transferError);
+            hideMessage(messageEl);
 
-            // 1. Validate amount
-            if (!amount || amount < 1) {
-                showError(amountError, 'أدخل مبلغاً صحيحاً (رقم أكبر من 0)');
+            // 1. الأطفال المحددون
+            const checkedBoxes = document.querySelectorAll('#eligibleChildrenList .md-child-checkbox:checked');
+            const childIDs = [];
+            let total = 0;
+            checkedBoxes.forEach(function(cb) {
+                childIDs.push(cb.value);
+                total += parseInt(cb.getAttribute('data-commission')) || 0;
+            });
+
+            if (childIDs.length === 0) {
+                showError(childrenError, 'يجب اختيار طفل واحد على الأقل');
                 return;
             }
-            if (max <= 0) {
-                showError(amountError, 'لا يوجد رصيد متاح للسحب حالياً');
-                return;
-            }
-            if (amount > max) {
-                showError(amountError, 'المبلغ يتجاوز الرصيد المتاح (' + max + ' ج.م)');
+            if (childIDs.length > 20) {
+                showError(childrenError, 'الحد الأقصى 20 طفلاً في الطلب الواحد');
                 return;
             }
 
-            // 2. Validate method
+            // 2. طريقة الاستلام
+            const methodRadio = form.querySelector('input[name="withdrawMethod"]:checked');
+            const method = methodRadio ? methodRadio.value : '';
             if (!method) {
                 showError(methodError, 'اختر طريقة الاستلام');
                 return;
             }
 
-            // 3. Validate transfer number (Egyptian mobile)
+            // 3. رقم التحويل
+            const transferNumber = (transferInput ? transferInput.value : '').trim();
             if (!transferNumber) {
                 showError(transferError, 'رقم التحويل مطلوب');
                 return;
@@ -1184,58 +1284,177 @@ function formatShortDate(dateStr) {
                 return;
             }
 
-            // 4. Submit
-            const btn = document.getElementById('submitWithdrawBtn');
-            if (btn) {
-                btn.disabled = true;
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
-            }
+            // 4. تجهيز البيانات المؤقتة + فتح Modal
+            pendingWithdrawData = {
+                childIDs: childIDs,
+                method: method,
+                transferNumber: transferNumber,
+                total: total
+            };
 
-            try {
-                const res = await fetch('/api?action=marketer', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        innerAction: 'submitWithdrawRequest',
-                        marketerCode: code,
-                        amount: amount,
-                        method: method,
-                        transferNumber: transferNumber
-                    })
-                });
-                const data = await res.json();
+            openConfirmModal(pendingWithdrawData, checkedBoxes);
+        });
 
-                if (data.success) {
-                    showMessage(messageEl, 'success',
-                        '✅ تم إرسال طلبك بنجاح. رقم الطلب: ' + (data.requestId || '—') +
-                        ' — سيتم التواصل معك خلال 48 ساعة عبر البريد أو الهاتف.');
+        // زر إلغاء في Modal
+        const confirmCancelBtn = document.getElementById('mdWithdrawConfirmCancel');
+        if (confirmCancelBtn) {
+            confirmCancelBtn.addEventListener('click', closeConfirmModal);
+        }
 
-                    // Reset form fields (except readonly)
-                    if (amountInput) amountInput.value = '';
+        // زر التأكيد الفعلي
+        const confirmSubmitBtn = document.getElementById('mdWithdrawConfirmSubmit');
+        if (confirmSubmitBtn) {
+            confirmSubmitBtn.addEventListener('click', confirmWithdrawSubmit);
+        }
+
+        // إغلاق Modal عند الضغط على الخلفية
+        const confirmModal = document.getElementById('mdWithdrawConfirmModal');
+        if (confirmModal) {
+            confirmModal.addEventListener('click', function(e) {
+                if (e.target === confirmModal) closeConfirmModal();
+            });
+        }
+
+        refreshWithdrawData();
+    }
+
+    function openConfirmModal(data, checkedBoxes) {
+        const modal = document.getElementById('mdWithdrawConfirmModal');
+        if (!modal) return;
+
+        // children list
+        const listEl = document.getElementById('mdConfirmChildrenList');
+        if (listEl) {
+            let html = '';
+            checkedBoxes.forEach(function(cb) {
+                const card = cb.closest('.md-eligible-child-card');
+                if (!card) return;
+                const nameEl = card.querySelector('.md-child-name');
+                const idEl = card.querySelector('.md-child-id');
+                const comEl = card.querySelector('.md-child-commission');
+
+                html += '<div class="md-confirm-child-item">' +
+                    '<div>' +
+                        '<div class="md-confirm-child-name">' + escapeHtml(nameEl ? nameEl.textContent : '') + '</div>' +
+                        '<div class="md-confirm-child-id">' + escapeHtml(idEl ? idEl.textContent : '') + '</div>' +
+                    '</div>' +
+                    '<div class="md-confirm-child-commission">' + escapeHtml(comEl ? comEl.textContent : '') + '</div>' +
+                '</div>';
+            });
+            listEl.innerHTML = html;
+        }
+
+        const countEl = document.getElementById('mdConfirmCount');
+        if (countEl) countEl.textContent = data.childIDs.length;
+
+        const totalEl = document.getElementById('mdConfirmTotalAmount');
+        if (totalEl) totalEl.textContent = data.total + ' ج.م';
+
+        const methodEl = document.getElementById('mdConfirmMethod');
+        if (methodEl) methodEl.textContent = data.method === 'instapay' ? 'انستاباي' : 'محفظة إلكترونية';
+
+        const transferEl = document.getElementById('mdConfirmTransfer');
+        if (transferEl) transferEl.textContent = data.transferNumber;
+
+        modal.style.display = 'flex';
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeConfirmModal() {
+        const modal = document.getElementById('mdWithdrawConfirmModal');
+        if (modal) {
+            modal.style.display = 'none';
+            modal.classList.remove('show');
+        }
+        document.body.style.overflow = '';
+        pendingWithdrawData = null;
+    }
+
+    async function confirmWithdrawSubmit() {
+        if (!pendingWithdrawData) return;
+
+        const btn = document.getElementById('mdWithdrawConfirmSubmit');
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
+        }
+
+        const code = getMarketerCode();
+        const payload = {
+            innerAction: 'submitWithdrawRequest',
+            marketerCode: code,
+            childIDs: pendingWithdrawData.childIDs,
+            method: pendingWithdrawData.method,
+            transferNumber: pendingWithdrawData.transferNumber
+        };
+
+        try {
+            const res = await fetch('/api?action=marketer', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                closeConfirmModal();
+
+                const messageEl = document.getElementById('withdrawMessage');
+                if (messageEl) {
+                    messageEl.className = 'md-message success';
+                    messageEl.textContent = '✅ ' + (data.message || 'تم إرسال طلبك بنجاح');
+                    messageEl.style.display = 'block';
+                }
+
+                // إعادة تعيين النموذج
+                const form = document.getElementById('withdrawForm');
+                if (form) {
+                    const transferInput = document.getElementById('withdrawTransferNumber');
                     if (transferInput) transferInput.value = '';
                     form.querySelectorAll('input[name="withdrawMethod"]').forEach(function(r) {
                         r.checked = false;
                     });
+                    const transferHint = document.getElementById('withdrawTransferNumberHint');
                     if (transferHint) {
                         transferHint.textContent = 'رقم الهاتف المسجل على وسيلة الاستلام';
                     }
-                    refreshWithdrawData();
-                } else {
-                    const errMsg = data.message || data.error || 'فشل إرسال الطلب';
-                    showMessage(messageEl, 'error', '❌ ' + errMsg);
                 }
-            } catch (err) {
-                console.error('withdraw submit error:', err);
-                showMessage(messageEl, 'error', '⚠️ تعذر الاتصال بالخادم. حاول مرة أخرى.');
-            } finally {
-                if (btn) {
-                    btn.disabled = false;
-                    btn.innerHTML = '<i class="fas fa-paper-plane"></i> إرسال طلب السحب';
+
+                // تحديث البيانات
+                if (window.MD && window.MD.loadDashboard) {
+                    await window.MD.loadDashboard();
+                }
+                await refreshWithdrawData();
+
+            } else {
+                closeConfirmModal();
+                const messageEl = document.getElementById('withdrawMessage');
+                if (messageEl) {
+                    let errMsg = data.message || data.error || 'فشل إرسال الطلب';
+                    if (data.failedChildIDs && data.failedChildIDs.length > 0) {
+                        errMsg += '\n\nأطفال فشلوا: ' + data.failedChildIDs.join('، ');
+                    }
+                    messageEl.className = 'md-message error';
+                    messageEl.textContent = '❌ ' + errMsg;
+                    messageEl.style.display = 'block';
                 }
             }
-        });
 
-        refreshWithdrawData();
+        } catch (err) {
+            console.error('❌ [confirmWithdrawSubmit]', err);
+            const messageEl = document.getElementById('withdrawMessage');
+            if (messageEl) {
+                messageEl.className = 'md-message error';
+                messageEl.textContent = '⚠️ تعذر الاتصال بالخادم. حاول مرة أخرى.';
+                messageEl.style.display = 'block';
+            }
+        } finally {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-paper-plane"></i> تأكيد الإرسال';
+            }
+        }
     }
 
     // ============================================================
@@ -1507,19 +1726,39 @@ function formatShortDate(dateStr) {
     // ============================================================
     //  4. Delete Warnings
     // ============================================================
-    function populateDeleteWarnings() {
+    async function getActiveWithdrawalCount() {
+        try {
+            const code = getMarketerCode();
+            if (!code) return 0;
+            const res = await fetch('/api?action=marketer&innerAction=getWithdrawHistory&code=' + encodeURIComponent(code));
+            const data = await res.json();
+            if (!data.success) return 0;
+            return (data.requests || []).filter(function(r) {
+                return ['submitted', 'under_review', 'sending'].indexOf(r.status) !== -1;
+            }).length;
+        } catch (e) {
+            return 0;
+        }
+    }
+
+    async function populateDeleteWarnings() {
         const box = document.getElementById('deleteWarningsBox');
         if (!box) return;
 
-        const earned = readNumberFromEl('earnedCommission');
-        const pending = readNumberFromEl('pendingCommission');
+        // عرض أولي
+        box.innerHTML = '<p class="dw-title"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</p>';
+        box.style.display = 'block';
+
+        const totalUnpaid = readNumberFromEl('totalUnpaid');
+        const activeRequests = await getActiveWithdrawalCount();
 
         const lines = [];
-        if (earned > 0) {
-            lines.push('لديك <strong>' + earned + ' ج.م</strong> عمولات مستحقة — ستفقدها نهائياً عند الحذف.');
+        if (totalUnpaid > 0) {
+            lines.push('لديك <strong>' + totalUnpaid + ' ج.م</strong> عمولات غير مدفوعة — ستفقدها نهائياً عند الحذف.');
         }
-        if (pending > 0) {
-            lines.push('لديك <strong>' + pending + ' ج.م</strong> عمولات معلقة — لن تحصل عليها بعد الحذف.');
+        if (activeRequests > 0) {
+            const label = activeRequests === 1 ? 'طلب سحب واحد قيد المعالجة' : activeRequests + ' طلبات سحب قيد المعالجة';
+            lines.push('لديك <strong>' + label + '</strong> — <strong style="color: #DC2626;">سيتم إلغاؤه تلقائياً</strong> عند حذف الحساب، وسيعود الأطفال للقائمة.');
         }
 
         if (lines.length === 0) {
@@ -1661,25 +1900,44 @@ function formatShortDate(dateStr) {
             const dateStr = formatDateShort(r.createdAt);
             const amountStr = r.amount + ' ج.م';
 
-            let actions = '<span style="color: var(--text-light); font-size: 0.8rem;">—</span>';
+            const actionParts = [];
+            const childrenCount = (r.children && r.children.length) || 0;
 
+            // زر الأطفال (دائم)
+            actionParts.push(
+                '<button type="button" class="md-action-btn muted" data-action="children" data-request-id="' + escapeHtml(r.requestId) + '">' +
+                    '<i class="fas fa-users"></i> الأطفال (' + childrenCount + ')' +
+                '</button>'
+            );
+
+            // أزرار حسب الحالة
             if (r.status === 'submitted' || r.status === 'under_review') {
-                actions = '<button type="button" class="md-action-btn danger" data-action="cancel" data-request-id="' + escapeHtml(r.requestId) + '">' +
-                            '<i class="fas fa-times"></i> إلغاء' +
-                          '</button>';
+                actionParts.push(
+                    '<button type="button" class="md-action-btn danger" data-action="cancel" data-request-id="' + escapeHtml(r.requestId) + '">' +
+                        '<i class="fas fa-times"></i> إلغاء' +
+                    '</button>'
+                );
             } else if (r.status === 'rejected' && r.rejectionReason) {
-                actions = '<button type="button" class="md-action-btn danger" data-action="reason" data-type="rejected" data-request-id="' + escapeHtml(r.requestId) + '">' +
-                            '<i class="fas fa-info-circle"></i> عرض السبب' +
-                          '</button>';
+                actionParts.push(
+                    '<button type="button" class="md-action-btn danger" data-action="reason" data-type="rejected" data-request-id="' + escapeHtml(r.requestId) + '">' +
+                        '<i class="fas fa-info-circle"></i> عرض السبب' +
+                    '</button>'
+                );
             } else if (r.status === 'cancelled' && r.cancellationReason) {
-                actions = '<button type="button" class="md-action-btn muted" data-action="reason" data-type="cancelled" data-request-id="' + escapeHtml(r.requestId) + '">' +
-                            '<i class="fas fa-info-circle"></i> عرض السبب' +
-                          '</button>';
+                actionParts.push(
+                    '<button type="button" class="md-action-btn muted" data-action="reason" data-type="cancelled" data-request-id="' + escapeHtml(r.requestId) + '">' +
+                        '<i class="fas fa-info-circle"></i> عرض السبب' +
+                    '</button>'
+                );
             } else if (r.status === 'sent' && r.screenshotUrl) {
-                actions = '<button type="button" class="md-action-btn success" data-action="screenshot" data-url="' + escapeHtml(r.screenshotUrl) + '" data-request-id="' + escapeHtml(r.requestId) + '">' +
-                            '<i class="fas fa-receipt"></i> عرض الإيصال' +
-                          '</button>';
+                actionParts.push(
+                    '<button type="button" class="md-action-btn success" data-action="screenshot" data-url="' + escapeHtml(r.screenshotUrl) + '" data-request-id="' + escapeHtml(r.requestId) + '">' +
+                        '<i class="fas fa-receipt"></i> عرض الإيصال' +
+                    '</button>'
+                );
             }
+
+            const actions = '<div class="md-actions-group">' + actionParts.join('') + '</div>';
 
             html += '<tr data-request-id="' + escapeHtml(r.requestId) + '">' +
                 '<td class="cell-request-id">' + escapeHtml(r.requestId) + '</td>' +
@@ -1885,12 +2143,28 @@ function formatShortDate(dateStr) {
             });
         }
 
-        // Escape
+        // 🆕 Children modal — مستقلة تماماً عن historyBody
+        const childrenCloseBtn = document.getElementById('mdHistoryChildrenCloseBtn');
+        if (childrenCloseBtn && !childrenCloseBtn.dataset.bound) {
+            childrenCloseBtn.dataset.bound = 'true';
+            childrenCloseBtn.addEventListener('click', closeHistoryChildrenModal);
+        }
+
+        const childrenModal = document.getElementById('mdHistoryChildrenModal');
+        if (childrenModal && !childrenModal.dataset.bound) {
+            childrenModal.dataset.bound = 'true';
+            childrenModal.addEventListener('click', function(e) {
+                if (e.target === childrenModal) closeHistoryChildrenModal();
+            });
+        }
+
+        // Escape — إغلاق كل المودالات
         document.addEventListener('keydown', function(e) {
             if (e.key !== 'Escape') return;
             closeCancelModal();
             closeReasonModal();
             closeScreenshotModal();
+            closeHistoryChildrenModal();
         });
 
         // Event delegation for action buttons
@@ -1904,7 +2178,10 @@ function formatShortDate(dateStr) {
                 const action = btn.getAttribute('data-action');
                 const requestId = btn.getAttribute('data-request-id');
 
-                if (action === 'cancel') {
+                if (action === 'children') {
+                    const req = findHistoryRequest(requestId);
+                    if (req) openHistoryChildrenModal(requestId, req.children || []);
+                } else if (action === 'cancel') {
                     const req = findHistoryRequest(requestId);
                     if (req) openCancelModal(requestId, req.amount);
                 } else if (action === 'reason') {
@@ -1919,6 +2196,55 @@ function formatShortDate(dateStr) {
                 }
             });
         }
+    }
+
+        function openHistoryChildrenModal(requestId, children) {
+        const modal = document.getElementById('mdHistoryChildrenModal');
+        const reqIdEl = document.getElementById('mdHistoryChildrenRequestId');
+        const listEl = document.getElementById('mdHistoryChildrenList');
+        if (!modal || !listEl) return;
+
+        if (reqIdEl) reqIdEl.textContent = requestId;
+
+        if (!children || children.length === 0) {
+            listEl.innerHTML =
+                '<div class="md-history-children-empty">' +
+                    '<i class="fas fa-inbox"></i>' +
+                    '<p>لا يوجد أطفال مسجلون في هذا الطلب</p>' +
+                    '<small>قد يكون الطلب ملغياً أو فاشلاً — تحرّر الأطفال تلقائياً للقائمة المتاحة.</small>' +
+                '</div>';
+        } else {
+            let html = '';
+            children.forEach(function(c) {
+                const statusClass = c.status === 'مدفوع' ? 'paid' :
+                                    c.status === 'مرفوض' ? 'rejected' : 'pending';
+
+                html += '<div class="md-history-child-item">' +
+                    '<div>' +
+                        '<div class="md-history-child-name">' + escapeHtml(c.childName || 'بدون اسم') + '</div>' +
+                        '<div class="md-history-child-id">' + escapeHtml(c.childID) + '</div>' +
+                    '</div>' +
+                    '<div class="md-history-child-right">' +
+                        '<div class="md-history-child-commission">' + c.commission + ' ج.م</div>' +
+                        '<span class="md-child-status-badge ' + statusClass + '">' + escapeHtml(c.status) + '</span>' +
+                    '</div>' +
+                '</div>';
+            });
+            listEl.innerHTML = html;
+        }
+
+        modal.style.display = 'flex';
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeHistoryChildrenModal() {
+        const modal = document.getElementById('mdHistoryChildrenModal');
+        if (modal) {
+            modal.style.display = 'none';
+            modal.classList.remove('show');
+        }
+        document.body.style.overflow = '';
     }
 
     // ============================================================
