@@ -1113,21 +1113,22 @@ function formatShortDate(dateStr) {
             let html = '';
             eligibleChildrenCache.forEach(function(child) {
                 html += '<label class="md-eligible-child-card">' +
-                    // مربع اختيار مخصص (Custom Checkbox)
-                    '<div class="md-custom-checkbox-wrapper">' +
-                        '<input type="checkbox" class="md-child-checkbox" value="' + escapeHtml(child.childID) + '" data-commission="' + child.commission + '">' +
-                        '<span class="md-checkbox-ui"></span>' +
-                    '</div>' +
-                    // بيانات الطفل
-                    '<div class="md-eligible-child-info">' +
-                        '<div class="md-child-name">' + escapeHtml(child.childName || 'بدون اسم') + '</div>' +
-                        '<div class="md-child-meta">' +
-                            '<span class="md-child-id"><i class="fas fa-id-badge"></i> ' + escapeHtml(child.childID) + '</span>' +
-                            '<span class="md-child-plan"><i class="fas fa-layer-group"></i> ' + escapeHtml(child.plan || '—') + '</span>' +
-                            '<span class="md-child-days"><i class="fas fa-clock"></i> ' + child.daysSinceRegistration + ' يوم</span>' +
+                    // الحاوية اليمنى (المربع + البيانات)
+                    '<div class="md-child-main">' +
+                        '<div class="md-custom-checkbox-wrapper">' +
+                            '<input type="checkbox" class="md-child-checkbox" value="' + escapeHtml(child.childID) + '" data-commission="' + child.commission + '">' +
+                            '<span class="md-checkbox-ui"></span>' +
+                        '</div>' +
+                        '<div class="md-eligible-child-info">' +
+                            '<div class="md-child-name">' + escapeHtml(child.childName || 'بدون اسم') + '</div>' +
+                            '<div class="md-child-meta">' +
+                                '<span class="md-child-id"><i class="fas fa-id-badge"></i> ' + escapeHtml(child.childID) + '</span>' +
+                                '<span class="md-child-plan"><i class="fas fa-layer-group"></i> ' + escapeHtml(child.plan || '—') + '</span>' +
+                                '<span class="md-child-days"><i class="fas fa-clock"></i> ' + child.daysSinceRegistration + ' يوم</span>' +
+                            '</div>' +
                         '</div>' +
                     '</div>' +
-                    // مبلغ العمولة (تم فصل الرقم عن العملة)
+                    // الحاوية اليسرى (المبلغ)
                     '<div class="md-child-commission">' +
                         '<span class="md-commission-value">' + child.commission + '</span>' +
                         '<span class="md-commission-currency">ج.م</span>' +
