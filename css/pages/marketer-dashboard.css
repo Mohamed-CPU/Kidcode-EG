@@ -1788,45 +1788,58 @@ body.marketer-dashboard-page.no-header {
     gap: 10px;
 }
 
-/* ------------------------------------------------------------
-   كارت الطفل (تصميم Grid احترافي - يمنع التمدد)
-   ------------------------------------------------------------ */
-.md-eligible-child-card {
-    display: grid;
-    grid-template-columns: 1fr max-content; /* اليمين يأخذ المساحة، اليسار على قد المبلغ */
+/* ============================================================
+   🎨 كارت الطفل — تصميم احترافي (Part 2 Redesign)
+   ============================================================ */
+.md-child-card {
+    display: flex;
     align-items: center;
-    gap: 20px;
-    padding: 16px 20px;
+    gap: 16px;
+    padding: 16px 18px;
     background: #FFFFFF;
     border: 2px solid #E2E8F0;
-    border-radius: 12px;
+    border-radius: 14px;
     cursor: pointer;
     transition: all 0.25s ease;
+    position: relative;
     width: 100%;
     box-sizing: border-box;
+    overflow: hidden;
 }
 
-.md-eligible-child-card:hover {
+.md-child-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+    opacity: 0;
+    background: linear-gradient(135deg, rgba(34, 85, 159, 0.05) 0%, rgba(16, 185, 129, 0.03) 100%);
+}
+
+.md-child-card:hover {
     border-color: #94A3B8;
-    background: #FAFBFF;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
 }
 
-.md-eligible-child-card:has(input:checked) {
+.md-child-card:hover::before {
+    opacity: 1;
+}
+
+.md-child-card:has(.md-child-checkbox:checked) {
     border-color: var(--primary-color);
     background: #F0F7FF;
-    box-shadow: 0 4px 14px rgba(34, 85, 159, 0.08);
+    box-shadow: 0 4px 16px rgba(34, 85, 159, 0.12);
 }
 
-/* الحاوية اليمنى (المربع + البيانات) */
-.md-child-main {
-    display: flex;
-    align-items: flex-start; /* محاذاة لليمين */
-    gap: 16px;
-    min-width: 0; /* يمنع تمدد النص خارج الحاوية */
+.md-child-card:has(.md-child-checkbox:checked)::before {
+    opacity: 1;
 }
 
-/* مربع الاختيار المخصص */
-.md-custom-checkbox-wrapper {
+/* 1️⃣ منطقة مربع الاختيار */
+.md-child-select-zone {
     position: relative;
     width: 24px;
     height: 24px;
@@ -1834,10 +1847,11 @@ body.marketer-dashboard-page.no-header {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 2px; /* محاذاة بصرية مع اسم الطفل */
 }
+
 .md-child-checkbox {
     position: absolute;
+    inset: 0;
     opacity: 0;
     width: 100%;
     height: 100%;
@@ -1845,11 +1859,12 @@ body.marketer-dashboard-page.no-header {
     z-index: 2;
     margin: 0;
 }
+
 .md-checkbox-ui {
     width: 24px;
     height: 24px;
     border: 2px solid #CBD5E1;
-    border-radius: 6px;
+    border-radius: 7px;
     background: #FFFFFF;
     display: flex;
     align-items: center;
@@ -1857,73 +1872,164 @@ body.marketer-dashboard-page.no-header {
     transition: all 0.2s ease;
     pointer-events: none;
 }
+
 .md-checkbox-ui::after {
     content: '\f00c';
     font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free', sans-serif;
     font-weight: 900;
     color: transparent;
-    font-size: 13px;
+    font-size: 12px;
     transition: all 0.2s ease;
+    transform: scale(0.5);
 }
+
 .md-child-checkbox:checked + .md-checkbox-ui {
     background: var(--primary-color);
     border-color: var(--primary-color);
-}
-.md-child-checkbox:checked + .md-checkbox-ui::after {
-    color: #FFFFFF;
+    box-shadow: 0 2px 8px rgba(34, 85, 159, 0.3);
 }
 
-/* بيانات الطفل */
-.md-eligible-child-info {
+.md-child-checkbox:checked + .md-checkbox-ui::after {
+    color: #FFFFFF;
+    transform: scale(1);
+}
+
+/* 2️⃣ الأفاتار (حرف أول من الاسم) */
+.md-child-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: #FFFFFF;
+    background: linear-gradient(135deg, #22559F 0%, #3B82F6 100%);
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(34, 85, 159, 0.25);
+    font-family: 'Cairo', sans-serif;
+    user-select: none;
+}
+
+/* 3️⃣ جسم الكارت (الاسم + الشرائح) */
+.md-child-body {
+    flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    min-width: 0;
+    gap: 8px;
 }
+
 .md-child-name {
-    font-size: 1rem;
-    font-weight: 800;
+    font-size: 1.02rem;
+    font-weight: 900;
     color: var(--text-primary);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    line-height: 1.3;
 }
-.md-child-meta {
+
+.md-child-chips {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     flex-wrap: wrap;
 }
-.md-child-meta span {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: var(--text-secondary);
-    background: #F1F5F9;
-    padding: 4px 10px;
-    border-radius: 6px;
-    width: max-content;
-}
-.md-child-meta i { font-size: 0.7rem; opacity: 0.7; }
-.md-child-id { font-family: 'Courier New', monospace; color: var(--primary-color) !important; direction: ltr; }
 
-/* مبلغ العمولة (اليسار) */
-.md-child-commission {
+.md-child-chip {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 4px;
-    background: #ECFDF5;
-    padding: 8px 16px;
-    border-radius: 8px;
-    border: 1px solid #D1FAE5;
-    flex-shrink: 0; 
-    width: max-content;
+    gap: 5px;
+    font-size: 0.73rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+    line-height: 1.4;
+    transition: all 0.2s ease;
 }
-.md-commission-value { font-size: 1.2rem; font-weight: 900; color: #059669; line-height: 1; }
-.md-commission-currency { font-size: 0.8rem; font-weight: 700; color: #10B981; }
+
+.md-child-chip i {
+    font-size: 0.7rem;
+    opacity: 0.85;
+}
+
+.md-child-chip.chip-id {
+    background: #EFF6FF;
+    color: #22559F;
+    font-family: 'Courier New', monospace;
+    direction: ltr;
+    unicode-bidi: embed;
+}
+
+.md-child-chip.chip-plan {
+    background: #F5F3FF;
+    color: #6D28D9;
+}
+
+.md-child-chip.chip-days {
+    background: #FEF3C7;
+    color: #92400E;
+}
+
+/* 4️⃣ كتلة المبلغ + شارة الأهلية */
+.md-child-money {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    padding: 8px 14px;
+    background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
+    border: 1.5px solid #10B981;
+    border-radius: 12px;
+    min-width: 96px;
+    transition: all 0.25s ease;
+}
+
+.md-child-card:has(.md-child-checkbox:checked) .md-child-money {
+    background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+}
+
+.md-money-value {
+    display: flex;
+    align-items: baseline;
+    gap: 3px;
+    line-height: 1;
+}
+
+.md-money-number {
+    font-size: 1.35rem;
+    font-weight: 900;
+    color: #047857;
+    font-family: 'Cairo', sans-serif;
+    line-height: 1;
+}
+
+.md-money-currency {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #059669;
+}
+
+.md-money-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 0.66rem;
+    font-weight: 800;
+    color: #065F46;
+    white-space: nowrap;
+    line-height: 1.3;
+}
+
+.md-money-badge i {
+    font-size: 0.65rem;
+    color: #10B981;
+}
 
 /* عداد المحددين */
 .md-eligible-count {
@@ -1992,15 +2098,84 @@ body.marketer-dashboard-page.no-header {
 [data-theme="dark"] .md-confirm-section,
 [data-theme="dark"] .md-history-child-item,
 [data-theme="dark"] .md-history-children-empty { background: rgba(30, 41, 59, 0.4); border-color: rgba(148, 163, 184, 0.2); }
-[data-theme="dark"] .md-eligible-child-card { background: rgba(30, 41, 59, 0.6); border-color: rgba(148, 163, 184, 0.2); }
-[data-theme="dark"] .md-eligible-child-card:hover { background: rgba(30, 41, 59, 0.8); border-color: #60A5FA; }
-[data-theme="dark"] .md-eligible-child-card:has(input:checked) { background: rgba(34, 85, 159, 0.2); border-color: #60A5FA; }
-[data-theme="dark"] .md-checkbox-ui { background: rgba(15, 23, 42, 0.5); border-color: #475569; }
-[data-theme="dark"] .md-child-meta span { background: rgba(255, 255, 255, 0.05); color: #CBD5E1; }
-[data-theme="dark"] .md-child-id { color: #93C5FD !important; }
-[data-theme="dark"] .md-child-commission { background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.3); }
-[data-theme="dark"] .md-commission-value { color: #34D399; }
-[data-theme="dark"] .md-commission-currency { color: #6EE7B7; }
+/* ============================================================
+   🌙 Dark Mode — كارت الطفل (Redesign)
+   ============================================================ */
+[data-theme="dark"] .md-child-card {
+    background: rgba(30, 41, 59, 0.6);
+    border-color: rgba(148, 163, 184, 0.2);
+}
+
+[data-theme="dark"] .md-child-card::before {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(16, 185, 129, 0.05) 100%);
+}
+
+[data-theme="dark"] .md-child-card:hover {
+    background: rgba(30, 41, 59, 0.8);
+    border-color: #60A5FA;
+}
+
+[data-theme="dark"] .md-child-card:has(.md-child-checkbox:checked) {
+    background: rgba(34, 85, 159, 0.2);
+    border-color: #60A5FA;
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.15);
+}
+
+[data-theme="dark"] .md-checkbox-ui {
+    background: rgba(15, 23, 42, 0.6);
+    border-color: #475569;
+}
+
+[data-theme="dark"] .md-child-checkbox:checked + .md-checkbox-ui {
+    background: #3B82F6;
+    border-color: #3B82F6;
+}
+
+[data-theme="dark"] .md-child-avatar {
+    background: linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.35);
+}
+
+[data-theme="dark"] .md-child-chip.chip-id {
+    background: rgba(59, 130, 246, 0.15);
+    color: #93C5FD;
+}
+
+[data-theme="dark"] .md-child-chip.chip-plan {
+    background: rgba(139, 92, 246, 0.15);
+    color: #C4B5FD;
+}
+
+[data-theme="dark"] .md-child-chip.chip-days {
+    background: rgba(245, 158, 11, 0.15);
+    color: #FCD34D;
+}
+
+[data-theme="dark"] .md-child-money {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.08) 100%);
+    border-color: rgba(16, 185, 129, 0.4);
+}
+
+[data-theme="dark"] .md-child-card:has(.md-child-checkbox:checked) .md-child-money {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(16, 185, 129, 0.15) 100%);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+}
+
+[data-theme="dark"] .md-money-number {
+    color: #34D399;
+}
+
+[data-theme="dark"] .md-money-currency {
+    color: #6EE7B7;
+}
+
+[data-theme="dark"] .md-money-badge {
+    color: #A7F3D0;
+}
+
+[data-theme="dark"] .md-money-badge i {
+    color: #34D399;
+}
 [data-theme="dark"] .md-eligible-count { background: rgba(34, 85, 159, 0.2); color: #93C5FD; }
 [data-theme="dark"] .md-total-amount-box,
 [data-theme="dark"] .md-confirm-amount { background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.05) 100%); border-color: rgba(16, 185, 129, 0.4); }
@@ -2018,14 +2193,58 @@ body.marketer-dashboard-page.no-header {
     .md-eligible-actions { justify-content: center; width: 100%; }
     .md-link-btn { flex: 1; text-align: center; }
     
-    /* السماح بالالتفاف على الموبايل فقط */
-    .md-eligible-child-card {
+    /* الموبايل: ترتيب عمودي ذكي */
+    .md-child-card {
         flex-wrap: wrap;
         gap: 12px;
+        padding: 14px 14px 12px;
     }
-    .md-custom-checkbox-wrapper { order: 1; }
-    .md-child-commission { order: 2; margin-right: auto; margin-left: 0; }
-    .md-eligible-child-info { flex: 1 1 100%; order: 3; margin-top: 4px; }
+
+    .md-child-select-zone {
+        order: 1;
+    }
+
+    .md-child-avatar {
+        order: 2;
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+    }
+
+    .md-child-money {
+        order: 3;
+        margin-right: auto;
+        min-width: 80px;
+        padding: 6px 10px;
+    }
+
+    .md-money-number {
+        font-size: 1.1rem;
+    }
+
+    .md-money-badge {
+        font-size: 0.6rem;
+    }
+
+    .md-child-body {
+        order: 4;
+        flex: 1 1 100%;
+        gap: 6px;
+        padding-right: 0;
+    }
+
+    .md-child-name {
+        font-size: 0.95rem;
+    }
+
+    .md-child-chips {
+        gap: 4px;
+    }
+
+    .md-child-chip {
+        font-size: 0.68rem;
+        padding: 3px 8px;
+    }
     
     .md-eligible-list { max-height: 350px; }
     .md-total-amount-box, .md-confirm-amount { flex-direction: column; text-align: center; gap: 10px; }

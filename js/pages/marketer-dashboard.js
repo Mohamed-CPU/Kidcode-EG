@@ -1109,29 +1109,39 @@ function formatShortDate(dateStr) {
                 return;
             }
 
-            // بناء القائمة
+            // بناء القائمة — تصميم احترافي جديد
             let html = '';
             eligibleChildrenCache.forEach(function(child) {
-                html += '<label class="md-eligible-child-card">' +
-                    // الحاوية اليمنى (المربع + البيانات)
-                    '<div class="md-child-main">' +
-                        '<div class="md-custom-checkbox-wrapper">' +
-                            '<input type="checkbox" class="md-child-checkbox" value="' + escapeHtml(child.childID) + '" data-commission="' + child.commission + '">' +
-                            '<span class="md-checkbox-ui"></span>' +
-                        '</div>' +
-                        '<div class="md-eligible-child-info">' +
-                            '<div class="md-child-name">' + escapeHtml(child.childName || 'بدون اسم') + '</div>' +
-                            '<div class="md-child-meta">' +
-                                '<span class="md-child-id"><i class="fas fa-id-badge"></i> ' + escapeHtml(child.childID) + '</span>' +
-                                '<span class="md-child-plan"><i class="fas fa-layer-group"></i> ' + escapeHtml(child.plan || '—') + '</span>' +
-                                '<span class="md-child-days"><i class="fas fa-clock"></i> ' + child.daysSinceRegistration + ' يوم</span>' +
-                            '</div>' +
+                const rawName = String(child.childName || '').trim();
+                const initial = rawName ? rawName.charAt(0) : '؟';
+
+                html += '<label class="md-child-card">' +
+                    // 1. مربع الاختيار
+                    '<div class="md-child-select-zone">' +
+                        '<input type="checkbox" class="md-child-checkbox" value="' + escapeHtml(child.childID) + '" data-commission="' + child.commission + '">' +
+                        '<span class="md-checkbox-ui"></span>' +
+                    '</div>' +
+
+                    // 2. الأفاتار (حرف أول من الاسم)
+                    '<div class="md-child-avatar">' + escapeHtml(initial) + '</div>' +
+
+                    // 3. جسم الكارت (الاسم + الشرائح)
+                    '<div class="md-child-body">' +
+                        '<div class="md-child-name">' + escapeHtml(rawName || 'بدون اسم') + '</div>' +
+                        '<div class="md-child-chips">' +
+                            '<span class="md-child-chip chip-id"><i class="fas fa-id-badge"></i> ' + escapeHtml(child.childID) + '</span>' +
+                            '<span class="md-child-chip chip-plan"><i class="fas fa-layer-group"></i> ' + escapeHtml(child.plan || '—') + '</span>' +
+                            '<span class="md-child-chip chip-days"><i class="fas fa-clock"></i> ' + child.daysSinceRegistration + ' يوم</span>' +
                         '</div>' +
                     '</div>' +
-                    // الحاوية اليسرى (المبلغ)
-                    '<div class="md-child-commission">' +
-                        '<span class="md-commission-value">' + child.commission + '</span>' +
-                        '<span class="md-commission-currency">ج.م</span>' +
+
+                    // 4. المبلغ + شارة الأهلية
+                    '<div class="md-child-money">' +
+                        '<div class="md-money-value">' +
+                            '<span class="md-money-number">' + child.commission + '</span>' +
+                            '<span class="md-money-currency">ج.م</span>' +
+                        '</div>' +
+                        '<span class="md-money-badge"><i class="fas fa-check-circle"></i> مؤهل للسحب</span>' +
                     '</div>' +
                 '</label>';
             });
