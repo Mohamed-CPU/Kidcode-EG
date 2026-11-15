@@ -83,6 +83,11 @@
             <div class="wd-stat-value" id="statPendingAmount">—</div>
             <div class="wd-stat-label">مبالغ معلقة</div>
           </div>
+          <div class="wd-stat-card active-children">
+            <div class="wd-stat-value" id="statActiveChildren">—</div>
+            <div class="wd-stat-label">أطفال في طلبات نشطة</div>
+          </div>
+        </div>
         </div>
 
         <div class="filters-bar">
@@ -192,6 +197,27 @@
         <div class="wd-current-status-block">
           <label>الحالة الحالية:</label>
           <span id="wdCurrentStatusBadge" class="wd-status-badge">—</span>
+        </div>
+
+        <!-- 🆕 Children in Request (Part 2) -->
+        <div class="wd-children-block" id="wdChildrenBlock" style="display:none;">
+          <label class="wd-children-block-label">
+            <i class="fas fa-users"></i> الأطفال المشمولون في الطلب
+          </label>
+          <div class="wd-children-table-wrapper">
+            <table class="wd-children-table">
+              <thead>
+                <tr>
+                  <th>كود الطفل</th>
+                  <th>الاسم</th>
+                  <th>العمولة</th>
+                  <th>الحالة</th>
+                  <th>إجراء</th>
+                </tr>
+              </thead>
+              <tbody id="wdChildrenBody"></tbody>
+            </table>
+          </div>
         </div>
 
         <!-- Rejection / Cancellation Reason (if exists) -->

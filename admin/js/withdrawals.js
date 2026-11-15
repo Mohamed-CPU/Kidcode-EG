@@ -178,6 +178,7 @@
       setText('statCancelled', s.cancelled || 0);
       setText('statTotalAmount', s.totalAmount.toLocaleString('ar-EG') + ' ج.م');
       setText('statPendingAmount', s.pendingAmount.toLocaleString('ar-EG') + ' ج.م');
+      setText('statActiveChildren', s.activeChildrenCount || 0);
     } catch (e) {
       console.warn('loadStats error:', e);
     }
@@ -458,6 +459,9 @@
       existingNotesBlock.style.display = 'none';
     }
 
+    // 🆕 الأطفال المشمولون في الطلب
+    renderChildrenTable(req.children || [], req.status);
+
     // Status change section
     renderStatusOptions(req.status);
 
@@ -476,6 +480,112 @@
     } else {
       if (changeSection) changeSection.style.display = 'block';
       if (saveBtn) saveBtn.disabled = true; // يفعّل عند اختيار حالة
+    }
+  }
+
+    // ============================================================
+  //  🆕 عرض جدول الأطفال في الـ Modal
+  // ============================================================
+  function renderChildrenTable(children, requestStatus) {
+    const block = document.getElementById('wdChildrenBlock');
+    const body = document.getElementById('wdChildrenBody');
+    if (!block || !body) return;
+
+    if (!children || children.length === 0) {
+      block.style.display = 'none';
+      body.innerHTML = '';
+      return;
+    }
+
+    const canRemove = ['submitted', 'under_review'].includes(requestStatus);
+
+    let html = '';
+    children.forEach(function(c) {
+      const statusClass = c.status === 'مدفوع' ? 'paid' :
+                          c.status === 'مرفوض' ? 'rejected' : 'pending';
+
+      const removeBtn = canRemove
+        ? '<button type="button" class="wd-remove-child-btn" data-child-id="' +
+            escapeAttr(c.childID) + '" data-child-name="' + escapeAttr(c.childName || '') + '">' +
+            '<i class="fas fa-times"></i> إزالة' +
+          '</button>'
+        : '<span class="wd-no-action">—</span>';
+
+      html += '<tr>' +
+        '<td><span class="wd-child-id-cell">' + window.UI.escapeHtml(c.childID) + '</span></td>' +
+        '<td>' + window.UI.escapeHtml(c.childName || 'بدون اسم') + '</td>' +
+        '<td><strong class="wd-child-commission-cell">' + c.commission + ' ج.م</strong></td>' +
+        '<td><span class="wd-child-status-badge ' + statusClass + '">' + window.UI.escapeHtml(c.status) + '</span></td>' +
+        '<td>' + removeBtn + '</td>' +
+      '</tr>';
+    });
+
+    body.innerHTML = html;
+    block.style.display = 'block';
+
+    body.querySelectorAll('.wd-remove-child-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        const childID = btn.getAttribute('data-child-id');
+        const childName = btn.getAttribute('data-child-name');
+        confirmRemoveChild(childID, childName);
+      });
+    });
+  }
+
+  // ============================================================
+  //  🆕 إزالة طفل من الطلب
+  // ============================================================
+  async function confirmRemoveChild(childID, childName) {
+    if (!state.currentRequest) return;
+    const requestId = state.currentRequest.requestId;
+
+    const ok = await window.UI.confirm({
+      title: 'إزالة طفل من الطلب',
+      message: 'سيتم إزالة الطفل "' + (childName || childID) + '" من الطلب، وسيُعاد حساب المبلغ الإجمالي تلقائياً. هل أنت متأكد؟',
+      confirmText: 'إزالة',
+      type: 'warning'
+    });
+    if (!ok) return;
+
+    try {
+      const result = await window.Core.api('removeChildFromWithdrawal', {
+        requestId: requestId,
+        childID: childID
+      }, 'POST');
+
+      if (!result.success) {
+        window.UI.toast.error(result.message || result.error || 'فشلت الإزالة');
+        return;
+      }
+
+      window.UI.toast.success(result.message || 'تمت الإزالة بنجاح');
+
+      if (result.requestCancelled) {
+        closeModal();
+        window.UI.toast.info('تم إلغاء الطلب بالكامل لخلوّه من الأطفال.', { duration: 5000 });
+      } else {
+        // إعادة تحميل بيانات Modal
+        try {
+          const detailsResult = await window.Core.api('getWithdrawalDetails', { requestId: requestId }, 'GET');
+          if (detailsResult.success) {
+            state.currentRequest = detailsResult.request;
+            state.currentMarketer = detailsResult.marketer;
+            populateModal(detailsResult.request, detailsResult.marketer);
+          }
+        } catch (e) {
+          closeModal();
+        }
+      }
+
+      loadList();
+      loadStats();
+
+      if (window.WithdrawalsBadge && typeof window.WithdrawalsBadge.refresh === 'function') {
+        window.WithdrawalsBadge.refresh();
+      }
+
+    } catch (e) {
+      window.UI.toast.error(e.userMessage || 'تعذر الاتصال بالخادم');
     }
   }
 

@@ -1711,3 +1711,525 @@ body.marketer-dashboard-page.no-header {
         font-size: 0.72rem;
     }
 }
+
+/* ============================================================
+   🆕 Part 2 — إحصاءات جديدة (5 كروت)
+   ============================================================ */
+.stat-card.total-unpaid {
+    border-right-color: #8B5CF6;
+    background: linear-gradient(135deg, #F5F3FF 0%, #FFFFFF 100%);
+}
+.stat-card.total-unpaid .stat-value.total-unpaid {
+    color: #6D28D9;
+}
+
+.stat-card.reserved {
+    border-right-color: #F59E0B;
+    background: linear-gradient(135deg, #FEF3C7 0%, #FFFFFF 100%);
+}
+.stat-card.reserved .stat-value.reserved {
+    color: #B45309;
+}
+
+[data-theme="dark"] .stat-card.total-unpaid {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(15, 23, 42, 0.6) 100%);
+}
+[data-theme="dark"] .stat-card.reserved {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(15, 23, 42, 0.6) 100%);
+}
+
+/* ============================================================
+   🆕 قائمة الأطفال المؤهلين
+   ============================================================ */
+.md-eligible-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.md-eligible-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.82rem;
+}
+
+.md-link-btn {
+    background: transparent;
+    border: none;
+    color: var(--primary-color);
+    font-weight: 800;
+    font-family: inherit;
+    cursor: pointer;
+    padding: 4px 6px;
+    font-size: 0.82rem;
+    text-decoration: underline;
+    transition: color 0.2s;
+}
+
+.md-link-btn:hover {
+    color: var(--primary-dark);
+}
+
+.md-divider {
+    color: var(--border-color);
+    font-weight: 400;
+}
+
+.md-eligible-loader {
+    text-align: center;
+    padding: 30px 16px;
+    color: var(--text-secondary);
+    background: #F8FAFC;
+    border-radius: var(--radius-md);
+    border: 2px dashed var(--border-color);
+}
+
+.md-eligible-loader i {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    margin-bottom: 8px;
+    display: block;
+}
+
+.md-eligible-loader span {
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.md-eligible-empty {
+    text-align: center;
+    padding: 30px 16px;
+    background: #F8FAFC;
+    border-radius: var(--radius-md);
+    border: 2px dashed var(--border-color);
+}
+
+.md-eligible-empty i {
+    font-size: 2rem;
+    color: var(--text-light);
+    margin-bottom: 10px;
+    display: block;
+}
+
+.md-eligible-empty p {
+    margin: 0 0 6px;
+    font-weight: 800;
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+}
+
+.md-eligible-empty small {
+    color: var(--text-light);
+    font-size: 0.8rem;
+    line-height: 1.6;
+    display: block;
+}
+
+.md-eligible-list {
+    max-height: 380px;
+    overflow-y: auto;
+    padding: 4px;
+    background: #F8FAFC;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    -webkit-overflow-scrolling: touch;
+}
+
+.md-eligible-child-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background: #FFFFFF;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.md-eligible-child-card:last-child {
+    margin-bottom: 0;
+}
+
+.md-eligible-child-card:hover {
+    border-color: var(--primary-color);
+    background: #FAFBFF;
+}
+
+.md-eligible-child-card:has(input[type="checkbox"]:checked) {
+    border-color: var(--primary-color);
+    background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+    box-shadow: 0 3px 10px rgba(34, 85, 159, 0.12);
+}
+
+.md-child-checkbox {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--primary-color);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.md-eligible-child-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.md-child-name {
+    font-size: 0.95rem;
+    font-weight: 900;
+    color: var(--text-primary);
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.md-child-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 0.74rem;
+    color: var(--text-secondary);
+}
+
+.md-child-id,
+.md-child-plan,
+.md-child-days {
+    background: var(--bg-body);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 700;
+}
+
+.md-child-id {
+    font-family: 'Courier New', monospace;
+    color: var(--primary-color);
+    direction: ltr;
+    unicode-bidi: embed;
+}
+
+.md-child-commission {
+    font-size: 1rem;
+    font-weight: 900;
+    color: var(--secondary-color);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.md-eligible-count {
+    text-align: center;
+    padding: 8px;
+    margin-top: 10px;
+    background: #EFF6FF;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--primary-color);
+}
+
+/* ============================================================
+   🆕 المبلغ الإجمالي (Read-only)
+   ============================================================ */
+.md-total-amount-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(135deg, #E8F5EE 0%, #D1FAE5 100%);
+    border: 2px solid var(--secondary-color);
+    border-radius: var(--radius-md);
+    padding: 14px 20px;
+    margin: 16px 0 20px;
+    flex-wrap: wrap;
+}
+
+.md-total-label {
+    font-size: 0.92rem;
+    font-weight: 800;
+    color: #065F46;
+}
+
+.md-total-value {
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: var(--secondary-dark);
+}
+
+[data-theme="dark"] .md-total-amount-box {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%);
+}
+
+/* ============================================================
+   🆕 Modal التأكيد
+   ============================================================ */
+.md-confirm-section {
+    background: #F8FAFC;
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    margin-bottom: 12px;
+}
+
+.md-confirm-label {
+    margin: 0 0 8px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--text-secondary);
+}
+
+.md-confirm-label:last-child {
+    margin-bottom: 0;
+}
+
+.md-confirm-children-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.md-confirm-child-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: #FFFFFF;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+}
+
+.md-confirm-child-name {
+    font-size: 0.88rem;
+    font-weight: 800;
+    color: var(--text-primary);
+}
+
+.md-confirm-child-id {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    font-family: 'Courier New', monospace;
+    direction: ltr;
+    unicode-bidi: embed;
+}
+
+.md-confirm-child-commission {
+    font-size: 0.9rem;
+    font-weight: 900;
+    color: var(--secondary-color);
+    white-space: nowrap;
+}
+
+.md-confirm-amount {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 18px;
+    background: linear-gradient(135deg, #E8F5EE, #D1FAE5);
+    border-radius: var(--radius-md);
+    margin-bottom: 12px;
+    font-size: 1rem;
+    font-weight: 800;
+    color: #065F46;
+}
+
+.md-confirm-amount strong {
+    font-size: 1.35rem;
+    color: var(--secondary-dark);
+}
+
+[data-theme="dark"] .md-confirm-section {
+    background: rgba(30, 41, 59, 0.5);
+}
+[data-theme="dark"] .md-confirm-child-item {
+    background: rgba(30, 41, 59, 0.7);
+    border-color: rgba(148, 163, 184, 0.2);
+}
+
+/* ============================================================
+   🆕 Modal أطفال الطلب
+   ============================================================ */
+.md-history-children-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.md-history-child-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #F8FAFC;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+}
+
+.md-history-child-name {
+    font-size: 0.92rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 3px;
+}
+
+.md-history-child-id {
+    font-size: 0.74rem;
+    color: var(--text-secondary);
+    font-family: 'Courier New', monospace;
+    direction: ltr;
+    unicode-bidi: embed;
+}
+
+.md-history-child-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.md-history-child-commission {
+    font-size: 0.92rem;
+    font-weight: 900;
+    color: var(--secondary-color);
+}
+
+.md-child-status-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.md-child-status-badge.pending {
+    background: #FEF3C7;
+    color: #92400E;
+}
+
+.md-child-status-badge.paid {
+    background: #D1FAE5;
+    color: #065F46;
+}
+
+.md-child-status-badge.rejected {
+    background: #FEE2E2;
+    color: #991B1B;
+}
+
+.md-history-children-empty {
+    text-align: center;
+    padding: 40px 20px;
+    background: #F8FAFC;
+    border-radius: var(--radius-md);
+    border: 2px dashed var(--border-color);
+}
+
+.md-history-children-empty i {
+    font-size: 2.5rem;
+    color: var(--text-light);
+    margin-bottom: 12px;
+    display: block;
+}
+
+.md-history-children-empty p {
+    margin: 0 0 6px;
+    font-weight: 800;
+    color: var(--text-secondary);
+}
+
+.md-history-children-empty small {
+    color: var(--text-light);
+    font-size: 0.82rem;
+    line-height: 1.6;
+    display: block;
+}
+
+[data-theme="dark"] .md-history-child-item,
+[data-theme="dark"] .md-history-children-empty {
+    background: rgba(30, 41, 59, 0.5);
+}
+
+/* ============================================================
+   🆕 Actions Group in History Table
+   ============================================================ */
+.md-actions-group {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+/* ============================================================
+   📱 Responsive — Part 2
+   ============================================================ */
+@media (max-width: 768px) {
+    .md-eligible-child-card {
+        padding: 10px 12px;
+        gap: 10px;
+    }
+    .md-child-name {
+        font-size: 0.88rem;
+    }
+    .md-child-meta {
+        font-size: 0.68rem;
+        gap: 5px;
+    }
+    .md-child-commission {
+        font-size: 0.9rem;
+    }
+    .md-eligible-list {
+        max-height: 320px;
+    }
+    .md-total-value {
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .md-eligible-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+    .md-eligible-actions {
+        justify-content: center;
+    }
+    .md-child-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 3px;
+    }
+    .md-total-amount-box {
+        flex-direction: column;
+        text-align: center;
+    }
+    .md-confirm-child-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+    .md-confirm-child-commission {
+        align-self: flex-end;
+    }
+    .md-history-child-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .md-history-child-right {
+        align-self: stretch;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+}

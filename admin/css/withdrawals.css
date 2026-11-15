@@ -564,3 +564,206 @@
 [data-theme="dark"] .wd-table .wd-request-id {
     color: #60A5FA; /* لون أزرق فاتح للـ ID عشان يبان */
 }
+
+/* ============================================================
+   🆕 Part 2 — كارت الأطفال النشطين
+   ============================================================ */
+.wd-stat-card.active-children { border-top-color: #8B5CF6; }
+.wd-stat-card.active-children .wd-stat-value { color: #6D28D9; }
+
+[data-theme="dark"] .wd-stat-card.active-children .wd-stat-value { color: #C4B5FD; }
+
+/* ============================================================
+   🆕 قسم الأطفال في الـ Modal
+   ============================================================ */
+.wd-children-block {
+    margin: 16px 0;
+    padding: 14px 16px;
+    background: #F8FAFC;
+    border-radius: 12px;
+    border: 1px solid var(--border-color, #E2E8F0);
+}
+
+.wd-children-block-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.88rem;
+    font-weight: 900;
+    color: var(--text-primary, #0F172A);
+    margin-bottom: 10px;
+}
+
+.wd-children-block-label i {
+    color: #22559F;
+}
+
+.wd-children-table-wrapper {
+    overflow-x: auto;
+    border-radius: 8px;
+    border: 1px solid var(--border-color, #E2E8F0);
+    background: #FFFFFF;
+}
+
+.wd-children-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    min-width: 520px;
+}
+
+.wd-children-table thead th {
+    background: #F1F5F9;
+    padding: 10px 12px;
+    text-align: right;
+    font-weight: 800;
+    font-size: 0.78rem;
+    color: var(--text-secondary, #475569);
+    border-bottom: 1px solid var(--border-color, #E2E8F0);
+    white-space: nowrap;
+}
+
+.wd-children-table tbody td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border-color, #E2E8F0);
+    vertical-align: middle;
+}
+
+.wd-children-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.wd-child-id-cell {
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: #22559F;
+    direction: ltr;
+    unicode-bidi: embed;
+}
+
+.wd-child-commission-cell {
+    color: #059669;
+    font-weight: 900;
+}
+
+.wd-child-status-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.wd-child-status-badge.pending {
+    background: #FEF3C7;
+    color: #92400E;
+    border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.wd-child-status-badge.paid {
+    background: #D1FAE5;
+    color: #065F46;
+    border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.wd-child-status-badge.rejected {
+    background: #FEE2E2;
+    color: #991B1B;
+    border: 1px solid rgba(220, 38, 38, 0.2);
+}
+
+.wd-remove-child-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 10px;
+    border-radius: 6px;
+    border: 1.5px solid rgba(220, 38, 38, 0.3);
+    background: #FEF2F2;
+    color: #DC2626;
+    font-family: inherit;
+    font-size: 0.75rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.wd-remove-child-btn:hover {
+    background: #DC2626;
+    color: #FFFFFF;
+    border-color: #DC2626;
+}
+
+.wd-no-action {
+    color: var(--text-muted, #94A3B8);
+    font-size: 0.75rem;
+}
+
+/* ============================================================
+   🌙 Dark Mode
+   ============================================================ */
+[data-theme="dark"] .wd-children-block {
+    background: rgba(30, 41, 59, 0.4);
+    border-color: rgba(148, 163, 184, 0.2);
+}
+
+[data-theme="dark"] .wd-children-table-wrapper {
+    background: rgba(15, 23, 42, 0.6);
+    border-color: rgba(148, 163, 184, 0.2);
+}
+
+[data-theme="dark"] .wd-children-table thead th {
+    background: rgba(30, 41, 59, 0.6);
+    color: #CBD5E1;
+}
+
+[data-theme="dark"] .wd-child-id-cell {
+    color: #93C5FD;
+}
+
+[data-theme="dark"] .wd-child-commission-cell {
+    color: #6EE7B7;
+}
+
+[data-theme="dark"] .wd-remove-child-btn {
+    background: rgba(220, 38, 38, 0.15);
+    color: #FCA5A5;
+    border-color: rgba(220, 38, 38, 0.4);
+}
+
+[data-theme="dark"] .wd-remove-child-btn:hover {
+    background: #DC2626;
+    color: #FFFFFF;
+}
+
+/* ============================================================
+   📱 Responsive
+   ============================================================ */
+@media (max-width: 600px) {
+    .wd-children-block {
+        padding: 10px 8px;
+    }
+
+    .wd-children-table {
+        font-size: 0.75rem;
+        min-width: 480px;
+    }
+
+    .wd-children-table thead th,
+    .wd-children-table tbody td {
+        padding: 8px 6px;
+    }
+
+    .wd-child-status-badge {
+        font-size: 0.65rem;
+        padding: 2px 8px;
+    }
+
+    .wd-remove-child-btn {
+        font-size: 0.68rem;
+        padding: 4px 8px;
+    }
+}

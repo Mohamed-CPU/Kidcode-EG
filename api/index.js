@@ -751,7 +751,8 @@ async function handleMarketer(req, res) {
       'getMarketerStats',
       'validateMarketerCode',
       'marketerLogin',
-      'getWithdrawHistory'
+      'getWithdrawHistory',
+      'getEligibleChildrenForWithdrawal'
     ];
 
     if (SUPABASE_READ_ACTIONS.includes(innerAction)) {
