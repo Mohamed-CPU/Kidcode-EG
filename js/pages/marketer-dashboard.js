@@ -1344,23 +1344,20 @@ function formatShortDate(dateStr) {
         const modal = document.getElementById('mdWithdrawConfirmModal');
         if (!modal) return;
 
-        // children list
+        // children list — نقرأ البيانات مباشرة من الكاش
         const listEl = document.getElementById('mdConfirmChildrenList');
         if (listEl) {
             let html = '';
-            checkedBoxes.forEach(function(cb) {
-                const card = cb.closest('.md-eligible-child-card');
-                if (!card) return;
-                const nameEl = card.querySelector('.md-child-name');
-                const idEl = card.querySelector('.md-child-id');
-                const comEl = card.querySelector('.md-child-commission');
-
+            // فلترة الأطفال المختارين بناءً على الـ childIDs الممررة
+            const selectedChildren = eligibleChildrenCache.filter(c => data.childIDs.includes(c.childID));
+            
+            selectedChildren.forEach(function(c) {
                 html += '<div class="md-confirm-child-item">' +
                     '<div>' +
-                        '<div class="md-confirm-child-name">' + escapeHtml(nameEl ? nameEl.textContent : '') + '</div>' +
-                        '<div class="md-confirm-child-id">' + escapeHtml(idEl ? idEl.textContent : '') + '</div>' +
+                        '<div class="md-confirm-child-name">' + escapeHtml(c.childName || 'بدون اسم') + '</div>' +
+                        '<div class="md-confirm-child-id">' + escapeHtml(c.childID) + '</div>' +
                     '</div>' +
-                    '<div class="md-confirm-child-commission">' + escapeHtml(comEl ? comEl.textContent : '') + '</div>' +
+                    '<div class="md-confirm-child-commission">' + c.commission + ' ج.م</div>' +
                 '</div>';
             });
             listEl.innerHTML = html;
