@@ -198,14 +198,17 @@ async function fetchTokenAndData() {
         return;
     }
 
+    // ✅ فرض بيئة المسح (Mobile Gatekeeper) حتى لو دخل المستخدم مباشرة
     if (!tempToken && id !== 'KC-01007') {
         showError(`
-            ⚠️ الرابط غير صالح أو منتهي الصلاحية.<br>
-            <span style="font-size: 0.9rem; font-weight: 400; display: block; margin-top: 8px;">
-                يرجى <strong>إعادة مسح رمز QR</strong> للحصول على رابط جديد.
-            </span>
-            <br>
-            <a href="/" style="color: var(--primary-color); font-weight: 700; text-decoration: underline;">العودة للرئيسية</a>
+            <div style="text-align:center;">
+                <i class="fas fa-mobile-screen-button" style="font-size: 3rem; color: #f59e0b; margin-bottom: 16px; display: block;"></i>
+                <h3 style="margin-bottom: 8px; color: var(--text-primary);">بيئة مسح غير صحيحة</h3>
+                <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.8;">
+                    لأسباب أمنية، يجب مسح رمز الكارت (QR) بكاميرا الهاتف المحمول لفتح هذه الصفحة.<br>
+                    لا يمكن فتح هذا الرابط مباشرة من المتصفح.
+                </p>
+            </div>
         `);
         return;
     }

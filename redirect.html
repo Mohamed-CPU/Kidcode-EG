@@ -228,7 +228,13 @@
             let title = '⚠️ حدث خطأ';
             let icon = 'fa-exclamation-circle';
 
-            if (errorCode === 'account_pending' || errorCode === 'pending') {
+            // ✅ حظر أجهزة الكمبيوتر (للمسجلين القدامى)
+            if (errorCode === 'desktop_not_allowed') {
+                title = '📱 بيئة مسح غير صحيحة';
+                icon = 'fa-mobile-screen-button';
+                errorMessage = 'لأسباب أمنية، يجب مسح رمز الكارت (QR) بكاميرا الهاتف المحمول لفتح هذه الصفحة.<br><br>لا يمكن فتح هذا الرابط مباشرة من جهاز الكمبيوتر.';
+                supportText = null; // إخفاء زر الدعم لأنه ليس خطأ حقيقي
+            } else if (errorCode === 'account_pending' || errorCode === 'pending') {
                 title = '⏳ الحساب قيد التفعيل';
                 errorMessage = 'جاري مراجعة طلب التسجيل. سيتم التفعيل خلال <strong>24 ساعة</strong>';
                 supportText = 'استفسار عن حالة الحساب';

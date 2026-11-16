@@ -247,8 +247,18 @@ export default async function handler(req, res) {
 async function handleToken(req, res) {
   // GET
   if (req.method === 'GET') {
-    const { id } = req.query;
+    const { id, pass } = req.query;
     if (!id) return res.status(400).json({ success: false, error: 'missing_id' });
+
+    // ✅ حماية المسجلين القدامى: منع أجهزة الكمبيوتر من توليد توكن
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(req.headers['user-agent'] || '');
+    if (!isMobile && pass !== 'devi') {
+      return res.status(403).json({ 
+        success: false, 
+        error: 'desktop_not_allowed', 
+        message: 'لأسباب أمنية، يجب مسح رمز QR بكاميرا الهاتف.' 
+      });
+    }
 
     try {
       const { createOneTimeToken } = await import('../lib/db/tokens.js');
@@ -279,8 +289,18 @@ async function handleToken(req, res) {
   // POST
   if (req.method === 'POST') {
     try {
-      const { id, faceImage } = req.body;
+      const { id, faceImage, pass } = req.body;
       if (!id) return res.status(400).json({ success: false, error: 'missing_id' });
+
+      // ✅ إضافة شرط حظر الكمبيوتر (حماية إضافية)
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(req.headers['user-agent'] || '');
+      if (!isMobile && pass !== 'devi') {
+        return res.status(403).json({ 
+          success: false, 
+          error: 'desktop_not_allowed', 
+          message: 'لأسباب أمنية، يجب مسح رمز QR بكاميرا الهاتف.' 
+        });
+      }
 
       const { createOneTimeToken } = await import('../lib/db/tokens.js');
       const result = await createOneTimeToken({ childID: id, faceImage: faceImage || null });
