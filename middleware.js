@@ -137,6 +137,12 @@ export default async function middleware(request) {
   const url = new URL(request.url);
   const path = url.pathname;
 
+  // ✅ 0. منع الحلقة اللانهائية (Infinite Loop)
+  // إذا كان الطلب قادماً من fetch داخل الـ middleware نفسه، نتجاهله
+  if (request.headers.get('x-middleware-subrequest')) {
+    return undefined;
+  }
+
   // ✅ 1. توليد Nonce لكل طلب (باستخدام Web Crypto API)
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
   
@@ -162,7 +168,11 @@ export default async function middleware(request) {
 
   // ✅ 4. دالة لحقن الـ nonce في صفحات الـ HTML قبل إرسالها للمتصفح
   const injectNonce = async (request, nonce, allowedOrigin, cspHeader) => {
-    const response = await fetch(request);
+    const fetchHeaders = new Headers(request.headers);
+    // ✅ إضافة هذا الهيدر لتخطي الـ middleware أثناء جلب الصفحة الأصلية
+    fetchHeaders.set('x-middleware-subrequest', '1');
+
+    const response = await fetch(request.url, { headers: fetchHeaders });
     const contentType = response.headers.get('content-type') || '';
     
     // نطبق التعديل فقط على صفحات الـ HTML
