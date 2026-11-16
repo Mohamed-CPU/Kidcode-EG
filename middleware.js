@@ -53,6 +53,7 @@ async function isPanelOpen() {
   const supabaseKey = process.env.SUPABASE_SECRET_KEY;
 
   if (!supabaseUrl || !supabaseKey) {
+    // Fail-Close: لو الإعدادات ناقصة → مقفولة
     cachedPanelOpen = false;
     cacheTimestamp = now;
     return false;
@@ -84,6 +85,7 @@ async function isPanelOpen() {
     cacheTimestamp = now;
     return cachedPanelOpen;
   } catch (e) {
+    // Fail-Close على أي خطأ
     cachedPanelOpen = false;
     cacheTimestamp = now;
     return false;
@@ -92,13 +94,19 @@ async function isPanelOpen() {
 
 // ================================================================
 //  🎫 hasSessionToken — فحص وجود cookie أو Authorization header
+//  - Cookie: بيجي تلقائيًا مع same-origin requests
+//  - Authorization: core.js بيبعته مع كل API call
+//  ملاحظة: نفحص الاتنين، لأن بعض المتصفحات بتحجب الـ cookies
+//           أو الـ SameSite=Strict بيمنعها في بعض الحالات
 // ================================================================
 function hasSessionToken(request) {
+  // 1. Cookie
   const cookieHeader = request.headers.get('cookie') || '';
   if (/(?:^|;\s*)admin_session=([^;]+)/.test(cookieHeader)) {
     return true;
   }
 
+  // 2. Authorization: Bearer <token>
   const authHeader = request.headers.get('authorization') || '';
   if (/^Bearer\s+\S+/i.test(authHeader)) {
     return true;
@@ -145,23 +153,35 @@ export default async function middleware(request) {
   if (path.startsWith('/admin')) {
     const hasToken = hasSessionToken(request);
 
+    // ✅ القاعدة الجديدة:
+    //   - البوابة مقفولة + مفيش cookie → 404 (منع دخول جديد)
+    //   - البوابة مقفولة + فيه cookie  → مسموح (الجلسة النشطة مستمرة)
+    //   - الصفحات العامة (login) → مسموحة دايماً
+    //   - صفحة enter → تحتاج بوابة مفتوحة
+
+    // 4أ. صفحة enter → تحتاج بوابة مفتوحة
     if (path === '/admin/enter.html') {
       if (!panelOpen) return notFound();
       return undefined;
     }
 
+    // 4ب. صفحة login (index) → مسموحة دايماً
     if (PUBLIC_ADMIN_PAGES.includes(path)) {
       return undefined;
     }
 
+    // 4ج. باقي الصفحات:
+    //     لو فيه cookie → مسموح (حتى لو البوابة مقفولة)
     if (hasToken) {
       return undefined;
     }
 
+    // 4د. مفيش cookie + البوابة مقفولة → 404 (إخفاء)
     if (!panelOpen) {
       return notFound();
     }
 
+    // 4هـ. مفيش cookie + البوابة مفتوحة → redirect للـ login
     return Response.redirect(new URL('/admin/', request.url), 302);
   }
 
@@ -173,6 +193,14 @@ export default async function middleware(request) {
     const inner = url.searchParams.get('innerAction') || '';
     const hasToken = hasSessionToken(request);
 
+    // ✅ 5أ. Actions دايماً مسموحة (بغض النظر عن حالة البوابة)
+    //  - verify/checkStatus : للتحقق من الجلسة الحالية + freeze polling
+    //                          ⚠️ لا يجوز حجبها لأنها بتُستخدم للجلسات النشطة
+    //  - health             : للمراقبة
+    //  - initSuperAdmin     : للتهيئة الأولى
+    //  - emergencyUnlock    : للطوارئ
+    //  - requestPasswordChange / changePasswordWithToken / iDidntRequest
+    //                        : من حالة freeze أو من البريد — لا علاقة بالبوابة
     const ALWAYS_ALLOWED_ACTIONS = [
       'verify',
       'checkStatus',
@@ -187,10 +215,14 @@ export default async function middleware(request) {
       return undefined;
     }
 
+    // ✅ 5ب. عندك token صالح → مسموح (الجلسة النشطة مستمرة حتى لو البوابة مقفولة)
     if (hasToken) {
       return undefined;
     }
 
+    // ─── من هنا: مفيش token ───
+
+    // ✅ 5ج. Actions عامة (login, consumeLoginLink) — تحتاج البوابة مفتوحة
     if (PUBLIC_ADMIN_ACTIONS.includes(inner)) {
       if (!panelOpen) {
         return new Response(
@@ -201,6 +233,7 @@ export default async function middleware(request) {
       return undefined;
     }
 
+    //     ب) مفيش cookie + البوابة مقفولة → 404
     if (!panelOpen) {
       return new Response(
         JSON.stringify({ success: false, error: 'panel_closed' }),
@@ -208,6 +241,10 @@ export default async function middleware(request) {
       );
     }
 
+    //     - البوابة مفتوحة → نعدي للـ router (الـ router بيرجع 401 بنفسه)
+    //     السبب: لو الـ middleware رجع 401، core.js بيعمل logout فوراً
+    //             حتى لو المشكلة كانت مؤقتة (race condition / cookie issue)
+    //             الـ router أذكى — بيرجع رسائل مفصّلة وبيراعي حالات الجلسة
     return undefined;
   }
 
@@ -217,6 +254,8 @@ export default async function middleware(request) {
 
 // ================================================================
 //  ⚙️ Matcher + Runtime
+//  - runtime: 'nodejs' → لتجنب تحذير Vercel (Edge runtime deprecated)
+//  - matcher: المسارات اللي يشتغل عليها
 // ================================================================
 export const config = {
   runtime: 'nodejs',
