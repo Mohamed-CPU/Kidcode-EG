@@ -16,33 +16,6 @@ function nowEgypt12() {
   return datePart + ' ' + timePart;
 }
 
-// ============================================================
-//  🛡️ Helper: Rate Limiting (تحديد معدل الطلبات)
-// ============================================================
-async function isRateLimited(ip, action, limit = 20, windowSec = 60) {
-  try {
-    const { cacheGet, cachePut } = await import('../lib/cache.js');
-    const key = `rl:${ip}:${action}`;
-    const current = cacheGet(key) || 0;
-    if (current >= limit) return true;
-    cachePut(key, current + 1, windowSec);
-    return false;
-  } catch (e) {
-    return false; // Fail open في حال حدوث خطأ في الكاش
-  }
-}
-
-// ============================================================
-//  🌐 Helper: Origin Check (منع الاستدعاء من مواقع خارجية)
-// ============================================================
-function isAllowedOrigin(req) {
-  const origin = req.headers.origin || req.headers.referer || '';
-  // إذا لم يوجد Origin (مثل طلبات المتصفح المباشرة أو الـ Webhooks) نسمح
-  if (!origin) return true;
-  // نسمح فقط لموقعنا
-  return origin.includes('kidcode-eg.com') || origin.includes('localhost');
-}
-
 // ================================================================
 //  🧰 Helper: تصنيف الأخطاء وإرجاع رسالة مناسبة للمستخدم
 // ================================================================
@@ -170,17 +143,8 @@ async function safeErrorResponse(res, error, source, context) {
 //  الـ Handler الرئيسي — يقرأ action ويوجّه
 // ================================================================
 export default async function handler(req, res) {
-  // ✅ 1. ترويسات الأمان الموحدة لكل الـ APIs
-  res.setHeader('X-Robots-Tag', 'noindex, nofollow');
-  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-
-  // ✅ 2. تأمين CORS (نسمح فقط لموقعنا بالاستدعاء)
-  const origin = req.headers.origin || '';
-  if (origin && (origin.includes('kidcode-eg.com') || origin.includes('localhost'))) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  } else {
-    res.setHeader('Access-Control-Allow-Origin', 'https://www.kidcode-eg.com');
-  }
+  // CORS
+  res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
@@ -190,27 +154,6 @@ export default async function handler(req, res) {
 
   // استخراج action من الـ query أو الـ body
   const action = (req.query && req.query.action) || (req.body && req.body.action);
-
-  // ✅ 3. حظر الاستدعاء من نطاقات خارجية (باستثناء الـ Webhooks والـ Crons)
-  const publicActions = [
-    'paymobWebhook', 'telegram', 'emailQueue', 'familyWeeklyReport', 
-    'marketerWeeklyReport', 'cleanup', 'escalateMissingReport', 'checkMarketerCommissions'
-  ];
-  
-  if (!publicActions.includes(action) && !isAllowedOrigin(req)) {
-    return res.status(403).json({ success: false, error: 'forbidden_origin', message: 'الوصول مرفوض من هذا النطاق.' });
-  }
-
-  // ✅ 4. تحديد معدل الطلبات (Rate Limiting)
-  const clientIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
-  
-  // أقصى عدد طلبات: 30 طلب كل دقيقة للـ endpoints الحساسة
-  if (['token', 'child', 'scanGateway', 'location'].includes(action)) {
-    const limited = await isRateLimited(clientIP, action, 30, 60);
-    if (limited) {
-      return res.status(429).json({ success: false, error: 'too_many_requests', message: 'لقد قمت بمحاولات كثيرة. يرجى الانتظار دقيقة.' });
-    }
-  }
 
   switch (action) {
     case 'token':
