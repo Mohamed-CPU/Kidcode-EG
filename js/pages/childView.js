@@ -136,8 +136,20 @@ async function fetchTokenAndData() {
         else if (urlError === 'account_pending') msg = 'الحساب قيد التفعيل.';
         else if (urlError === 'account_deleted') msg = 'هذا الحساب تم حذفه.';
         else if (urlError === 'missing_id') msg = 'رابط غير صحيح.';
+        else if (urlError === 'desktop_not_allowed') {
+            msg = `
+                <div style="text-align:center;">
+                    <i class="fas fa-mobile-screen-button" style="font-size: 3rem; color: #f59e0b; margin-bottom: 16px; display: block;"></i>
+                    <h3 style="margin-bottom: 8px; color: var(--text-primary);">بيئة مسح غير صحيحة</h3>
+                    <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.8;">
+                        لأسباب أمنية، يجب مسح رمز الكارت (QR) بكاميرا الهاتف المحمول لفتح هذه الصفحة.<br>
+                        لا يمكن فتح هذا الرابط مباشرة من جهاز الكمبيوتر.
+                    </p>
+                </div>
+            `;
+        }
         
-        showError(`⚠️ ${msg}`);
+        showError(msg);
         return;
     }
 

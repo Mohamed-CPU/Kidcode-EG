@@ -2177,9 +2177,26 @@ async function handlePaymobDiagnostics(req, res) {
 // ============================================================
 async function handleScanGateway(req, res) {
   const id = String(req.query.id || '').trim();
+  
+  // ✅ ممر سري خاص بالمطور (غير متوقع)
+  const isDevMode = req.query.pass === 'devi';
 
   if (!id) {
     return res.redirect(302, '/childView.html?error=missing_id');
+  }
+
+  // ✅ 1. فحص بيئة المسح (منع الكمبيوتر)
+  if (!isDevMode) {
+    const ua = req.headers['user-agent'] || '';
+    // فحص إذا كان الجهاز محمولاً (Android, iPhone, iPad, etc.)
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+
+    if (!isMobile) {
+      console.warn(`[Security] Desktop access blocked for child: ${id}`);
+      return res.redirect(302, `/childView.html?error=desktop_not_allowed`);
+    }
+  } else {
+    console.log(`[DevMode] Desktop access allowed for child: ${id}`);
   }
 
   try {
@@ -2187,10 +2204,8 @@ async function handleScanGateway(req, res) {
     const result = await createOneTimeToken({ childID: id, faceImage: null });
 
     if (result.success) {
-      // توجيه لصفحة الطفل مع التوكن
       return res.redirect(302, `/childView.html?id=${encodeURIComponent(id)}&tempToken=${encodeURIComponent(result.token)}`);
     } else {
-      // في حال فشل توليد التوكن (مثل حساب منتهي أو محذوف)
       return res.redirect(302, `/childView.html?id=${encodeURIComponent(id)}&error=${encodeURIComponent(result.code || 'token_failed')}`);
     }
   } catch (error) {
