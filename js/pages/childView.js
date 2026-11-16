@@ -39,6 +39,14 @@ var msgEl = null;
 var tokenExpiryTime = null;
 var activeReportData = null;
 
+// ✅ شبكة الأمان: إذا حدث أي خطأ برمجي (Crash)، يتم تدمير الصفحة وعرض شاشة الانتهاء فوراً
+window.onerror = function() {
+    if (typeof triggerSessionExpiry === 'function') {
+        triggerSessionExpiry();
+    }
+    return false;
+};
+
 // ============================================================
 //  ✅ دوال إدارة حالة التتبع الدوري (localStorage)
 // ============================================================
@@ -175,7 +183,7 @@ async function fetchTokenAndData() {
                 // نكمل عادي (هنحاول نجيب البيانات)
             } else {
                 console.log('🚫 الجلسة منتهية (نفس التوكن حديث)');
-                showTimeoutModal();
+                triggerSessionExpiry();
                 return;
             }
         } else if (expiredToken && expiredToken !== urlToken) {
@@ -316,7 +324,7 @@ async function fetchTokenAndData() {
             // ✅ فحص فوري — لو الوقت انتهى بالفعل
             if (tokenExpiryTime && Date.now() >= tokenExpiryTime.getTime()) {
                 console.log('⏰ [Initial] الوقت انتهى بالفعل — عرض المودال');
-                showTimeoutModal();
+                triggerSessionExpiry();
                 return;
             }
 
@@ -610,18 +618,47 @@ function renderContactButtons(child) {
     });
 }
 
-function showTimeoutModal() {
-    const modal = document.getElementById('timeoutModal');
-    if (modal) {
-        modal.classList.add('show');
-        modal.style.display = 'flex';
-    }
+let isExpiring = false; // منع التكرار
+
+function triggerSessionExpiry() {
+    if (isExpiring) return; // إذا تم الاستدعاء مسبقاً، لا تفعل شيئاً
+    isExpiring = true;
+
+    // 1. تدمير المحتوى فوراً (Full Page Replacement)
     const mainContent = document.getElementById('mainContent');
-    if (mainContent) mainContent.style.display = 'none';
+    if (mainContent) {
+        mainContent.style.display = 'none';
+        mainContent.innerHTML = ''; // مسح البيانات من الذاكرة
+    }
+    
     const loading = document.getElementById('loadingSpinner');
     if (loading) loading.style.display = 'none';
+    
     const error = document.getElementById('errorSection');
     if (error) error.style.display = 'none';
+    
+    const alertBar = document.getElementById('alertBar');
+    if (alertBar) alertBar.style.display = 'none';
+
+    // إيقاف كل المؤقتات (التوكن والموقع)
+    if (window.__tokenTimerInterval) clearInterval(window.__tokenTimerInterval);
+    if (window.__locationTrackingInterval) clearTimeout(window.__locationTrackingInterval);
+
+    // حفظ حالة الانتهاء في الذاكرة لمنع طلب البيانات عند التحديث
+    try {
+        const tokenToStore = childInfo.demoToken || childInfo.token || 'demo';
+        sessionStorage.setItem('kc_session_expired_token', tokenToStore);
+        sessionStorage.setItem('kc_session_expired_at', new Date().toISOString());
+    } catch (e) {}
+
+    // 2. إظهار شاشة الانتهاء (الفكرة الأولى)
+    const expScreen = document.getElementById('sessionExpiredScreen');
+    if (expScreen) expScreen.style.display = 'flex';
+
+    // 3. التوجيه القسري بعد 4 ثوانٍ (الفكرة الثانية)
+    setTimeout(function() {
+        window.location.replace('/index.html?expired=true');
+    }, 4000); // 4 ثوانٍ
 }
 
 // ============================================================
@@ -678,7 +715,7 @@ function startTokenTimer() {
             } catch (e) {}
 
             // ✅ إظهار المودال وإخفاء المحتوى
-            showTimeoutModal();
+            triggerSessionExpiry();
         }
     }, 1000);
 }
@@ -710,7 +747,7 @@ function bindVisibilityCheckForToken() {
             sessionStorage.setItem('kc_session_expired_token', tokenToStore);
             sessionStorage.setItem('kc_session_expired_at', new Date().toISOString());
         } catch (e) {}
-        showTimeoutModal();
+        triggerSessionExpiry();
     }
 
     function checkLocalNow() {
@@ -1255,7 +1292,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 sessionStorage.removeItem('kc_session_expired_token');
                 sessionStorage.removeItem('kc_session_expired_at');
             } else {
-                showTimeoutModal();
+                triggerSessionExpiry();
                 return;
             }
         }

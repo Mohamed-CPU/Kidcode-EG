@@ -137,22 +137,17 @@
         <img id="modalImage" src="" alt="صورة الطفل">
     </div>
 
-    <!-- ===== رسالة انتهاء الصلاحية ===== -->
-    <div id="timeoutModal" class="timeout-modal" style="display: none;">
-        <div class="timeout-content">
-            <div class="timeout-icon">
-                <i class="fas fa-shield-alt"></i>
+    <!-- ===== شاشة انتهاء الصلاحية (Full Screen) ===== -->
+    <div id="sessionExpiredScreen" class="session-expired-screen" style="display: none;">
+        <div class="expired-content">
+            <div class="expired-icon-wrapper">
+                <i class="fas fa-hand-holding-heart"></i>
             </div>
-            <div class="timeout-shield">
-                <i class="fas fa-exclamation-triangle"></i>
+            <h2>حفاظاً على خصوصية الطفل 🤝</h2>
+            <p>انتهت مدة عرض البيانات. شكراً لتفهمك، جاري تحويلك للصفحة الرئيسية...</p>
+            <div class="expired-loader">
+                <div class="expired-loader-bar"></div>
             </div>
-            <h2>نظراً للأمان</h2>
-            <p>يرجى إعادة مسح رمز QR Code مرة أخرى للحصول على جلسة جديدة</p>
-            <div class="timeout-divider"></div>
-            <p class="timeout-hint">انتهت صلاحية الجلسة</p>
-            <a href="/" onclick="try{sessionStorage.removeItem('kc_session_expired_token');sessionStorage.removeItem('kc_session_expired_at');}catch(e){}" class="btn btn-primary timeout-btn">
-            <i class="fas fa-home"></i> العودة للرئيسية
-            </a>
         </div>
     </div>
 
