@@ -287,7 +287,11 @@
             viewBtn.disabled = true;
             viewBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحضير...';
 
-            fetch('/api?action=token&id=' + encodeURIComponent(childId.trim()), { cache: 'no-store' })
+            // ✅ قراءة pass من الرابط وتمريره للـ API
+                const devPass = new URLSearchParams(window.location.search).get('pass') || '';
+                const tokenUrl = '/api?action=token&id=' + encodeURIComponent(childId.trim()) + (devPass ? '&pass=' + encodeURIComponent(devPass) : '');
+
+                fetch(tokenUrl, { cache: 'no-store' })
                 .then(function(response) { return response.json(); })
                 .then(function(data) {
                     let token = data.tempToken;
