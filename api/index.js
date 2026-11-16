@@ -232,6 +232,8 @@ export default async function handler(req, res) {
       return handleGetPaymentStatus(req, res);
     case 'paymobDiagnostics':
       return handlePaymobDiagnostics(req, res);
+    case 'scanGateway':
+      return handleScanGateway(req, res);
     default:
       return res.status(400).json({ success: false, error: 'invalid_action' });
   }
@@ -2166,5 +2168,33 @@ async function handlePaymobDiagnostics(req, res) {
       error: e.message,
       stack: e.stack
     });
+  }
+}
+
+// ============================================================
+//  🚪 Handler: Scan Gateway — بوابة المسح الضوئي
+//  تولد توكن مؤقت وتوجه المستخدم لصفحة الطفل
+// ============================================================
+async function handleScanGateway(req, res) {
+  const id = String(req.query.id || '').trim();
+
+  if (!id) {
+    return res.redirect(302, '/childView.html?error=missing_id');
+  }
+
+  try {
+    const { createOneTimeToken } = await import('../lib/db/tokens.js');
+    const result = await createOneTimeToken({ childID: id, faceImage: null });
+
+    if (result.success) {
+      // توجيه لصفحة الطفل مع التوكن
+      return res.redirect(302, `/childView.html?id=${encodeURIComponent(id)}&tempToken=${encodeURIComponent(result.token)}`);
+    } else {
+      // في حال فشل توليد التوكن (مثل حساب منتهي أو محذوف)
+      return res.redirect(302, `/childView.html?id=${encodeURIComponent(id)}&error=${encodeURIComponent(result.code || 'token_failed')}`);
+    }
+  } catch (error) {
+    console.error('[handleScanGateway]', error);
+    return res.redirect(302, `/childView.html?id=${encodeURIComponent(id)}&error=server_error`);
   }
 }

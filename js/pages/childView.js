@@ -78,19 +78,68 @@ function clearTickState(childID) {
 // ============================================================
 function getUrlParams() {
     const params = new URLSearchParams(window.location.search);
-    return {
-        id: params.get('id') || '',
-        tempToken: params.get('tempToken') || ''
-    };
+    const id = params.get('id') || '';
+    let tempToken = params.get('tempToken') || '';
+    let demoToke = params.get('demo') || '';
+
+    // إذا لم يوجد في الرابط، نبحث عنه في الجلسة (بعد التحديث)
+    if (id) {
+        try {
+            if (!tempToken) tempToken = sessionStorage.getItem('kc_token_' + id) || '';
+            if (!demoToke) demoToke = sessionStorage.getItem('kc_demo_' + id) || '';
+        } catch (e) {}
+    }
+
+    return { id, tempToken, demoToke };
+}
+
+function sanitizeUrl() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get('id') || '';
+    const tempToken = urlParams.get('tempToken');
+    const demoToke = urlParams.get('demo');
+    let changed = false;
+
+    if (id) {
+        if (tempToken) {
+            try { sessionStorage.setItem('kc_token_' + id, tempToken); } catch (e) {}
+            urlParams.delete('tempToken');
+            changed = true;
+        }
+        if (demoToke) {
+            try { sessionStorage.setItem('kc_demo_' + id, demoToke); } catch (e) {}
+            urlParams.delete('demo');
+            changed = true;
+        }
+    }
+
+    if (changed) {
+        const newUrl = window.location.pathname + (urlParams.toString() ? '?' + urlParams.toString() : '');
+        window.history.replaceState({}, document.title, newUrl);
+        console.log('🔒 [Security] URL Sanitized: Tokens hidden from address bar');
+    }
 }
 
 // ============================================================
 //  جلب البيانات وعرضها
 // ============================================================
 async function fetchTokenAndData() {
-    const { id, tempToken } = getUrlParams();
+    const { id, tempToken, demoToke } = getUrlParams();
     const urlParams = new URLSearchParams(window.location.search);
-    const demoToke = urlParams.get('demo') || '';
+    
+    // ✅ فحص خطأ البوابة (إذا تم التوجيه من scanGateway بخطأ)
+    const urlError = urlParams.get('error');
+    if (urlError) {
+        let msg = 'حدث خطأ غير متوقع.';
+        if (urlError === 'child_not_found') msg = 'لا يوجد طفل بهذا المعرف.';
+        else if (urlError === 'account_expired') msg = 'انتهى اشتراك هذا الحساب.';
+        else if (urlError === 'account_pending') msg = 'الحساب قيد التفعيل.';
+        else if (urlError === 'account_deleted') msg = 'هذا الحساب تم حذفه.';
+        else if (urlError === 'missing_id') msg = 'رابط غير صحيح.';
+        
+        showError(`⚠️ ${msg}`);
+        return;
+    }
 
     try {
         const expiredToken = sessionStorage.getItem('kc_session_expired_token');
@@ -1168,11 +1217,12 @@ window.addEventListener('beforeunload', function() {
 //  بدء التشغيل
 // ============================================================
 document.addEventListener('DOMContentLoaded', function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    // ✅ للجلسات التجريبية: نستخدم demoToken الفريد بدل 'demo' الثابت
-    const urlToken = urlParams.get('tempToken') 
-                  || urlParams.get('demo') 
-                  || 'demo';
+    // ✅ 1. تنظيف الرابط فوراً (إخفاء التوكن)
+    sanitizeUrl();
+
+    // ✅ 2. قراءة التوكن من الذاكرة المؤقتة (بعد التنظيف)
+    const { tempToken, demoToke } = getUrlParams();
+    const urlToken = tempToken || demoToke || 'demo';
 
     try {
         const expiredToken = sessionStorage.getItem('kc_session_expired_token');
