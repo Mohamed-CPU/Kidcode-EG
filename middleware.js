@@ -137,6 +137,52 @@ export default async function middleware(request) {
   const url = new URL(request.url);
   const path = url.pathname;
 
+  // ✅ 1. توليد Nonce لكل طلب (باستخدام Web Crypto API)
+  const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
+  
+  // ✅ 2. إعداد ترويسة CORS ديناميكية
+  const origin = request.headers.get('origin') || '';
+  const isAllowedOrigin = origin === 'https://www.kidcode-eg.com' || origin === 'https://kidcode-eg.com' || origin.includes('localhost');
+  const allowedOrigin = isAllowedOrigin ? origin : 'https://www.kidcode-eg.com';
+
+  // ✅ 3. بناء سياسة CSP ديناميكية (بدون unsafe-inline)
+  //    ملاحظة: تم الاحتفاظ بـ unsafe-inline في style-src لأن بعض مكتبات الطرف الثالث قد تتطلبها،
+  //    لكن يمكن إزالتها لاحقاً إذا لزم الأمر.
+  const cspHeader = `
+    default-src 'self';
+    script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https://www.googletagmanager.com https://www.google-analytics.com;
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
+    font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+    img-src 'self' data: https://res.cloudinary.com https://www.google-analytics.com https://www.googletagmanager.com;
+    connect-src 'self' https://api.kidcode-eg.com https://www.google-analytics.com https://*.supabase.co;
+    frame-src 'self';
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self';
+    frame-ancestors 'self';
+  `.replace(/\s{2,}/g, ' ').trim();
+
+  // ✅ 4. دالة مساعدة لإنشاء استجابة مع الهيدرز الأمنية
+  const createSecureResponse = (body, init) => {
+    const response = new Response(body, init);
+    response.headers.set('Content-Security-Policy', cspHeader);
+    response.headers.set('Access-Control-Allow-Origin', allowedOrigin);
+    response.headers.set('X-Content-Type-Options', 'nosniff');
+    return response;
+  };
+
+  // ─── 5. التعامل مع طلبات OPTIONS (CORS Preflight) ───
+  if (request.method === 'OPTIONS') {
+    return new Response(null, {
+      status: 204,
+      headers: {
+        'Access-Control-Allow-Origin': allowedOrigin,
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      },
+    });
+  }
+
   // ─── 1. المسارات العامة (خارج الحماية) ───
   if (path.startsWith('/css/')) return undefined;
   if (path.startsWith('/js/')) return undefined;
