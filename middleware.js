@@ -146,8 +146,6 @@ export default async function middleware(request) {
   const allowedOrigin = isAllowedOrigin ? origin : 'https://www.kidcode-eg.com';
 
   // ✅ 3. بناء سياسة CSP ديناميكية (بدون unsafe-inline)
-  //    ملاحظة: تم الاحتفاظ بـ unsafe-inline في style-src لأن بعض مكتبات الطرف الثالث قد تتطلبها،
-  //    لكن يمكن إزالتها لاحقاً إذا لزم الأمر.
   const cspHeader = `
     default-src 'self';
     script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https://www.googletagmanager.com https://www.google-analytics.com;
@@ -162,13 +160,32 @@ export default async function middleware(request) {
     frame-ancestors 'self';
   `.replace(/\s{2,}/g, ' ').trim();
 
-  // ✅ 4. دالة مساعدة لإنشاء استجابة مع الهيدرز الأمنية
-  const createSecureResponse = (body, init) => {
-    const response = new Response(body, init);
-    response.headers.set('Content-Security-Policy', cspHeader);
-    response.headers.set('Access-Control-Allow-Origin', allowedOrigin);
-    response.headers.set('X-Content-Type-Options', 'nosniff');
-    return response;
+  // ✅ 4. دالة لحقن الـ nonce في صفحات الـ HTML قبل إرسالها للمتصفح
+  const injectNonce = async (request, nonce, allowedOrigin, cspHeader) => {
+    const response = await fetch(request);
+    const contentType = response.headers.get('content-type') || '';
+    
+    // نطبق التعديل فقط على صفحات الـ HTML
+    if (!contentType.includes('text/html')) {
+      return response;
+    }
+
+    let html = await response.text();
+    
+    // نضيف الـ nonce لكل وسم <script> لا يحتوي عليه مسبقاً
+    html = html.replace(/<script(?![^>]*nonce=)/g, `<script nonce="${nonce}"`);
+
+    const newResponse = new Response(html, {
+      status: response.status,
+      statusText: response.statusText,
+      headers: response.headers
+    });
+
+    newResponse.headers.set('Content-Security-Policy', cspHeader);
+    newResponse.headers.set('Access-Control-Allow-Origin', allowedOrigin);
+    newResponse.headers.set('X-Content-Type-Options', 'nosniff');
+    
+    return newResponse;
   };
 
   // ─── 5. التعامل مع طلبات OPTIONS (CORS Preflight) ───
@@ -184,13 +201,12 @@ export default async function middleware(request) {
   }
 
   // ─── 1. المسارات العامة (خارج الحماية) ───
-  if (path.startsWith('/css/')) return undefined;
-  if (path.startsWith('/js/')) return undefined;
-  if (path.startsWith('/admin/css/')) return undefined;
-  if (path.startsWith('/admin/js/')) return undefined;
+  if (path.startsWith('/css/') || path.startsWith('/js/') || path.startsWith('/assets/')) return undefined;
 
   // ─── 2. Emergency unlock دايماً مسموح (لا يحتاج بوابة مفتوحة) ───
-  if (path === '/admin/emergency-unlock.html') return undefined;
+  if (path === '/admin/emergency-unlock.html') {
+    return await injectNonce(request, nonce, allowedOrigin, cspHeader);
+  }
 
   // ─── 3. البوابة مقفولة → 404 لكل المسارات المحمية ───
   const panelOpen = await isPanelOpen();
@@ -199,27 +215,21 @@ export default async function middleware(request) {
   if (path.startsWith('/admin')) {
     const hasToken = hasSessionToken(request);
 
-    // ✅ القاعدة الجديدة:
-    //   - البوابة مقفولة + مفيش cookie → 404 (منع دخول جديد)
-    //   - البوابة مقفولة + فيه cookie  → مسموح (الجلسة النشطة مستمرة)
-    //   - الصفحات العامة (login) → مسموحة دايماً
-    //   - صفحة enter → تحتاج بوابة مفتوحة
-
     // 4أ. صفحة enter → تحتاج بوابة مفتوحة
     if (path === '/admin/enter.html') {
       if (!panelOpen) return notFound();
-      return undefined;
+      return await injectNonce(request, nonce, allowedOrigin, cspHeader);
     }
 
     // 4ب. صفحة login (index) → مسموحة دايماً
     if (PUBLIC_ADMIN_PAGES.includes(path)) {
-      return undefined;
+      return await injectNonce(request, nonce, allowedOrigin, cspHeader);
     }
 
     // 4ج. باقي الصفحات:
     //     لو فيه cookie → مسموح (حتى لو البوابة مقفولة)
     if (hasToken) {
-      return undefined;
+      return await injectNonce(request, nonce, allowedOrigin, cspHeader);
     }
 
     // 4د. مفيش cookie + البوابة مقفولة → 404 (إخفاء)
@@ -239,14 +249,6 @@ export default async function middleware(request) {
     const inner = url.searchParams.get('innerAction') || '';
     const hasToken = hasSessionToken(request);
 
-    // ✅ 5أ. Actions دايماً مسموحة (بغض النظر عن حالة البوابة)
-    //  - verify/checkStatus : للتحقق من الجلسة الحالية + freeze polling
-    //                          ⚠️ لا يجوز حجبها لأنها بتُستخدم للجلسات النشطة
-    //  - health             : للمراقبة
-    //  - initSuperAdmin     : للتهيئة الأولى
-    //  - emergencyUnlock    : للطوارئ
-    //  - requestPasswordChange / changePasswordWithToken / iDidntRequest
-    //                        : من حالة freeze أو من البريد — لا علاقة بالبوابة
     const ALWAYS_ALLOWED_ACTIONS = [
       'verify',
       'checkStatus',
@@ -261,14 +263,10 @@ export default async function middleware(request) {
       return undefined;
     }
 
-    // ✅ 5ب. عندك token صالح → مسموح (الجلسة النشطة مستمرة حتى لو البوابة مقفولة)
     if (hasToken) {
       return undefined;
     }
 
-    // ─── من هنا: مفيش token ───
-
-    // ✅ 5ج. Actions عامة (login, consumeLoginLink) — تحتاج البوابة مفتوحة
     if (PUBLIC_ADMIN_ACTIONS.includes(inner)) {
       if (!panelOpen) {
         return new Response(
@@ -279,7 +277,6 @@ export default async function middleware(request) {
       return undefined;
     }
 
-    //     ب) مفيش cookie + البوابة مقفولة → 404
     if (!panelOpen) {
       return new Response(
         JSON.stringify({ success: false, error: 'panel_closed' }),
@@ -287,26 +284,24 @@ export default async function middleware(request) {
       );
     }
 
-    //     - البوابة مفتوحة → نعدي للـ router (الـ router بيرجع 401 بنفسه)
-    //     السبب: لو الـ middleware رجع 401، core.js بيعمل logout فوراً
-    //             حتى لو المشكلة كانت مؤقتة (race condition / cookie issue)
-    //             الـ router أذكى — بيرجع رسائل مفصّلة وبيراعي حالات الجلسة
     return undefined;
   }
 
-  // ─── 6. الباقي → مرور عادي ───
+  // ─── 6. الباقي → مرور عادي (مع حقن الـ nonce للـ HTML) ───
+  const acceptHeader = request.headers.get('accept') || '';
+  if (acceptHeader.includes('text/html')) {
+    return await injectNonce(request, nonce, allowedOrigin, cspHeader);
+  }
+
   return undefined;
 }
 
 // ================================================================
 //  ⚙️ Matcher + Runtime
-//  - runtime: 'nodejs' → لتجنب تحذير Vercel (Edge runtime deprecated)
-//  - matcher: المسارات اللي يشتغل عليها
 // ================================================================
 export const config = {
   runtime: 'nodejs',
   matcher: [
-    '/admin/:path*',
-    '/api'
+    '/((?!_next/static|_vercel|favicon.ico|assets|css|js|images|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|css|js)$).*)'
   ]
 };
