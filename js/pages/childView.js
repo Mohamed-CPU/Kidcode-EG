@@ -630,11 +630,8 @@ function showTimeoutModal() {
 function showError(message) {
     document.getElementById('loadingSpinner').classList.add('hidden');
     document.getElementById('mainContent').classList.add('hidden');
-    
     const errorSection = document.getElementById('errorSection');
     errorSection.classList.remove('hidden');
-    errorSection.style.display = 'flex'; // ✅ إجبار المتصفح على إظهار رسالة الخطأ
-    
     document.getElementById('errorMessage').innerHTML = message;
 }
 
