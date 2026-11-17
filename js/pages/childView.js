@@ -1270,16 +1270,26 @@ window.addEventListener('beforeunload', function() {
 // ============================================================
 document.addEventListener('DOMContentLoaded', function() {
     // ✅ 0. حماية الخصوصية عند تبديل التطبيقات (App Switcher)
-    document.addEventListener('visibilitychange', function() {
+    (function initPrivacyOverlay() {
         const overlay = document.getElementById('privacyOverlay');
         if (!overlay) return;
-        
-        if (document.hidden) {
-            overlay.style.display = 'flex';
-        } else {
-            overlay.style.display = 'none';
-        }
-    });
+
+        function showOverlay() { overlay.style.display = 'flex'; }
+        function hideOverlay() { overlay.style.display = 'none'; }
+
+        // 1. حدث تبديل التابات / تصغير المتصفح في الموبايل
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                showOverlay();
+            } else {
+                hideOverlay();
+            }
+        });
+
+        // 2. أحداث فقدان التركيز (أسرع في التقاط الشاشة على بعض الأجهزة)
+        window.addEventListener('blur', showOverlay);
+        window.addEventListener('focus', hideOverlay);
+    })();
 
     // ✅ 1. تنظيف الرابط فوراً (إخفاء التوكن)
     sanitizeUrl();
