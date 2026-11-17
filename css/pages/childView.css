@@ -1104,3 +1104,51 @@ body.no-header {
     font-weight: 600;
     color: var(--text-secondary);
 }
+
+/* ============================================================
+   🛡️ حماية البيانات: منع التحديد + العلامة المائية للصور
+   ============================================================ */
+
+/* 1. منع تحديد النصوص ونسخها */
+body, .child-content, .child-card, .child-info, .detail-value {
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10+ */
+    user-select: none; /* Standard */
+    -webkit-touch-callout: none; /* يمنع القائمة المنبثقة عند الضغط المطول في iOS */
+}
+
+/* 2. منع سحب الصورة، تحميلها، أو إظهار قائمة الضغط المطول (Long Press) */
+.child-image-wrapper .child-image,
+.image-modal img {
+    -webkit-user-drag: none;
+    -webkit-touch-callout: none; /* ✅ يمنع قائمة (حفظ الصورة) في الآيفون */
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    pointer-events: auto; /* نتركها auto لكي تعمل خاصية التكبير عند النقر */
+}
+
+/* 3. إضافة علامة مائية (Watermark) فوق صورة الطفل */
+.child-image-wrapper {
+    position: relative; /* تأكد من وجودها */
+}
+
+.child-image-wrapper::after {
+    content: "KidCode-EG";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-35deg); /* تدوير العلامة المائية */
+    font-size: 3.5rem;
+    font-weight: 900;
+    font-family: 'Inter', sans-serif;
+    color: rgba(255, 255, 255, 0.45); /* لون أبيض شفاف */
+    pointer-events: none; /* تسمح بمرور النقرات للصورة تحتها */
+    z-index: 10;
+    white-space: nowrap;
+    letter-spacing: 5px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* ظل خفيف لتبيين العلامة */
+    user-select: none;
+}

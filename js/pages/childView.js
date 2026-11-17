@@ -1286,6 +1286,33 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
+    // ✅ حماية البيانات (منع النسخ، القائمة اليمنى، السحب)
+    (function initDataProtection() {
+        // 1. منع القائمة المنبثقة (Right Click) والضغط المطول (Long Press) للصور فقط
+        document.addEventListener('contextmenu', function(e) {
+            if (e.target.tagName.toUpperCase() === 'IMG') {
+                e.preventDefault();
+            }
+        });
+
+        // 2. منع حدث النسخ (Ctrl+C) لأي نص
+        document.addEventListener('copy', function(e) {
+            e.preventDefault();
+        });
+
+        // 3. منع تحديد النصوص (Select Start)
+        document.addEventListener('selectstart', function(e) {
+            e.preventDefault();
+        });
+
+        // 4. منع سحب الصور (Drag & Drop)
+        document.addEventListener('dragstart', function(e) {
+            if (e.target.tagName.toUpperCase() === 'IMG') {
+                e.preventDefault();
+            }
+        });
+    })();
+
         // 2. أحداث فقدان التركيز (أسرع في التقاط الشاشة على بعض الأجهزة)
         window.addEventListener('blur', showOverlay);
         window.addEventListener('focus', hideOverlay);
