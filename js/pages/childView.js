@@ -1288,9 +1288,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // ✅ حماية البيانات (منع النسخ، القائمة اليمنى، السحب)
     (function initDataProtection() {
-        // 1. منع القائمة المنبثقة (Right Click) والضغط المطول (Long Press) للصور فقط
+        // 1. منع القائمة المنبثقة (Right Click) والضغط المطول (Long Press) للصور والأزرار
         document.addEventListener('contextmenu', function(e) {
-            if (e.target.tagName.toUpperCase() === 'IMG') {
+            // إذا كان العنصر صورة أو زر أو رابط، امنع القائمة
+            const target = e.target.closest('img, a, button, .btn-call, .btn-wa, .btn-location, .btn-location-option');
+            if (target) {
                 e.preventDefault();
             }
         });
@@ -1307,7 +1309,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // 4. منع سحب الصور (Drag & Drop)
         document.addEventListener('dragstart', function(e) {
-            if (e.target.tagName.toUpperCase() === 'IMG') {
+            const target = e.target.closest('img, a, button');
+            if (target) {
                 e.preventDefault();
             }
         });

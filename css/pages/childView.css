@@ -1130,20 +1130,22 @@ body, .child-content, .child-card, .child-info, .detail-value {
     pointer-events: auto; /* نتركها auto لكي تعمل خاصية التكبير عند النقر */
 }
 
-/* 3. العلامة المائية الشاملة (تغطي الشاشة بالكامل) */
-.screenshot-watermark {
-    position: fixed;
-    inset: 0;
-    z-index: 9999; /* أعلى من المحتوى والصور المكبرة */
-    pointer-events: none; /* ✅ يسمح بمرور النقرات واللمسات للأزرار تحتها */
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='350' height='200'%3E%3Ctext x='50%25' y='50%25' transform='rotate(-30 175 100)' fill='rgba(34, 85, 159, 0.12)' font-size='32' font-family='Cairo, sans-serif' font-weight='900' text-anchor='middle' dominant-baseline='middle'%3EKidCode-EG%3C/text%3E%3C/svg%3E");
-    background-repeat: repeat;
+/* 3. منع التأثيرات الجانبية للضغط المطول على الأزرار وتأكيد النقر السريع فقط */
+.contact-buttons a,
+.btn-location,
+.btn-location-option,
+.btn-emergency,
+.btn-child-helpline {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
     user-select: none;
+    -webkit-tap-highlight-color: transparent; /* إزالة المربع الأزرق عند النقر في الموبايل */
+    -webkit-user-drag: none;
 }
 
-/* 4. علامة مائية إضافية أقوى على صورة الطفل فقط (لضمان عدم استخدام الصورة وحدها) */
+/* 3. إضافة علامة مائية (Watermark) فوق صورة الطفل */
 .child-image-wrapper {
-    position: relative;
+    position: relative; /* تأكد من وجودها */
 }
 
 .child-image-wrapper::after {
@@ -1151,15 +1153,15 @@ body, .child-content, .child-card, .child-info, .detail-value {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) rotate(-35deg);
+    transform: translate(-50%, -50%) rotate(-35deg); /* تدوير العلامة المائية */
     font-size: 3.5rem;
     font-weight: 900;
     font-family: 'Inter', sans-serif;
-    color: rgba(255, 255, 255, 0.6); 
-    pointer-events: none;
+    color: rgba(255, 255, 255, 0.45); /* لون أبيض شفاف */
+    pointer-events: none; /* تسمح بمرور النقرات للصورة تحتها */
     z-index: 10;
     white-space: nowrap;
     letter-spacing: 5px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* ظل خفيف لتبيين العلامة */
     user-select: none;
 }
