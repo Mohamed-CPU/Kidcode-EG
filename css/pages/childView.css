@@ -16,8 +16,6 @@ body.no-header {
     margin: 24px auto;
     padding: 0 20px;
 }
-
-.loading-screen .spinner-box,
 .error-screen .error-box {
     background: var(--bg-white);
     border-radius: var(--radius-lg);
@@ -25,22 +23,6 @@ body.no-header {
     text-align: center;
     box-shadow: var(--shadow-md);
     border: 1px solid rgba(34, 85, 159, 0.06);
-}
-
-.loading-screen .spinner-box i {
-    font-size: 4rem;
-    color: var(--primary-color);
-    margin-bottom: 16px;
-    animation: spin 1s linear infinite;
-}
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-.loading-screen .spinner-box p {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--text-secondary);
 }
 
 .error-screen .error-box i {
@@ -680,7 +662,6 @@ body.no-header {
         font-size: 0.95rem;
         padding: 14px 16px;
     }
-    .loading-screen .spinner-box,
     .error-screen .error-box {
         padding: 40px 24px;
     }
@@ -808,15 +789,12 @@ body.no-header {
         font-size: 0.85rem;
         padding: 12px 14px;
     }
-    .loading-screen .spinner-box,
     .error-screen .error-box {
         padding: 24px 16px;
     }
-    .loading-screen .spinner-box i,
     .error-screen .error-box i {
         font-size: 3rem;
     }
-    .loading-screen .spinner-box p,
     .error-screen .error-box p {
         font-size: 1rem;
     }
@@ -835,7 +813,6 @@ body.no-header {
     padding: 0 16px;
 }
 
-.loading-screen .spinner-box,
 .error-screen .error-box {
     background: var(--bg-white);
     border-radius: var(--radius-lg);
@@ -843,22 +820,6 @@ body.no-header {
     text-align: center;
     box-shadow: var(--shadow-md);
     border: 1px solid rgba(34, 85, 159, 0.06);
-}
-
-.loading-screen .spinner-box i {
-    font-size: 3.5rem;
-    color: var(--primary-color);
-    margin-bottom: 16px;
-    animation: spin 1s linear infinite;
-}
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-.loading-screen .spinner-box p {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--text-secondary);
 }
 
 .error-screen .error-box i {
@@ -909,16 +870,13 @@ body.no-header {
         padding: 0 12px;
         margin: 16px auto;
     }
-    .loading-screen .spinner-box,
     .error-screen .error-box {
         padding: 28px 16px;
         border-radius: var(--radius-md);
     }
-    .loading-screen .spinner-box i,
     .error-screen .error-box i {
         font-size: 2.8rem;
     }
-    .loading-screen .spinner-box p,
     .error-screen .error-box p {
         font-size: 1rem;
         line-height: 1.6;
@@ -1015,4 +973,96 @@ body.no-header {
         opacity: 1;
         transform: scale(1) translateY(0);
     }
+}
+
+/* ============================================================
+   🆕 SKELETON LOADING
+   ============================================================ */
+.skeleton-wrapper {
+    max-width: 650px;
+    margin: 24px auto;
+    padding: 0 20px;
+}
+
+.skeleton-card {
+    background: var(--bg-white);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: 0 15px 50px rgba(34, 85, 159, 0.10);
+    border: 1px solid rgba(34, 85, 159, 0.06);
+}
+
+.skeleton-image {
+    width: 100%;
+    height: clamp(350px, 60vh, 650px);
+    background: #E2E8F0;
+}
+
+.skeleton-info {
+    padding: 28px 30px;
+}
+
+.skeleton-title {
+    height: 36px;
+    width: 60%;
+    background: #E2E8F0;
+    border-radius: var(--radius-sm);
+    margin-bottom: 24px;
+}
+
+.skeleton-details {
+    background: var(--bg-body);
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    border-right: 4px solid #CBD5E1;
+}
+
+.skeleton-line {
+    height: 20px;
+    background: #E2E8F0;
+    border-radius: 4px;
+    margin-bottom: 12px;
+}
+.skeleton-line:last-child {
+    margin-bottom: 0;
+    width: 70%;
+}
+
+.skeleton-btn {
+    height: 72px;
+    background: #E2E8F0;
+    border-radius: var(--radius-md);
+    margin-bottom: 12px;
+}
+
+/* حركة اللمعان (Shimmer Animation) */
+.skeleton-shimmer {
+    position: relative;
+    overflow: hidden;
+}
+
+.skeleton-shimmer::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+    transform: translateX(-100%);
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    100% { transform: translateX(100%); }
+}
+
+@media (max-width: 768px) {
+    .skeleton-image { height: clamp(300px, 50vh, 500px); }
+}
+@media (max-width: 480px) {
+    .skeleton-image { height: clamp(280px, 45vh, 450px); }
+    .skeleton-info { padding: 20px 18px; }
+    .skeleton-btn { height: 50px; }
 }

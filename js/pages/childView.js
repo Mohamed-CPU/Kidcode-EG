@@ -1269,6 +1269,18 @@ window.addEventListener('beforeunload', function() {
 //  بدء التشغيل
 // ============================================================
 document.addEventListener('DOMContentLoaded', function() {
+    // ✅ 0. حماية الخصوصية عند تبديل التطبيقات (App Switcher)
+    document.addEventListener('visibilitychange', function() {
+        const overlay = document.getElementById('privacyOverlay');
+        if (!overlay) return;
+        
+        if (document.hidden) {
+            overlay.style.display = 'flex';
+        } else {
+            overlay.style.display = 'none';
+        }
+    });
+
     // ✅ 1. تنظيف الرابط فوراً (إخفاء التوكن)
     sanitizeUrl();
 
